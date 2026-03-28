@@ -89,7 +89,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #eaf2ed; min-he
 .empty-icon { font-size: 40px; margin-bottom: 10px; }
 .empty h3 { font-size: 15px; font-weight: 700; color: var(--gray-700); margin-bottom: 5px; }
 
-/* ════ RPH TABLE ════ */
+/* RPH CARD */
 .rph-card { background: white; border-radius: var(--radius); border: 1px solid #cde0d4; box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
 
 /* School header */
@@ -109,9 +109,9 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #eaf2ed; min-he
 .ig-cell input:focus, .ig-cell select:focus { border-color: var(--green-mid); background: white; }
 
 /* RPH table */
-table.t { width: 100%; min-width: 900px; border-collapse: collapse; font-size: 12px; }
+table.t { width: 100%; min-width: 1100px; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
 table.t th, table.t td { border: 1.5px solid var(--border); padding: 7px 9px; vertical-align: top; }
-table.t thead th { background: var(--green); color: white; font-size: 10.5px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; padding: 8px 9px; }
+table.t thead th { background: var(--green); color: white; font-size: 10.5px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; white-space: normal; word-wrap: break-word; padding: 8px 6px; line-height: 1.3; }
 .tlbl { background: var(--green-light); font-weight: 700; color: var(--green); text-align: center; vertical-align: middle; min-width: 80px; }
 .tlbl .tm { font-size: 12px; font-weight: 700; line-height: 1.3; }
 .tlbl .bd { font-size: 9.5px; font-weight: 700; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
@@ -140,6 +140,10 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
 .rutin-extra input { padding: 4px 7px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 12px; font-family: inherit; background: #fafdfc; outline: none; }
 .rutin-extra input:focus { border-color: var(--green-mid); background: white; }
 
+/* Sync banner */
+.sync-banner { background: var(--green-xlight); border-bottom: 1px solid #b8d9c5; padding: 6px 16px; font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 8px; }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
 /* Toast */
 .toast { position: fixed; bottom: 22px; right: 22px; background: var(--green); color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,0.15); opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 999; max-width: 320px; }
 .toast.show { opacity: 1; transform: translateY(0); }
@@ -149,13 +153,14 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
 /* Modal */
 .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; }
 .overlay.open { display: flex; }
-.modal { background: white; border-radius: 11px; padding: 24px; width: 450px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.modal { background: white; border-radius: 11px; padding: 24px; width: 500px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
 .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--green); }
 .modal p { font-size: 12px; color: var(--gray-500); margin-bottom: 13px; }
 .modal label { font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 4px; }
 .modal input { width: 100%; padding: 7px 10px; border: 1.5px solid #cad8cf; border-radius: 6px; font-size: 13px; font-family: inherit; outline: none; }
 .modal input:focus { border-color: var(--green-mid); }
 .gas-guide { background: var(--green-xlight); border: 1px solid #b8d9c5; border-radius: 7px; padding: 11px 13px; font-size: 11.5px; color: var(--green); line-height: 1.75; margin-top: 10px; }
+.gas-code { background: #1e1e1e; color: #9cdcfe; border-radius: 7px; padding: 11px 13px; font-size: 11px; font-family: monospace; margin-top: 8px; white-space: pre; overflow-x: auto; line-height: 1.7; }
 .modal-actions { display: flex; gap: 8px; margin-top: 18px; justify-content: flex-end; }
 
 /* Print */
@@ -200,7 +205,6 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
 </div>
 
 <div class="wrap">
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-label">Menu</div>
     <div class="nav-item" id="nav-dashboard" onclick="go('dashboard')">
@@ -213,8 +217,6 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
     <div class="sb-label">Hari</div>
     <div id="day-nav"></div>
   </aside>
-
-  <!-- MAIN -->
   <main class="main" id="main"></main>
 </div>
 
@@ -224,27 +226,44 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
 <div class="overlay" id="gas-modal">
   <div class="modal">
     <h3>🔗 Sambung Google Apps Script</h3>
-    <p>Masukkan URL Web App GAS untuk simpan data ke Google Sheets secara automatik.</p>
+    <p>Sambung ke GAS untuk simpan &amp; muat data dari Google Sheets — boleh akses dari mana-mana device.</p>
     <label>URL Google Apps Script Web App</label>
     <input type="text" id="gas-input" placeholder="https://script.google.com/macros/s/XXXX/exec">
     <div class="gas-guide">
-      <strong>Cara deploy GAS:</strong><br>
-      1. Buka <strong>Code.gs</strong> dalam Google Apps Script<br>
-      2. Klik <em>Deploy → New Deployment → Web App</em><br>
-      3. Execute as: <strong>Me</strong> &nbsp;|&nbsp; Who has access: <strong>Anyone</strong><br>
-      4. Copy URL → tampal di sini → klik Sambung
+      <strong>Cara setup GAS (salin kod di bawah ke Code.gs):</strong><br>
+      1. Pergi ke <strong>script.google.com</strong> → projek baru<br>
+      2. Salin &amp; tampal kod di bawah ke <strong>Code.gs</strong><br>
+      3. Deploy → New Deployment → <strong>Web App</strong><br>
+      4. Execute as: <strong>Me</strong> &nbsp;|&nbsp; Access: <strong>Anyone</strong><br>
+      5. Copy URL → tampal di atas → klik Sambung
     </div>
+    <div class="gas-code">function doPost(e){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var data = JSON.parse(e.postData.contents);
+  var sheet = ss.getSheetByName(data._dayId) || ss.insertSheet(data._dayId);
+  sheet.clearContents();
+  sheet.getRange(1,1).setValue(JSON.stringify(data));
+  return ContentService.createTextOutput('OK');
+}
+function doGet(e){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var result = {};
+  ss.getSheets().forEach(function(s){
+    var v = s.getRange(1,1).getValue();
+    if(v) try{ result[s.getName()]=JSON.parse(v); }catch(err){}
+  });
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}</div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeGas()">Batal</button>
-      <button class="btn btn-green" onclick="saveGas()">Sambung</button>
+      <button class="btn btn-amber btn-sm" onclick="copyGasCode()">📋 Salin Kod GAS</button>
+      <button class="btn btn-green" onclick="saveGas()">⚡ Sambung</button>
     </div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════
-//  DATA & CONFIG
-// ═══════════════════════════════════════
 const DAYS = [
   { id:'isnin',  label:'Isnin',  emoji:'1️⃣' },
   { id:'selasa', label:'Selasa', emoji:'2️⃣' },
@@ -254,171 +273,180 @@ const DAYS = [
 ];
 
 const SLOTS = [
-  { id:'s1',  masa:'8.00 - 8.20',  dur:'20 MIN', bidang:'PERBUALAN AWAL',     kompetensi:'Perkembangan Diri', defAkt:'Guru bersoal jawab dengan murid tentang apa itu keperluan dan kehendak.\n- Keperluan ialah sesuatu yang diperlukan dan mesti dipenuhi\n- Kehendak ialah sesuatu yang ingin dimiliki\n- Murid menonton video pembelajaran perbezaan antara keperluan dan kehendak\n- Contoh keperluan yang mesti dipenuhi ialah makanan, tempat tinggal, pakaian, kasut, buku dan alat tulis\n- Contoh kehendak yang ingin kanak-kanak miliki ialah telefon bimbit, permainan, kasut roda, aiskrim dan makanan ringan' },
-  { id:'s2',  masa:'8.20 - 8.50',  dur:'30 MIN', bidang:'PERKEMBANGAN DIRI',  kompetensi:'Perkembangan Diri', defAkt:'' },
-  { id:'s3',  masa:'9.00 - 9.30',  dur:'30 MIN', bidang:'REHAT AKTIF',        kompetensi:'Kemahiran Fizikal', defAkt:'Murid berjalan di atas garisan lurus menggunakan wisel dan Music' },
-  { id:'s4',  masa:'9.30 - 10.00', dur:'30 MIN', bidang:'KEMAHIRAN ASAS',     kompetensi:'Kemahiran Berfikir', defAkt:'' },
-  { id:'s5',  masa:'10.00 - 10.30',dur:'30 MIN', bidang:'KEMAHIRAN ASAS 2',   kompetensi:'Kemahiran Berfikir', defAkt:'' },
-  { id:'s6',  masa:'10.30 - 11.00',dur:'30 MIN', bidang:'SAINS AWAL',         kompetensi:'Kemahiran Berfikir', defAkt:'Guru memberikan contoh benda bukan hidup ciptaan manusia seperti jam, cawan, kereta, telefon, kapal terbang.\n- Kemudian guru menerangkan ciri-ciri benda bukan hidup:\n1. Tidak bernafas\n2. Tidak makan dan minum\n3. Tidak membesar\n4. Tidak bergerak dengan sendiri\n- Seterusnya murid mengelaskan objek benda hidup dan benda bukan hidup pada carta pengelasan.' },
-  { id:'s7',  masa:'11.00 - 11.20',dur:'20 MIN', bidang:'MATEMATIK AWAL',     kompetensi:'Kemahiran Berfikir', defAkt:'Murid dikehendaki membilang nombor 1-20 dalam kumpulan kecil menggunakan alat pembilang seperti cube, cotton bud dan blok kayu\n- Murid dikehendaki mengecam nombor 11-20 secara kelas dengan mencari nombor 11-20\n- Murid dapat membezakan nombor 11 dengan 12, 13 dengan 14\n- Kemudian murid dikehendaki menulis nombor 11-14 dengan betul pada lembaran kerja yang diberikan.' },
-  { id:'s8',  masa:'11.20 - 11.50',dur:'30 MIN', bidang:'BAHASA MELAYU',      kompetensi:'Kemahiran Bahasa', defAkt:'' },
+  { id:'s1', masa:'8.00 - 8.20',   dur:'20 MIN', bidang:'PERBUALAN AWAL',    kompetensi:'Perkembangan Diri',  defAkt:'Guru bersoal jawab dengan murid tentang apa itu keperluan dan kehendak.\n- Keperluan ialah sesuatu yang diperlukan dan mesti dipenuhi\n- Kehendak ialah sesuatu yang ingin dimiliki\n- Murid menonton video pembelajaran perbezaan antara keperluan dan kehendak\n- Contoh keperluan yang mesti dipenuhi ialah makanan, tempat tinggal, pakaian, kasut, buku dan alat tulis\n- Contoh kehendak yang ingin kanak-kanak miliki ialah telefon bimbit, permainan, kasut roda, aiskrim dan makanan ringan' },
+  { id:'s2', masa:'8.20 - 8.50',   dur:'30 MIN', bidang:'PERKEMBANGAN DIRI', kompetensi:'Perkembangan Diri',  defAkt:'' },
+  { id:'s3', masa:'9.00 - 9.30',   dur:'30 MIN', bidang:'REHAT AKTIF',       kompetensi:'Kemahiran Fizikal',  defAkt:'Murid berjalan di atas garisan lurus menggunakan wisel dan Music' },
+  { id:'s4', masa:'9.30 - 10.00',  dur:'30 MIN', bidang:'KEMAHIRAN ASAS',    kompetensi:'Kemahiran Berfikir', defAkt:'' },
+  { id:'s5', masa:'10.00 - 10.30', dur:'30 MIN', bidang:'KEMAHIRAN ASAS 2',  kompetensi:'Kemahiran Berfikir', defAkt:'' },
+  { id:'s6', masa:'10.30 - 11.00', dur:'30 MIN', bidang:'SAINS AWAL',        kompetensi:'Kemahiran Berfikir', defAkt:'Guru memberikan contoh benda bukan hidup ciptaan manusia seperti jam, cawan, kereta, telefon, kapal terbang.\n- Kemudian guru menerangkan ciri-ciri benda bukan hidup:\n1. Tidak bernafas\n2. Tidak makan dan minum\n3. Tidak membesar\n4. Tidak bergerak dengan sendiri\n- Seterusnya murid mengelaskan objek benda hidup dan benda bukan hidup pada carta pengelasan.' },
+  { id:'s7', masa:'11.00 - 11.20', dur:'20 MIN', bidang:'MATEMATIK AWAL',    kompetensi:'Kemahiran Berfikir', defAkt:'Murid dikehendaki membilang nombor 1-20 dalam kumpulan kecil menggunakan alat pembilang seperti cube, cotton bud dan blok kayu\n- Murid dikehendaki mengecam nombor 11-20 secara kelas dengan mencari nombor 11-20\n- Murid dapat membezakan nombor 11 dengan 12, 13 dengan 14\n- Kemudian murid dikehendaki menulis nombor 11-14 dengan betul pada lembaran kerja yang diberikan.' },
+  { id:'s8', masa:'11.20 - 11.50', dur:'30 MIN', bidang:'BAHASA MELAYU',     kompetensi:'Kemahiran Bahasa',   defAkt:'' },
 ];
 
-const PENUTUP = {
-  masa:'11.50 - 12.00', dur:'10 MIN',
-  defAkt:'Guru bersoal jawab dengan murid mengenai pembelajaran hari ini.\nGuru membuat rumusan keseluruhan mengenai aktiviti PdPc yang telah dijalankan.\nMurid berbaris dan mengucapkan ucapan selamat pulang serta membaca doa untuk pulang.\nMurid bersalaman dengan guru dan pembantu pengurusan murid.'
-};
-
+const PENUTUP_DEF = 'Guru bersoal jawab dengan murid mengenai pembelajaran hari ini.\nGuru membuat rumusan keseluruhan mengenai aktiviti PdPc yang telah dijalankan.\nMurid berbaris dan mengucapkan ucapan selamat pulang serta membaca doa untuk pulang.\nMurid bersalaman dengan guru dan pembantu pengurusan murid.';
+const RUTIN_DEF   = 'Ucap salam, minum pagi, pemeriksaan diri dan kebersihan, membaca doa, kalender dan kehadiran murid. Bersalam/mengucapkan selamat antara guru dan PPM dengan murid. Menyusun kasut di rak yang disediakan.';
 const PENTAKSIRAN_OPT = ['Lisan','Pemerhatian','Hasil Kerja','Buku Kerja','Projek','Modul Bacaan','Tingkah Laku','Lembaran Kerja','Gabungan'];
 const IMPAK_OPT = ['Mencapai objektif','Memerlukan bimbingan','Pemulihan','Pengayaan'];
 const TP_OPT = ['TP 1','TP 2','TP 3'];
 
 let rphData = {};
-let gasUrl = '';
-let view = 'dashboard';
+let gasUrl  = '';
+let view    = 'dashboard';
 
-// ── INIT ──
-function init() {
+// ════ INIT ════
+async function init() {
   try {
     const d = localStorage.getItem('erph_psk_v3');
     if (d) rphData = JSON.parse(d);
     const g = localStorage.getItem('erph_gas');
-    if (g) { gasUrl = g; setGasBadge(true); }
+    if (g) { gasUrl = g; setGasBadge(true, false); }
   } catch(e) {}
   setTodayLabel();
   renderDayNav();
   renderDashboard();
+  if (gasUrl) loadAllFromGAS();
 }
+
 function persist() { localStorage.setItem('erph_psk_v3', JSON.stringify(rphData)); }
 
 function setTodayLabel() {
-  const d = new Date();
-  const days = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+  const d   = new Date();
+  const dys = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
   const mon = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'];
-  document.getElementById('today-lbl').textContent = `${days[d.getDay()]}, ${d.getDate()} ${mon[d.getMonth()]} ${d.getFullYear()}`;
+  document.getElementById('today-lbl').textContent = dys[d.getDay()] + ', ' + d.getDate() + ' ' + mon[d.getMonth()] + ' ' + d.getFullYear();
 }
 
-// ── TOAST ──
+// ════ TOAST ════
 let _tt;
-function toast(msg, type='') {
+function toast(msg, type) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.className = 'toast show' + (type ? ' '+type : '');
   clearTimeout(_tt);
-  _tt = setTimeout(()=> el.classList.remove('show'), 3000);
+  _tt = setTimeout(function(){ el.classList.remove('show'); }, 3500);
 }
 
-// ── NAV ──
+// ════ NAV ════
 function renderDayNav() {
-  document.getElementById('day-nav').innerHTML = DAYS.map(d => {
+  document.getElementById('day-nav').innerHTML = DAYS.map(function(d) {
     const saved = rphData[d.id] && rphData[d.id]._saved;
-    return `<div class="nav-item ${view===d.id?'active':''}" id="nav-${d.id}" onclick="go('${d.id}')">
-      <div class="nav-icon" style="background:#e8f5ee;">${d.emoji}</div>
-      <span style="flex:1;">${d.label}</span>
-      ${saved?'<div class="nav-dot"></div>':''}
-    </div>`;
+    const active = view === d.id ? 'active' : '';
+    return '<div class="nav-item ' + active + '" id="nav-' + d.id + '" onclick="go(\'' + d.id + '\')">' +
+      '<div class="nav-icon" style="background:#e8f5ee;">' + d.emoji + '</div>' +
+      '<span style="flex:1;">' + d.label + '</span>' +
+      (saved ? '<div class="nav-dot"></div>' : '') +
+      '</div>';
   }).join('');
-  ['dashboard','history'].forEach(v => {
+  ['dashboard','history'].forEach(function(v) {
     const el = document.getElementById('nav-'+v);
-    if (el) el.classList.toggle('active', view===v);
+    if (el) el.classList.toggle('active', view === v);
   });
 }
 
 function go(v) {
   view = v;
   renderDayNav();
-  const m = document.getElementById('main');
-  if (v === 'dashboard') renderDashboard(m);
-  else if (v === 'history') renderHistory(m);
-  else renderRPH(v, m);
+  if (v === 'dashboard') renderDashboard();
+  else if (v === 'history') renderHistory();
+  else renderRPH(v);
 }
 
-// ═══════════════════════════════════════
-//  DASHBOARD
-// ═══════════════════════════════════════
+// ════ DASHBOARD ════
 function renderDashboard() {
   const m = document.getElementById('main');
-  const saved = DAYS.filter(d => rphData[d.id] && rphData[d.id]._saved).length;
-  m.innerHTML = `
-  <div class="page-hd">
-    <div><h2>Dashboard</h2><p>Gambaran keseluruhan RPH minggu ini</p></div>
-    <div class="page-actions no-print">
-      <button class="btn btn-outline btn-sm" onclick="go('history')">📋 Semua RPH</button>
-      <button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button>
-    </div>
-  </div>
-  <div class="stats">
-    <div class="stat"><div class="stat-lbl">RPH Disimpan</div><div class="stat-val">${saved}/5</div></div>
-    <div class="stat"><div class="stat-lbl">Minggu Ini</div><div class="stat-val">${saved}</div></div>
-    <div class="stat"><div class="stat-lbl">Belum Isi</div><div class="stat-val">${5-saved}</div></div>
-    <div class="stat"><div class="stat-lbl">Terakhir Simpan</div><div class="stat-val" style="font-size:14px;margin-top:5px;">${getLastSaved()}</div></div>
-  </div>
-  <div class="rph-card" style="padding:16px;">
-    <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;">📅 Status RPH Mingguan</div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
-      ${DAYS.map(d => {
-        const r = rphData[d.id];
-        const ok = r && r._saved;
-        return `<div onclick="go('${d.id}')" style="border:2px solid ${ok?'var(--green)':'#cde0d4'};border-radius:8px;padding:12px;text-align:center;cursor:pointer;background:${ok?'var(--green-light)':'white'};transition:all .15s;"
-          onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
-          <div style="font-size:20px;margin-bottom:5px;">${d.emoji}</div>
-          <div style="font-weight:700;font-size:12.5px;color:${ok?'var(--green)':'var(--gray-700)'};">${d.label}</div>
-          <div style="font-size:10px;margin-top:3px;color:${ok?'var(--green-mid)':'#aaa'};">${ok?'✓ '+r._lbl:'Belum ada'}</div>
-        </div>`;
-      }).join('')}
-    </div>
-  </div>
-  <div class="rph-card" style="padding:16px;">
-    <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">⚡ Mula Isi RPH</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      ${DAYS.map(d=>`<button class="btn btn-outline" onclick="go('${d.id}')">${d.emoji} ${d.label}</button>`).join('')}
-    </div>
-  </div>`;
+  const saved = DAYS.filter(function(d){ return rphData[d.id] && rphData[d.id]._saved; }).length;
+  const cards = DAYS.map(function(d) {
+    const r  = rphData[d.id];
+    const ok = r && r._saved;
+    const border = ok ? 'var(--green)' : '#cde0d4';
+    const bg     = ok ? 'var(--green-light)' : 'white';
+    const clr    = ok ? 'var(--green)' : 'var(--gray-700)';
+    const sub    = ok ? '✓ ' + r._lbl : 'Belum ada';
+    const subclr = ok ? 'var(--green-mid)' : '#aaa';
+    return '<div onclick="go(\'' + d.id + '\')" style="border:2px solid ' + border + ';border-radius:8px;padding:12px;text-align:center;cursor:pointer;background:' + bg + ';transition:all .15s;" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">' +
+      '<div style="font-size:20px;margin-bottom:5px;">' + d.emoji + '</div>' +
+      '<div style="font-weight:700;font-size:12.5px;color:' + clr + ';">' + d.label + '</div>' +
+      '<div style="font-size:10px;margin-top:3px;color:' + subclr + ';">' + sub + '</div>' +
+      '</div>';
+  }).join('');
+  const dayBtns = DAYS.map(function(d){
+    return '<button class="btn btn-outline" onclick="go(\'' + d.id + '\')">' + d.emoji + ' ' + d.label + '</button>';
+  }).join('');
+  const syncRow = gasUrl
+    ? '<div class="sync-banner no-print"><div class="sync-dot"></div>Data disegerakkan dengan Google Sheets. <a href="#" onclick="loadAllFromGAS();return false;" style="color:var(--green);font-weight:700;margin-left:4px;">Muat semula</a></div>'
+    : '<div class="sync-banner no-print" style="background:#fff8f0;border-color:#f0c98a;color:var(--amber);"><span>⚠️</span> GAS belum disambung — data hanya tersimpan di device ini. <a href="#" onclick="openGas();return false;" style="color:var(--amber);font-weight:700;margin-left:4px;">Sambung sekarang</a></div>';
+
+  m.innerHTML =
+    '<div class="page-hd">' +
+      '<div><h2>Dashboard</h2><p>Gambaran keseluruhan RPH minggu ini</p></div>' +
+      '<div class="page-actions no-print">' +
+        '<button class="btn btn-outline btn-sm" onclick="go(\'history\')">📋 Semua RPH</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button>' +
+        (gasUrl ? '<button class="btn btn-amber btn-sm" onclick="loadAllFromGAS()">🔄 Muat dari Sheets</button>' : '') +
+      '</div>' +
+    '</div>' +
+    syncRow +
+    '<div style="height:14px;"></div>' +
+    '<div class="stats">' +
+      '<div class="stat"><div class="stat-lbl">RPH Disimpan</div><div class="stat-val">' + saved + '/5</div></div>' +
+      '<div class="stat"><div class="stat-lbl">Minggu Ini</div><div class="stat-val">' + saved + '</div></div>' +
+      '<div class="stat"><div class="stat-lbl">Belum Isi</div><div class="stat-val">' + (5-saved) + '</div></div>' +
+      '<div class="stat"><div class="stat-lbl">Terakhir Simpan</div><div class="stat-val" style="font-size:14px;margin-top:5px;">' + getLastSaved() + '</div></div>' +
+    '</div>' +
+    '<div class="rph-card" style="padding:16px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;">📅 Status RPH Mingguan</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">' + cards + '</div>' +
+    '</div>' +
+    '<div class="rph-card" style="padding:16px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">⚡ Mula Isi RPH</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + dayBtns + '</div>' +
+    '</div>';
 }
 
 function getLastSaved() {
-  let latest = null;
-  Object.values(rphData).forEach(d => { if (d._saved) { const t = new Date(d._saved); if (!latest||t>latest) latest=t; } });
+  var latest = null;
+  Object.values(rphData).forEach(function(d) {
+    if (d._saved) { var t = new Date(d._saved); if (!latest || t > latest) latest = t; }
+  });
   return latest ? latest.toLocaleDateString('ms-MY',{day:'2-digit',month:'short'}) : '—';
 }
 
-// ═══════════════════════════════════════
-//  HISTORY
-// ═══════════════════════════════════════
+// ════ HISTORY ════
 function renderHistory() {
   const m = document.getElementById('main');
-  const entries = Object.entries(rphData).filter(([,v])=>v&&v._saved);
-  m.innerHTML = `
-  <div class="page-hd">
-    <div><h2>Semua RPH</h2><p>${entries.length} rekod tersimpan</p></div>
-    <div class="page-actions no-print"><button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button></div>
-  </div>`;
+  const entries = Object.entries(rphData).filter(function(e){ return e[1] && e[1]._saved; });
+  var html = '<div class="page-hd">' +
+    '<div><h2>Semua RPH</h2><p>' + entries.length + ' rekod tersimpan</p></div>' +
+    '<div class="page-actions no-print"><button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button></div>' +
+  '</div>';
   if (!entries.length) {
-    m.innerHTML += `<div class="empty"><div class="empty-icon">📋</div><h3>Tiada RPH Tersimpan</h3><p>Pilih hari di sidebar untuk mula isi RPH.</p></div>`;
-    return;
+    html += '<div class="empty"><div class="empty-icon">📋</div><h3>Tiada RPH Tersimpan</h3><p>Pilih hari di sidebar untuk mula isi RPH.</p></div>';
+  } else {
+    html += '<div class="hist-list">' + entries.map(function(e) {
+      const id = e[0]; const d = e[1];
+      const day = DAYS.find(function(x){ return x.id === id; });
+      const saved = d._saved ? new Date(d._saved).toLocaleString('ms-MY',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+      return '<div class="hitem" onclick="go(\'' + id + '\')">' +
+        '<div>' +
+          '<span class="badge" style="background:var(--green-light);color:var(--green);margin-bottom:5px;display:inline-flex;gap:5px;">' + day.emoji + ' ' + day.label + '</span>' +
+          '<div style="font-weight:700;font-size:13px;">Minggu: ' + (d.minggu||'—') + ' &nbsp;|&nbsp; Tarikh: ' + (d.tarikh||'—') + ' &nbsp;|&nbsp; Tema: ' + (d.tema||'—') + '</div>' +
+          '<div class="hitem-meta">Nama Guru: ' + (d.guru||'—') + ' &nbsp;|&nbsp; Disimpan: ' + saved + '</div>' +
+        '</div>' +
+        '<span style="font-size:18px;color:#ccc;">›</span>' +
+      '</div>';
+    }).join('') + '</div>';
   }
-  m.innerHTML += `<div class="hist-list">` + entries.map(([id,d]) => {
-    const day = DAYS.find(x=>x.id===id);
-    const saved = d._saved ? new Date(d._saved).toLocaleString('ms-MY',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
-    return `<div class="hitem" onclick="go('${id}')">
-      <div>
-        <span class="badge" style="background:var(--green-light);color:var(--green);margin-bottom:5px;display:inline-flex;gap:5px;">${day.emoji} ${day.label}</span>
-        <div style="font-weight:700;font-size:13px;">Minggu: ${d.minggu||'—'} &nbsp;|&nbsp; Tarikh: ${d.tarikh||'—'} &nbsp;|&nbsp; Tema: ${d.tema||'—'}</div>
-        <div class="hitem-meta">Nama Guru: ${d.guru||'—'} &nbsp;|&nbsp; Disimpan: ${saved}</div>
-      </div>
-      <span style="font-size:18px;color:#ccc;">›</span>
-    </div>`;
-  }).join('') + '</div>';
+  m.innerHTML = html;
 }
 
 function exportCSV() {
   const rows = [['Hari','Minggu','Tarikh','Nama Guru','Tema','Strategi','Disimpan']];
-  Object.entries(rphData).forEach(([id,d]) => {
-    if (!d._saved) return;
-    const day = DAYS.find(x=>x.id===id);
-    rows.push([day.label,d.minggu||'',d.tarikh||'',d.guru||'',d.tema||'',d.strategi||'',d._saved]);
+  Object.entries(rphData).forEach(function(e) {
+    if (!e[1]._saved) return;
+    const day = DAYS.find(function(x){ return x.id === e[0]; });
+    rows.push([day.label, e[1].minggu||'', e[1].tarikh||'', e[1].guru||'', e[1].tema||'', e[1].strategi||'', e[1]._saved]);
   });
-  const csv = rows.map(r=>r.map(c=>`"${(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const csv = rows.map(function(r){ return r.map(function(c){ return '"' + (c||'').replace(/"/g,'""') + '"'; }).join(','); }).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
   a.download = 'e-RPH-export.csv';
@@ -426,147 +454,131 @@ function exportCSV() {
   toast('✅ CSV berjaya dieksport!');
 }
 
-// ═══════════════════════════════════════
-//  RPH FORM
-// ═══════════════════════════════════════
-function renderRPH(dayId, mainEl) {
-  const m = mainEl || document.getElementById('main');
-  const day = DAYS.find(d=>d.id===dayId);
-  const D = rphData[dayId] || {};
+// ════ RPH FORM ════
+function renderRPH(dayId) {
+  const m   = document.getElementById('main');
+  const day = DAYS.find(function(d){ return d.id === dayId; });
+  const D   = rphData[dayId] || {};
 
-  m.innerHTML = `
-  <div class="page-hd">
-    <div><h2>${day.emoji} RPH Hari ${day.label}</h2><p>Rancangan Pengajaran Prasekolah</p></div>
-    <div class="page-actions no-print">
-      <button class="btn btn-print" onclick="window.print()">🖨️ Cetak / PDF</button>
-      <button class="btn btn-green" onclick="saveRPH('${dayId}')">💾 Simpan RPH</button>
-    </div>
-  </div>
+  const pentHtml = PENTAKSIRAN_OPT.map(function(p) {
+    const chk = D.pentaksiran && D.pentaksiran.includes(p) ? 'checked' : '';
+    return '<label class="pent-item"><input type="checkbox" name="pent" value="' + p + '" ' + chk + '> ' + p + '</label>';
+  }).join('');
 
-  <div class="rph-card" id="print-area">
+  const hariOpts = ['Isnin','Selasa','Rabu','Khamis','Jumaat'].map(function(h){
+    return '<option' + ((D.hari || day.label) === h ? ' selected' : '') + '>' + h + '</option>';
+  }).join('');
 
-    <!-- HEADER SEKOLAH -->
-    <div class="sch-hd">
-      <div class="sch-name" contenteditable="true" id="sch-name">${D.sekolah||'SEKOLAH KEBANGSAAN PULAU SEBANG'}</div>
-      <div class="sch-addr" contenteditable="true" id="sch-addr">${D.alamat||'78000 ALOR GAJAH, MELAKA.'}</div>
-      <div class="sch-addr" contenteditable="true" id="sch-kelas">${D.kelas||'PRASEKOLAH KASIH SAYANG'}</div>
-      <div class="sch-doc">RANCANGAN PENGAJARAN PRASEKOLAH</div>
-    </div>
+  m.innerHTML =
+    '<div class="page-hd">' +
+      '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<button class="btn btn-outline btn-sm no-print" onclick="go(\'dashboard\')" style="gap:4px;">← Dashboard</button>' +
+        '<div><h2>' + day.emoji + ' RPH Hari ' + day.label + '</h2><p>Rancangan Pengajaran Prasekolah</p></div>' +
+      '</div>' +
+      '<div class="page-actions no-print">' +
+        '<button class="btn btn-print" onclick="window.print()">🖨️ Cetak / PDF</button>' +
+        '<button class="btn btn-amber" onclick="syncGAS(\'' + dayId + '\')">☁️ Hantar ke Sheets</button>' +
+        '<button class="btn btn-green" onclick="saveRPH(\'' + dayId + '\')">💾 Simpan RPH</button>' +
+      '</div>' +
+    '</div>' +
 
-    <!-- INFO ROW -->
-    <div class="info-grid">
-      <div class="ig-cell"><label>Nama Guru</label><input type="text" id="f_guru" value="${D.guru||''}" placeholder="Puan / Cikgu ..."></div>
-      <div class="ig-cell"><label>Minggu</label><input type="text" id="f_minggu" value="${D.minggu||''}" placeholder="11"></div>
-      <div class="ig-cell"><label>Hari</label><select id="f_hari">${['Isnin','Selasa','Rabu','Khamis','Jumaat'].map(h=>`<option ${(D.hari||day.label)===h?'selected':''}>${h}</option>`).join('')}</select></div>
-      <div class="ig-cell"><label>Tarikh</label><input type="date" id="f_tarikh" value="${D.tarikh||''}"></div>
-      <div class="ig-cell"><label>Tema</label><input type="text" id="f_tema" value="${D.tema||''}" placeholder="cth: DIRI SAYA (RUMAH SAYA)"></div>
-      <div class="ig-cell"><label>Strategi</label><input type="text" id="f_strategi" value="${D.strategi||''}" placeholder="cth: Bertema / Berpusat Pembelajaran / Bersepadu"></div>
-    </div>
+    '<div class="rph-card" id="print-area">' +
 
-    <!-- RUTIN ROW -->
-    <div style="overflow-x:auto;">
-    <table class="t">
-      <tr class="rutin-row">
-        <td class="tlbl" style="width:88px;">
-          <div class="tm">7.30 - 8.00</div>
-          <div class="bd">RUTIN</div>
-          <div class="dur">(30 MIN)</div>
-        </td>
-        <td colspan="6">
-          <div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Aktiviti Rutin:</div>
-          <textarea id="f_rutin" style="min-height:55px;">${D.rutin||'Ucap salam, minum pagi, pemeriksaan diri dan kebersihan, membaca doa, kalender dan kehadiran murid. Bersalam/mengucapkan selamat antara guru dan PPM dengan murid. Menyusun kasut di rak yang disediakan.'}</textarea>
-          <div class="rutin-extra">
-            <div style="display:flex;align-items:center;gap:6px;"><label>KEHADIRAN:</label><input type="text" id="f_hadir" value="${D.hadir||''}" placeholder="__ / __" style="width:70px;"></div>
-            <div style="display:flex;align-items:center;gap:6px;"><label>PERISTIWA:</label><input type="text" id="f_peristiwa" value="${D.peristiwa||''}" placeholder="cth: Mesyuarat PIBG" style="width:200px;"></div>
-          </div>
-        </td>
-      </tr>
-    </table>
+      '<div class="sch-hd">' +
+        '<div class="sch-name" contenteditable="true" id="sch-name">' + (D.sekolah||'SEKOLAH KEBANGSAAN PULAU SEBANG') + '</div>' +
+        '<div class="sch-addr" contenteditable="true" id="sch-addr">' + (D.alamat||'78000 ALOR GAJAH, MELAKA.') + '</div>' +
+        '<div class="sch-addr" contenteditable="true" id="sch-kelas">' + (D.kelas||'PRASEKOLAH KASIH SAYANG') + '</div>' +
+        '<div class="sch-doc">RANCANGAN PENGAJARAN PRASEKOLAH</div>' +
+      '</div>' +
 
-    </div>
+      '<div class="info-grid">' +
+        '<div class="ig-cell"><label>Nama Guru</label><input type="text" id="f_guru" value="' + (D.guru||'') + '" placeholder="Puan / Cikgu ..."></div>' +
+        '<div class="ig-cell"><label>Minggu</label><input type="text" id="f_minggu" value="' + (D.minggu||'') + '" placeholder="11"></div>' +
+        '<div class="ig-cell"><label>Hari</label><select id="f_hari">' + hariOpts + '</select></div>' +
+        '<div class="ig-cell"><label>Tarikh</label><input type="date" id="f_tarikh" value="' + (D.tarikh||'') + '"></div>' +
+        '<div class="ig-cell"><label>Tema</label><input type="text" id="f_tema" value="' + (D.tema||'') + '" placeholder="cth: DIRI SAYA (RUMAH SAYA)"></div>' +
+        '<div class="ig-cell"><label>Strategi</label><input type="text" id="f_strategi" value="' + (D.strategi||'') + '" placeholder="cth: Bertema / Berpusat Pembelajaran / Bersepadu"></div>' +
+      '</div>' +
 
-    <!-- MAIN TABLE HEADER + SLOTS -->
-    <div style="overflow-x:auto;">
-    <table class="t">
-      <thead>
-        <tr>
-          <th style="width:88px;">Masa / Bidang Pembelajaran</th>
-          <th style="width:90px;">Kompetensi</th>
-          <th style="width:105px;">Kemahiran / Standard Pembelajaran</th>
-          <th style="width:115px;">Objektif (Diakhir Pelajaran Murid Dapat)</th>
-          <th>Aktiviti</th>
-          <th style="width:80px;">Bahan</th>
-          <th style="width:100px;">Impak</th>
-        </tr>
-      </thead>
-      <tbody id="slots-body"></tbody>
-    </table>
+      '<div style="overflow-x:auto;">' +
+      '<table class="t">' +
+        '<tr class="rutin-row">' +
+          '<td class="tlbl" style="width:90px;"><div class="tm">7.30 - 8.00</div><div class="bd">RUTIN</div><div class="dur">(30 MIN)</div></td>' +
+          '<td colspan="6">' +
+            '<div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Aktiviti Rutin:</div>' +
+            '<textarea id="f_rutin" style="min-height:55px;">' + (D.rutin || RUTIN_DEF) + '</textarea>' +
+            '<div class="rutin-extra">' +
+              '<div style="display:flex;align-items:center;gap:6px;"><label>KEHADIRAN:</label><input type="text" id="f_hadir" value="' + (D.hadir||'') + '" placeholder="__ / __" style="width:70px;"></div>' +
+              '<div style="display:flex;align-items:center;gap:6px;"><label>PERISTIWA:</label><input type="text" id="f_peristiwa" value="' + (D.peristiwa||'') + '" placeholder="cth: Mesyuarat PIBG" style="width:200px;"></div>' +
+            '</div>' +
+          '</td>' +
+        '</tr>' +
+      '</table>' +
+      '</div>' +
 
-    </div>
+      '<div style="overflow-x:auto;">' +
+      '<table class="t">' +
+        '<colgroup>' +
+          '<col style="width:90px;">' +
+          '<col style="width:100px;">' +
+          '<col style="width:120px;">' +
+          '<col style="width:120px;">' +
+          '<col>' +
+          '<col style="width:90px;">' +
+          '<col style="width:115px;">' +
+        '</colgroup>' +
+        '<thead><tr>' +
+          '<th>Masa /<br>Bidang<br>Pembelajaran</th>' +
+          '<th>Kompetensi</th>' +
+          '<th>Kemahiran /<br>Standard<br>Pembelajaran</th>' +
+          '<th>Objektif<br>(Diakhir Pelajaran<br>Murid Dapat)</th>' +
+          '<th>Aktiviti</th>' +
+          '<th>Bahan</th>' +
+          '<th>Impak</th>' +
+        '</tr></thead>' +
+        '<tbody id="slots-body"></tbody>' +
+      '</table>' +
+      '</div>' +
 
-    <!-- PENUTUP -->
-    <div style="overflow-x:auto;">
-    <table class="t" style="margin-top:0;">
-      <tbody>
-        <tr>
-          <td class="tlbl" style="width:88px;">
-            <div class="tm">11.50 - 12.00</div>
-            <div class="bd">PENUTUP</div>
-            <div class="dur">(10 MIN)</div>
-          </td>
-          <td colspan="5">
-            <textarea id="f_penutup" style="min-height:60px;">${D.penutup||PENUTUP.defAkt}</textarea>
-          </td>
-          <td style="width:105px;">
-            <span style="color:#bbb;font-size:11px;">—</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      '<div style="overflow-x:auto;">' +
+      '<table class="t" style="margin-top:0;">' +
+        '<tbody>' +
+          '<tr>' +
+            '<td class="tlbl" style="width:90px;"><div class="tm">11.50 - 12.00</div><div class="bd">PENUTUP</div><div class="dur">(10 MIN)</div></td>' +
+            '<td colspan="5"><textarea id="f_penutup" style="min-height:60px;">' + (D.penutup || PENUTUP_DEF) + '</textarea></td>' +
+            '<td style="width:115px;"><span style="color:#bbb;font-size:11px;">—</span></td>' +
+          '</tr>' +
+        '</tbody>' +
+      '</table>' +
+      '</div>' +
 
-    </div>
+      '<div style="overflow-x:auto;">' +
+      '<table class="t" style="margin-top:0;">' +
+        '<tbody>' +
+          '<tr>' +
+            '<td class="tlbl" style="width:90px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">PENTAKSIRAN<br>DAN<br>PENGUASAAN</div><div style="font-size:9.5px;color:#888;margin-top:3px;">KESELURUHAN</div></td>' +
+            '<td colspan="6">' +
+              '<div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;">Kaedah Pentaksiran:</div>' +
+              '<div class="pent-grid">' + pentHtml + '</div>' +
+            '</td>' +
+          '</tr>' +
+          '<tr>' +
+            '<td class="tlbl" style="text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">REFLEKSI<br>GURU</div></td>' +
+            '<td colspan="6"><textarea id="f_refleksi" style="min-height:55px;" placeholder="Catatan refleksi guru, tindakan susulan, pemerhatian murid...">' + (D.refleksi||'') + '</textarea></td>' +
+          '</tr>' +
+        '</tbody>' +
+      '</table>' +
+      '</div>' +
 
-    <!-- PENTAKSIRAN & REFLEKSI -->
-    <div style="overflow-x:auto;">
-    <table class="t" style="margin-top:0;">
-      <tbody>
-        <tr>
-          <td class="tlbl" style="width:88px;text-align:center;">
-            <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">PENTAKSIRAN<br>DAN<br>PENGUASAAN</div>
-            <div style="font-size:9.5px;color:#888;margin-top:3px;">KESELURUHAN</div>
-          </td>
-          <td colspan="6">
-            <div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;">Kaedah Pentaksiran:</div>
-            <div class="pent-grid">
-              ${PENTAKSIRAN_OPT.map(p => {
-                const chk = D.pentaksiran && D.pentaksiran.includes(p) ? 'checked' : '';
-                return `<label class="pent-item"><input type="checkbox" name="pent" value="${p}" ${chk}> ${p}</label>`;
-              }).join('')}
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="tlbl" style="text-align:center;">
-            <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">REFLEKSI<br>GURU</div>
-          </td>
-          <td colspan="6">
-            <textarea id="f_refleksi" style="min-height:55px;" placeholder="Catatan refleksi guru, tindakan susulan, pemerhatian murid...">${D.refleksi||''}</textarea>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    '</div>' +
 
-    </div>
-
-  </div><!-- /rph-card -->
-
-  <!-- ACTION BUTTONS -->
-  <div class="btn-row-bottom no-print" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
-    <button class="btn btn-green" onclick="saveRPH('${dayId}')">💾 Simpan RPH</button>
-    <button class="btn btn-print" onclick="window.print()">🖨️ Cetak / Export PDF</button>
-    <button class="btn btn-amber" onclick="syncGAS('${dayId}')">☁️ Hantar ke Sheets</button>
-    <button class="btn btn-danger" onclick="clearRPH('${dayId}')">🗑️ Kosongkan</button>
-  </div>`;
+    '<div class="btn-row-bottom no-print" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">' +
+      '<button class="btn btn-outline" onclick="go(\'dashboard\')">← Dashboard</button>' +
+      '<button class="btn btn-green" onclick="saveRPH(\'' + dayId + '\')">💾 Simpan RPH</button>' +
+      '<button class="btn btn-print" onclick="window.print()">🖨️ Cetak / Export PDF</button>' +
+      '<button class="btn btn-amber" onclick="syncGAS(\'' + dayId + '\')">☁️ Hantar ke Sheets</button>' +
+      '<button class="btn btn-danger" onclick="clearRPH(\'' + dayId + '\')">🗑️ Kosongkan</button>' +
+    '</div>';
 
   buildSlots(dayId, D);
 }
@@ -574,72 +586,64 @@ function renderRPH(dayId, mainEl) {
 function buildSlots(dayId, D) {
   const body = document.getElementById('slots-body');
   if (!body) return;
-  body.innerHTML = SLOTS.map(s => {
+  body.innerHTML = SLOTS.map(function(s) {
     const sd = D[s.id] || {};
-    const impakHtml = `<div class="impak-wrap">
-      ${IMPAK_OPT.map(im => {
+    const impakHtml = '<div class="impak-wrap">' +
+      IMPAK_OPT.map(function(im) {
         const chk = sd.impak && sd.impak.includes(im) ? 'checked' : '';
-        return `<label class="ck-item"><input type="checkbox" data-slot="${s.id}" data-impak="${im}" ${chk}> ${im}</label>`;
-      }).join('')}
-      <div class="tp-sec">
-        <div class="tp-lbl">Tahap Penguasaan:</div>
-        ${TP_OPT.map(tp => {
-          const chk = sd.tp && sd.tp.includes(tp) ? 'checked' : '';
-          return `<label class="ck-item"><input type="checkbox" data-slot="${s.id}" data-tp="${tp}" ${chk}> ${tp}</label>`;
-        }).join('')}
-      </div>
-    </div>`;
+        return '<label class="ck-item"><input type="checkbox" data-slot="' + s.id + '" data-impak="' + im + '" ' + chk + '> ' + im + '</label>';
+      }).join('') +
+      '<div class="tp-sec"><div class="tp-lbl">Tahap Penguasaan:</div>' +
+      TP_OPT.map(function(tp) {
+        const chk = sd.tp && sd.tp.includes(tp) ? 'checked' : '';
+        return '<label class="ck-item"><input type="checkbox" data-slot="' + s.id + '" data-tp="' + tp + '" ' + chk + '> ' + tp + '</label>';
+      }).join('') +
+      '</div></div>';
 
-    return `<tr>
-      <td class="tlbl">
-        <div class="tm">${s.masa}</div>
-        <input class="bd-edit" type="text" data-slot="${s.id}" data-field="bidang" value="${sd.bidang||s.bidang}">
-        <div class="dur">(${s.dur})</div>
-      </td>
-      <td><textarea data-slot="${s.id}" data-field="kompetensi" style="min-height:50px;">${sd.kompetensi||s.kompetensi}</textarea></td>
-      <td><textarea data-slot="${s.id}" data-field="standard" style="min-height:50px;">${sd.standard||''}</textarea></td>
-      <td><textarea data-slot="${s.id}" data-field="objektif" style="min-height:50px;">${sd.objektif||''}</textarea></td>
-      <td><textarea data-slot="${s.id}" data-field="aktiviti" style="min-height:120px;">${sd.aktiviti||s.defAkt}</textarea></td>
-      <td><textarea data-slot="${s.id}" data-field="bahan" style="min-height:50px;">${sd.bahan||''}</textarea></td>
-      <td>${impakHtml}</td>
-    </tr>`;
+    return '<tr>' +
+      '<td class="tlbl">' +
+        '<div class="tm">' + s.masa + '</div>' +
+        '<input class="bd-edit" type="text" data-slot="' + s.id + '" data-field="bidang" value="' + (sd.bidang || s.bidang) + '">' +
+        '<div class="dur">(' + s.dur + ')</div>' +
+      '</td>' +
+      '<td><textarea data-slot="' + s.id + '" data-field="kompetensi" style="min-height:50px;">' + (sd.kompetensi || s.kompetensi) + '</textarea></td>' +
+      '<td><textarea data-slot="' + s.id + '" data-field="standard" style="min-height:50px;">' + (sd.standard || '') + '</textarea></td>' +
+      '<td><textarea data-slot="' + s.id + '" data-field="objektif" style="min-height:50px;">' + (sd.objektif || '') + '</textarea></td>' +
+      '<td><textarea data-slot="' + s.id + '" data-field="aktiviti" style="min-height:120px;">' + (sd.aktiviti !== undefined ? sd.aktiviti : s.defAkt) + '</textarea></td>' +
+      '<td><textarea data-slot="' + s.id + '" data-field="bahan" style="min-height:50px;">' + (sd.bahan || '') + '</textarea></td>' +
+      '<td>' + impakHtml + '</td>' +
+    '</tr>';
   }).join('');
 }
 
-// ── COLLECT ──
+// ════ COLLECT ════
 function collectRPH(dayId) {
   const d = {};
-  const sn = document.getElementById('sch-name');
-  if (sn) d.sekolah = sn.textContent;
-  const sa = document.getElementById('sch-addr');
-  if (sa) d.alamat = sa.textContent;
-  const sk = document.getElementById('sch-kelas');
-  if (sk) d.kelas = sk.textContent;
-
-  ['guru','minggu','hari','tarikh','tema','strategi','rutin','hadir','peristiwa','penutup','refleksi'].forEach(f => {
-    const el = document.getElementById('f_'+f);
-    if (el) d[f] = el.value;
+  const sn = document.getElementById('sch-name'); if (sn) d.sekolah = sn.textContent;
+  const sa = document.getElementById('sch-addr'); if (sa) d.alamat  = sa.textContent;
+  const sk = document.getElementById('sch-kelas'); if (sk) d.kelas  = sk.textContent;
+  ['guru','minggu','hari','tarikh','tema','strategi','rutin','hadir','peristiwa','penutup','refleksi'].forEach(function(f) {
+    const el = document.getElementById('f_'+f); if (el) d[f] = el.value;
   });
-
-  d.pentaksiran = [...document.querySelectorAll('input[name="pent"]:checked')].map(cb=>cb.value);
-
-  SLOTS.forEach(s => {
+  d.pentaksiran = Array.from(document.querySelectorAll('input[name="pent"]:checked')).map(function(cb){ return cb.value; });
+  SLOTS.forEach(function(s) {
     d[s.id] = {};
-    document.querySelectorAll(`[data-slot="${s.id}"][data-field]`).forEach(el => { d[s.id][el.dataset.field] = el.value||el.textContent; });
-    d[s.id].impak = [...document.querySelectorAll(`input[data-slot="${s.id}"][data-impak]:checked`)].map(cb=>cb.dataset.impak);
-    d[s.id].tp = [...document.querySelectorAll(`input[data-slot="${s.id}"][data-tp]:checked`)].map(cb=>cb.dataset.tp);
+    document.querySelectorAll('[data-slot="' + s.id + '"][data-field]').forEach(function(el){ d[s.id][el.dataset.field] = el.value || el.textContent; });
+    d[s.id].impak = Array.from(document.querySelectorAll('input[data-slot="' + s.id + '"][data-impak]:checked')).map(function(cb){ return cb.dataset.impak; });
+    d[s.id].tp    = Array.from(document.querySelectorAll('input[data-slot="' + s.id + '"][data-tp]:checked')).map(function(cb){ return cb.dataset.tp; });
   });
   return d;
 }
 
+// ════ SAVE (LOCAL) ════
 function saveRPH(dayId) {
   const d = collectRPH(dayId);
   d._saved = new Date().toISOString();
-  d._lbl = new Date().toLocaleDateString('ms-MY',{day:'2-digit',month:'short'});
+  d._lbl   = new Date().toLocaleDateString('ms-MY',{day:'2-digit',month:'short'});
   rphData[dayId] = d;
   persist();
   renderDayNav();
-  toast(`✅ RPH Hari ${DAYS.find(x=>x.id===dayId).label} berjaya disimpan!`);
+  toast('✅ RPH Hari ' + DAYS.find(function(x){ return x.id === dayId; }).label + ' berjaya disimpan!');
 }
 
 function clearRPH(dayId) {
@@ -651,37 +655,90 @@ function clearRPH(dayId) {
   toast('Borang dikosongkan.','warn');
 }
 
-// ── GAS ──
-function openGas() { document.getElementById('gas-input').value=gasUrl; document.getElementById('gas-modal').classList.add('open'); }
+// ════ GAS — HANTAR KE SHEETS (POST) ════
+async function syncGAS(dayId) {
+  if (!gasUrl) { openGas(); return; }
+  const d = collectRPH(dayId);
+  d._dayLabel = DAYS.find(function(x){ return x.id === dayId; }).label;
+  d._dayId    = dayId;
+  d._saved    = new Date().toISOString();
+  d._lbl      = new Date().toLocaleDateString('ms-MY',{day:'2-digit',month:'short'});
+  d._action   = 'save';
+  setGasBadge(true, true);
+  toast('Menghantar data...','warn');
+  try {
+    await fetch(gasUrl, {method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
+    rphData[dayId] = d;
+    persist();
+    renderDayNav();
+    toast('✅ Data berjaya dihantar ke Google Sheets!');
+  } catch(e) {
+    toast('Gagal hantar ke GAS. Semak URL.','err');
+  } finally {
+    setGasBadge(true, false);
+  }
+}
+
+// ════ GAS — MUAT DARI SHEETS (GET) ════
+async function loadAllFromGAS() {
+  if (!gasUrl) return;
+  setGasBadge(true, true);
+  try {
+    const res = await fetch(gasUrl + '?action=load', {method:'GET'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data && typeof data === 'object') {
+      Object.entries(data).forEach(function(e) {
+        const dayId  = e[0]; const remote = e[1];
+        const local  = rphData[dayId];
+        const tR = remote._saved ? new Date(remote._saved) : new Date(0);
+        const tL = local && local._saved ? new Date(local._saved) : new Date(0);
+        if (tR >= tL) rphData[dayId] = remote;
+      });
+      persist();
+      renderDayNav();
+      if (DAYS.find(function(d){ return d.id === view; })) renderRPH(view);
+      else if (view === 'dashboard') renderDashboard();
+      toast('✅ Data dimuatkan dari Google Sheets!');
+    }
+  } catch(e) {
+    // GAS mungkin belum ada doGet — senyap, guna localStorage
+    console.warn('GAS load failed:', e.message);
+  } finally {
+    setGasBadge(true, false);
+  }
+}
+
+// ════ GAS MODAL ════
+function openGas() { document.getElementById('gas-input').value = gasUrl; document.getElementById('gas-modal').classList.add('open'); }
 function closeGas() { document.getElementById('gas-modal').classList.remove('open'); }
 function saveGas() {
   const url = document.getElementById('gas-input').value.trim();
   if (!url.startsWith('https://script.google.com')) { toast('URL GAS tidak sah!','err'); return; }
-  gasUrl = url; localStorage.setItem('erph_gas', gasUrl);
-  setGasBadge(true); closeGas(); toast('✅ GAS berjaya disambung!');
+  gasUrl = url;
+  localStorage.setItem('erph_gas', gasUrl);
+  setGasBadge(true, false);
+  closeGas();
+  toast('✅ GAS disambung! Memuatkan data...','warn');
+  loadAllFromGAS();
 }
-function setGasBadge(on) {
+function setGasBadge(on, syncing) {
   const el = document.getElementById('gas-badge');
-  el.className = 'gas-btn '+(on?'on':'off');
-  el.textContent = on ? '⚡ GAS: Tersambung' : '⚡ GAS: Tidak Tersambung';
-}
-async function syncGAS(dayId) {
-  if (!gasUrl) { openGas(); return; }
-  const d = collectRPH(dayId);
-  d._dayLabel = DAYS.find(x=>x.id===dayId).label;
-  d._saved = new Date().toISOString();
-  document.getElementById('gas-badge').classList.add('syncing');
-  toast('Menghantar data...','warn');
-  try {
-    await fetch(gasUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
-    toast('✅ Data berjaya dihantar ke Google Sheets!');
-    rphData[dayId] = {...d, _lbl: new Date().toLocaleDateString('ms-MY',{day:'2-digit',month:'short'})};
-    persist(); renderDayNav();
-  } catch(e) {
-    toast('Gagal hantar ke GAS. Semak URL.','err');
-  } finally {
-    document.getElementById('gas-badge').classList.remove('syncing');
+  if (syncing) {
+    el.className = 'gas-btn on syncing';
+    el.textContent = '⚡ Menyegerak...';
+  } else {
+    el.className = 'gas-btn ' + (on ? 'on' : 'off');
+    el.textContent = on ? '⚡ GAS: Tersambung' : '⚡ GAS: Tidak Tersambung';
   }
+}
+function copyGasCode() {
+  const code = document.querySelector('.gas-code').textContent;
+  navigator.clipboard.writeText(code).then(function(){
+    toast('✅ Kod GAS disalin! Tampal ke Code.gs');
+  }).catch(function(){
+    toast('Salin kod secara manual dari kotak hitam.','warn');
+  });
 }
 
 init();
