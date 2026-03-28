@@ -3,980 +3,678 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>e-RPH Guru — Sistem Rancangan Pengajaran Harian</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Lora:wght@500;600&display=swap" rel="stylesheet">
+<title>e-RPH Prasekolah</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --green-dark: #1a4a2e;
-  --green: #2d6a4f;
-  --green-mid: #40916c;
-  --green-light: #d8f3dc;
-  --green-xlight: #f0faf2;
-  --amber: #e07b1f;
-  --amber-light: #fef3e2;
-  --blue: #1565c0;
-  --blue-light: #e8f0fe;
-  --red: #c0392b;
-  --red-light: #fdecea;
-  --gray-900: #1a1a1a;
-  --gray-700: #3d3d3d;
-  --gray-500: #6b6b6b;
-  --gray-300: #c4c4c4;
-  --gray-100: #f5f5f5;
-  --white: #ffffff;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --green: #1a5c36;
+  --green-mid: #2d7a4f;
+  --green-light: #e8f5ee;
+  --green-xlight: #f4fbf7;
+  --blue: #1a3c6e;
+  --amber: #b85c00;
+  --red: #b71c1c;
+  --gray-900: #111;
+  --gray-700: #333;
+  --gray-500: #666;
+  --gray-300: #bbb;
+  --border: #9dc4ad;
+  --white: #fff;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
   --radius: 10px;
-  --radius-sm: 6px;
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #eaf2ed; min-height: 100vh; font-size: 13px; color: var(--gray-900); }
 
-body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: #f0f4f0;
-  color: var(--gray-900);
-  min-height: 100vh;
-  font-size: 14px;
-}
+/* TOPBAR */
+.topbar { background: var(--green); color: white; padding: 0 18px; height: 50px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+.tb-brand { display: flex; align-items: center; gap: 10px; }
+.tb-logo { width: 28px; height: 28px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--green); flex-shrink: 0; }
+.tb-title { font-weight: 700; font-size: 14px; }
+.tb-sub { font-size: 10px; opacity: 0.7; }
+.tb-right { display: flex; align-items: center; gap: 8px; }
+.gas-btn { font-size: 11px; padding: 4px 11px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; color: white; background: transparent; font-family: inherit; transition: all 0.2s; white-space: nowrap; }
+.gas-btn:hover { background: rgba(255,255,255,0.1); }
+.gas-btn.on { border-color: #69f0ae; color: #69f0ae; }
+.gas-btn.off { border-color: #ff8a65; color: #ff8a65; }
 
-/* ── TOP BAR ── */
-.topbar {
-  background: var(--green-dark);
-  color: white;
-  padding: 0 24px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-.topbar-brand { display: flex; align-items: center; gap: 10px; }
-.topbar-logo {
-  width: 32px; height: 32px;
-  background: var(--green-mid);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Lora', serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: white;
-}
-.topbar-title { font-family: 'Lora', serif; font-size: 18px; font-weight: 500; }
-.topbar-subtitle { font-size: 11px; opacity: 0.65; margin-top: 1px; }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
-.topbar-date { font-size: 12px; opacity: 0.75; }
-.gas-status {
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.3);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.gas-status:hover { background: rgba(255,255,255,0.1); }
-.gas-status.connected { border-color: #69f0ae; color: #69f0ae; }
-.gas-status.disconnected { border-color: #ff8a65; color: #ff8a65; }
+/* LAYOUT */
+.wrap { display: flex; min-height: calc(100vh - 50px); }
 
-/* ── LAYOUT ── */
-.layout { display: flex; min-height: calc(100vh - 56px); }
-
-/* ── SIDEBAR ── */
-.sidebar {
-  width: 220px;
-  background: var(--white);
-  border-right: 1px solid #e0e8e3;
-  padding: 16px 0;
-  position: sticky;
-  top: 56px;
-  height: calc(100vh - 56px);
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-.sidebar-section-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--gray-500);
-  text-transform: uppercase;
-  padding: 8px 16px 4px;
-}
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 16px;
-  cursor: pointer;
-  transition: all 0.15s;
-  border-left: 3px solid transparent;
-  font-size: 13.5px;
-  color: var(--gray-700);
-  position: relative;
-}
+/* SIDEBAR */
+.sidebar { width: 200px; background: white; border-right: 1px solid #cde0d4; padding: 10px 0; position: sticky; top: 50px; height: calc(100vh - 50px); overflow-y: auto; flex-shrink: 0; }
+.sb-label { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; color: var(--gray-500); text-transform: uppercase; padding: 10px 13px 3px; }
+.nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 13px; cursor: pointer; border-left: 3px solid transparent; font-size: 12.5px; color: var(--gray-700); transition: all 0.12s; position: relative; }
 .nav-item:hover { background: var(--green-xlight); color: var(--green); }
-.nav-item.active {
-  background: var(--green-xlight);
-  color: var(--green-dark);
-  border-left-color: var(--green);
-  font-weight: 600;
-}
-.nav-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--amber);
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.nav-icon {
-  width: 22px; height: 22px;
-  border-radius: 5px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px;
-  flex-shrink: 0;
-}
+.nav-item.active { background: var(--green-light); color: var(--green); border-left-color: var(--green); font-weight: 700; }
+.nav-icon { width: 20px; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+.nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); position: absolute; right: 11px; }
+.divider { height: 1px; background: #ddeee3; margin: 8px 12px; }
 
-/* ── MAIN ── */
-.main { flex: 1; padding: 24px; max-width: 900px; }
+/* MAIN */
+.main { flex: 1; padding: 18px 20px; }
 
-/* ── PAGE HEADER ── */
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-.page-header h2 { font-family: 'Lora', serif; font-size: 22px; font-weight: 500; }
-.page-header p { font-size: 13px; color: var(--gray-500); margin-top: 3px; }
-.page-actions { display: flex; gap: 8px; flex-shrink: 0; }
+/* PAGE HEADER */
+.page-hd { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+.page-hd h2 { font-size: 19px; font-weight: 700; color: var(--green); }
+.page-hd p { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.page-actions { display: flex; gap: 7px; flex-wrap: wrap; flex-shrink: 0; }
 
-/* ── BUTTONS ── */
-.btn {
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 600;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  cursor: pointer;
-  border: none;
-  transition: all 0.15s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.btn-primary { background: var(--green); color: white; }
-.btn-primary:hover { background: var(--green-dark); }
+/* BUTTONS */
+.btn { padding: 7px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 600; font-family: inherit; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; }
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover { background: #13472a; }
 .btn-outline { background: white; color: var(--gray-700); border: 1px solid var(--gray-300); }
 .btn-outline:hover { border-color: var(--green); color: var(--green); }
-.btn-danger { background: var(--red-light); color: var(--red); }
-.btn-danger:hover { background: #f7c5bf; }
-.btn-print { background: var(--blue-light); color: var(--blue); }
-.btn-print:hover { background: #c5d8fb; }
-.btn-amber { background: var(--amber-light); color: var(--amber); }
-.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-print { background: #e8f0fb; color: var(--blue); border: 1px solid #b3c6e8; }
+.btn-amber { background: #fff3e0; color: var(--amber); border: 1px solid #f0c98a; }
+.btn-danger { background: #ffebee; color: var(--red); border: 1px solid #f5c0c0; }
+.btn-sm { padding: 5px 10px; font-size: 11.5px; }
 
-/* ── CARD ── */
-.card {
-  background: var(--white);
-  border-radius: var(--radius);
-  border: 1px solid #e0e8e3;
-  padding: 20px 24px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-sm);
-}
-.card-title {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--green);
-  margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e8f0ea;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.card-title-icon {
-  width: 22px; height: 22px;
-  background: var(--green-light);
-  border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px;
-}
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat { background: white; border: 1px solid #cde0d4; border-radius: 8px; padding: 12px 14px; box-shadow: var(--shadow); }
+.stat-lbl { font-size: 10px; color: var(--gray-500); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-val { font-size: 22px; font-weight: 700; color: var(--green); margin-top: 3px; }
 
-/* ── FORM ── */
-.row { display: grid; gap: 14px; margin-bottom: 14px; }
-.col-2 { grid-template-columns: 1fr 1fr; }
-.col-3 { grid-template-columns: 1fr 1fr 1fr; }
-.col-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+/* HISTORY */
+.hist-list { display: flex; flex-direction: column; gap: 8px; }
+.hitem { background: white; border: 1px solid #cde0d4; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.12s; }
+.hitem:hover { border-color: var(--green-mid); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(26,92,54,0.1); }
+.hitem-meta { font-size: 11px; color: var(--gray-500); margin-top: 3px; }
+.badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 
-.field label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--gray-700);
-  margin-bottom: 5px;
-}
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-  padding: 8px 11px;
-  border: 1.5px solid #dde8e1;
-  border-radius: var(--radius-sm);
-  font-size: 13.5px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: var(--gray-900);
-  background: #fafcfa;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  outline: none;
-}
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  border-color: var(--green-mid);
-  background: white;
-  box-shadow: 0 0 0 3px rgba(64,145,108,0.12);
-}
-.field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
-.field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+/* EMPTY */
+.empty { text-align: center; padding: 50px 20px; color: var(--gray-500); }
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+.empty h3 { font-size: 15px; font-weight: 700; color: var(--gray-700); margin-bottom: 5px; }
 
-/* ── BADGE ── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-}
+/* ════ RPH TABLE ════ */
+.rph-card { background: white; border-radius: var(--radius); border: 1px solid #cde0d4; box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
 
-/* ── SUBJECT BADGE ── */
-.subject-pill {
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  display: inline-block;
-  margin-bottom: 18px;
-}
+/* School header */
+.sch-hd { text-align: center; padding: 14px 16px 10px; border-bottom: 2px solid var(--green); }
+.sch-name { font-size: 15px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.03em; outline: none; }
+.sch-name:focus { background: var(--green-xlight); border-radius: 4px; }
+.sch-addr { font-size: 12px; color: var(--gray-700); margin-top: 2px; outline: none; }
+.sch-addr:focus { background: var(--green-xlight); border-radius: 4px; }
+.sch-doc { font-size: 13.5px; font-weight: 700; margin-top: 6px; letter-spacing: 0.04em; color: var(--gray-900); }
 
-/* ── HISTORY ── */
-.history-grid { display: flex; flex-direction: column; gap: 10px; }
-.history-card {
-  background: white;
-  border: 1px solid #e0e8e3;
-  border-radius: var(--radius);
-  padding: 14px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all 0.15s;
-  box-shadow: var(--shadow-sm);
-}
-.history-card:hover {
-  border-color: var(--green-mid);
-  box-shadow: 0 3px 10px rgba(45,106,79,0.1);
-  transform: translateY(-1px);
-}
-.history-meta { font-size: 12px; color: var(--gray-500); margin-top: 3px; }
+/* Info grid */
+.info-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 2fr 2fr; border-bottom: 1.5px solid var(--border); }
+.ig-cell { padding: 7px 10px; border-right: 1.5px solid var(--border); }
+.ig-cell:last-child { border-right: none; }
+.ig-cell label { display: block; font-size: 10px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+.ig-cell input, .ig-cell select { width: 100%; padding: 4px 7px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 12.5px; font-family: inherit; background: #fafdfc; outline: none; }
+.ig-cell input:focus, .ig-cell select:focus { border-color: var(--green-mid); background: white; }
 
-/* ── ATTACH ── */
-.drop-zone {
-  border: 2px dashed #c4d9ca;
-  border-radius: var(--radius);
-  padding: 20px;
-  text-align: center;
-  color: var(--gray-500);
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.drop-zone:hover { border-color: var(--green-mid); background: var(--green-xlight); color: var(--green); }
-.att-item {
-  background: #f5f9f6;
-  border: 1px solid #dde8e1;
-  border-radius: var(--radius-sm);
-  padding: 7px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12.5px;
-  margin-top: 6px;
-}
-.att-remove { color: var(--red); cursor: pointer; font-size: 11px; padding: 2px 6px; border-radius: 4px; }
-.att-remove:hover { background: var(--red-light); }
+/* RPH table */
+table.t { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.t th, table.t td { border: 1.5px solid var(--border); padding: 7px 9px; vertical-align: top; }
+table.t thead th { background: var(--green); color: white; font-size: 10.5px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; padding: 8px 9px; }
+.tlbl { background: var(--green-light); font-weight: 700; color: var(--green); text-align: center; vertical-align: middle; min-width: 80px; }
+.tlbl .tm { font-size: 12px; font-weight: 700; line-height: 1.3; }
+.tlbl .bd { font-size: 9.5px; font-weight: 700; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
+.tlbl input.bd-edit { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--green); padding: 1px 3px; border: none; background: transparent; text-align: center; width: 100%; outline: none; }
+.tlbl input.bd-edit:focus { background: white; border-radius: 3px; }
+.tlbl .dur { font-size: 9px; color: #888; margin-top: 2px; }
+table.t textarea { width: 100%; padding: 5px 6px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 11.5px; font-family: inherit; background: #fafdfc; outline: none; resize: vertical; line-height: 1.5; }
+table.t textarea:focus { border-color: var(--green-mid); background: white; }
 
-/* ── TOAST ── */
-.toast {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  background: var(--green-dark);
-  color: white;
-  padding: 12px 20px;
-  border-radius: var(--radius);
-  font-size: 13.5px;
-  font-weight: 500;
-  box-shadow: var(--shadow-md);
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s;
-  pointer-events: none;
-  z-index: 999;
-  max-width: 320px;
-}
+/* Impak + TP */
+.impak-wrap { display: flex; flex-direction: column; gap: 3px; }
+.ck-item { display: flex; align-items: center; gap: 5px; font-size: 11px; cursor: pointer; color: var(--gray-700); }
+.ck-item input[type=checkbox] { width: 13px; height: 13px; accent-color: var(--green); flex-shrink: 0; margin: 0; }
+.tp-sec { margin-top: 6px; padding-top: 5px; border-top: 1px dashed #cde0d4; }
+.tp-lbl { font-size: 9.5px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+
+/* Pentaksiran */
+.pent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.pent-item { background: var(--green-xlight); border: 1px solid #b8d9c5; border-radius: 5px; padding: 5px 8px; display: flex; align-items: center; gap: 5px; font-size: 11.5px; cursor: pointer; }
+.pent-item input[type=checkbox] { width: 13px; height: 13px; accent-color: var(--green); flex-shrink: 0; margin: 0; }
+
+/* Rutin row */
+.rutin-row td { background: #f8fcfa; }
+.rutin-extra { display: flex; gap: 16px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+.rutin-extra label { font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+.rutin-extra input { padding: 4px 7px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 12px; font-family: inherit; background: #fafdfc; outline: none; }
+.rutin-extra input:focus { border-color: var(--green-mid); background: white; }
+
+/* Toast */
+.toast { position: fixed; bottom: 22px; right: 22px; background: var(--green); color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,0.15); opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 999; max-width: 320px; }
 .toast.show { opacity: 1; transform: translateY(0); }
-.toast.error { background: var(--red); }
-.toast.warning { background: var(--amber); }
+.toast.err { background: var(--red); }
+.toast.warn { background: var(--amber); }
 
-/* ── MODAL ── */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: white;
-  border-radius: var(--radius);
-  padding: 28px;
-  width: 480px;
-  max-width: 95vw;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-}
-.modal h3 { font-family: 'Lora', serif; font-size: 18px; margin-bottom: 8px; }
-.modal p { color: var(--gray-500); font-size: 13px; margin-bottom: 18px; }
-.modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+/* Modal */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; }
+.overlay.open { display: flex; }
+.modal { background: white; border-radius: 11px; padding: 24px; width: 450px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--green); }
+.modal p { font-size: 12px; color: var(--gray-500); margin-bottom: 13px; }
+.modal label { font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 4px; }
+.modal input { width: 100%; padding: 7px 10px; border: 1.5px solid #cad8cf; border-radius: 6px; font-size: 13px; font-family: inherit; outline: none; }
+.modal input:focus { border-color: var(--green-mid); }
+.gas-guide { background: var(--green-xlight); border: 1px solid #b8d9c5; border-radius: 7px; padding: 11px 13px; font-size: 11.5px; color: var(--green); line-height: 1.75; margin-top: 10px; }
+.modal-actions { display: flex; gap: 8px; margin-top: 18px; justify-content: flex-end; }
 
-/* ── EMPTY STATE ── */
-.empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--gray-500);
-}
-.empty-icon { font-size: 48px; margin-bottom: 16px; }
-.empty h3 { font-size: 16px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
-
-/* ── STATS BAR ── */
-.stats-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.stat-card {
-  background: white;
-  border: 1px solid #e0e8e3;
-  border-radius: var(--radius);
-  padding: 14px 18px;
-  box-shadow: var(--shadow-sm);
-}
-.stat-label { font-size: 11px; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-.stat-value { font-size: 24px; font-weight: 700; color: var(--green-dark); font-family: 'Lora', serif; margin-top: 4px; }
-
-/* ── PRINT ── */
+/* Print */
 @media print {
-  body { background: white; font-size: 12px; }
-  .topbar, .sidebar, .page-actions, .btn-row, .drop-zone, .att-remove { display: none !important; }
-  .layout { display: block; }
+  body { background: white; font-size: 11px; }
+  .topbar, .sidebar, .page-actions, .btn-row-bottom, .no-print { display: none !important; }
+  .wrap { display: block; }
   .main { padding: 0; max-width: 100%; }
-  .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
-  .page-header { margin-bottom: 16px; }
+  .rph-card { box-shadow: none; border: 1px solid #aaa; page-break-inside: avoid; }
+  table.t thead th { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tlbl { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table.t textarea { border: none; background: transparent; resize: none; }
+  .sch-hd { border-bottom: 2px solid #333; }
 }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .sidebar { display: none; }
-  .col-4 { grid-template-columns: 1fr 1fr; }
-  .col-3 { grid-template-columns: 1fr 1fr; }
-  .stats-bar { grid-template-columns: 1fr 1fr; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .info-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .pent-grid { grid-template-columns: 1fr 1fr; }
 }
 
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 .syncing { animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-.divider { height: 1px; background: #e8f0ea; margin: 8px 0 12px; }
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
+<!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-brand">
-    <div class="topbar-logo">e</div>
+  <div class="tb-brand">
+    <div class="tb-logo">e</div>
     <div>
-      <div class="topbar-title">e-RPH Guru</div>
-      <div class="topbar-subtitle">Sistem Rancangan Pengajaran Harian Digital</div>
+      <div class="tb-title">e-RPH Prasekolah</div>
+      <div class="tb-sub" id="tb-sekolah">SK Pulau Sebang — Prasekolah Kasih Sayang</div>
     </div>
   </div>
-  <div class="topbar-right">
-    <span class="topbar-date" id="today-date"></span>
-    <span class="gas-status disconnected" id="gas-badge" onclick="openGasModal()">⚡ GAS: Tidak Tersambung</span>
+  <div class="tb-right">
+    <span style="font-size:11px;opacity:.7;" id="today-lbl"></span>
+    <button class="gas-btn off" id="gas-badge" onclick="openGas()">⚡ GAS: Tidak Tersambung</button>
   </div>
 </div>
 
-<!-- LAYOUT -->
-<div class="layout">
+<div class="wrap">
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-section-label">Menu</div>
-    <div class="nav-item active" onclick="switchView('dashboard')" id="nav-dashboard">
-      <div class="nav-icon" style="background:#e8f5e9;">📊</div> Dashboard
+    <div class="sb-label">Menu</div>
+    <div class="nav-item" id="nav-dashboard" onclick="go('dashboard')">
+      <div class="nav-icon" style="background:#e8f5ee;">📊</div> Dashboard
     </div>
-    <div class="nav-item" onclick="switchView('history')" id="nav-history">
+    <div class="nav-item" id="nav-history" onclick="go('history')">
       <div class="nav-icon" style="background:#e8f0fe;">📋</div> Semua RPH
     </div>
-
-    <div class="divider" style="margin: 12px 16px;"></div>
-    <div class="sidebar-section-label">Mata Pelajaran</div>
-
-    <div id="subject-nav"></div>
+    <div class="divider"></div>
+    <div class="sb-label">Hari</div>
+    <div id="day-nav"></div>
   </aside>
 
   <!-- MAIN -->
-  <main class="main" id="main-content"></main>
+  <main class="main" id="main"></main>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <!-- GAS MODAL -->
-<div class="modal-overlay" id="gas-modal">
+<div class="overlay" id="gas-modal">
   <div class="modal">
     <h3>🔗 Sambung Google Apps Script</h3>
-    <p>Masukkan URL Web App GAS anda untuk simpan data RPH ke Google Sheets secara automatik.</p>
-    <div class="field">
-      <label>URL Google Apps Script Web App</label>
-      <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/XXXX/exec">
-    </div>
-    <div style="background:#f0faf2; border-radius:8px; padding:12px 14px; font-size:12px; color:#2d6a4f; margin-top:12px; line-height:1.7;">
+    <p>Masukkan URL Web App GAS untuk simpan data ke Google Sheets secara automatik.</p>
+    <label>URL Google Apps Script Web App</label>
+    <input type="text" id="gas-input" placeholder="https://script.google.com/macros/s/XXXX/exec">
+    <div class="gas-guide">
       <strong>Cara deploy GAS:</strong><br>
-      1. Buka <strong>Code.gs</strong> yang disediakan dalam Google Apps Script<br>
+      1. Buka <strong>Code.gs</strong> dalam Google Apps Script<br>
       2. Klik <em>Deploy → New Deployment → Web App</em><br>
-      3. Tetapkan <em>Execute as: Me</em> dan <em>Who has access: Anyone</em><br>
-      4. Copy URL dan tampal di sini
+      3. Execute as: <strong>Me</strong> &nbsp;|&nbsp; Who has access: <strong>Anyone</strong><br>
+      4. Copy URL → tampal di sini → klik Sambung
     </div>
     <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeGasModal()">Batal</button>
-      <button class="btn btn-primary" onclick="saveGasUrl()">Sambung</button>
+      <button class="btn btn-outline" onclick="closeGas()">Batal</button>
+      <button class="btn btn-green" onclick="saveGas()">Sambung</button>
     </div>
   </div>
 </div>
 
-<!-- FILE INPUT -->
-<input type="file" id="file-input" style="display:none" multiple accept="image/*,.pdf,.doc,.docx,.ppt,.pptx">
-
 <script>
-// ══════════════════════════════════════════
-//  DATA
-// ══════════════════════════════════════════
-const SUBJECTS = [
-  { id:'bm',        label:'Bahasa Melayu',      emoji:'🇲🇾', color:'#2d6a4f', bg:'#d8f3dc', text:'#1a4a2e' },
-  { id:'bi',        label:'Bahasa Inggeris',     emoji:'🔤', color:'#1565c0', bg:'#e8f0fe', text:'#0d3c91' },
-  { id:'math',      label:'Matematik',           emoji:'🔢', color:'#6a1f6e', bg:'#f3e5f5', text:'#4a1550' },
-  { id:'sains',     label:'Sains',               emoji:'🔬', color:'#00695c', bg:'#e0f2f1', text:'#004d40' },
-  { id:'creativity',label:'Kreativiti',          emoji:'🎨', color:'#c0392b', bg:'#fdecea', text:'#922b21' },
-  { id:'music',     label:'Muzik',               emoji:'🎵', color:'#6d4c41', bg:'#efebe9', text:'#4e342e' },
-  { id:'activity',  label:'Aktiviti Luar',       emoji:'⚽', color:'#e07b1f', bg:'#fef3e2', text:'#a85a0f' },
-  { id:'health',    label:'Kesihatan',            emoji:'💪', color:'#388e3c', bg:'#e8f5e9', text:'#1b5e20' },
-  { id:'civic',     label:'Kewarganegaraan',     emoji:'🏛️', color:'#455a64', bg:'#eceff1', text:'#263238' }
+// ═══════════════════════════════════════
+//  DATA & CONFIG
+// ═══════════════════════════════════════
+const DAYS = [
+  { id:'isnin',  label:'Isnin',  emoji:'1️⃣' },
+  { id:'selasa', label:'Selasa', emoji:'2️⃣' },
+  { id:'rabu',   label:'Rabu',   emoji:'3️⃣' },
+  { id:'khamis', label:'Khamis', emoji:'4️⃣' },
+  { id:'jumaat', label:'Jumaat', emoji:'5️⃣' }
 ];
 
-let rphData = {};
-let attachments = {};
-let gasUrl = '';
-let currentView = 'dashboard';
-let currentSubject = null;
+// Slots ikut format doc busu — 7 kolum table
+const SLOTS = [
+  { id:'s1',  masa:'8.00 - 8.20',  dur:'20 MIN', bidang:'PERBUALAN AWAL',     kompetensi:'Perkembangan Diri', defAkt:'Guru bersoal jawab dengan murid tentang apa itu keperluan dan kehendak.\n- Keperluan ialah sesuatu yang diperlukan dan mesti dipenuhi\n- Kehendak ialah sesuatu yang ingin dimiliki\n- Murid menonton video pembelajaran perbezaan antara keperluan dan kehendak\n- Contoh keperluan yang mesti dipenuhi ialah makanan, tempat tinggal, pakaian, kasut, buku dan alat tulis\n- Contoh kehendak yang ingin kanak-kanak miliki ialah telefon bimbit, permainan, kasut roda, aiskrim dan makanan ringan' },
+  { id:'s2',  masa:'8.20 - 8.50',  dur:'30 MIN', bidang:'PERKEMBANGAN DIRI',  kompetensi:'Perkembangan Diri', defAkt:'' },
+  { id:'s3',  masa:'9.00 - 9.30',  dur:'30 MIN', bidang:'REHAT AKTIF',        kompetensi:'Kemahiran Fizikal', defAkt:'Murid berjalan di atas garisan lurus menggunakan wisel dan Music' },
+  { id:'s4',  masa:'9.30 - 10.00', dur:'30 MIN', bidang:'KEMAHIRAN ASAS',     kompetensi:'Kemahiran Berfikir', defAkt:'' },
+  { id:'s5',  masa:'10.00 - 10.30',dur:'30 MIN', bidang:'KEMAHIRAN ASAS 2',   kompetensi:'Kemahiran Berfikir', defAkt:'' },
+  { id:'s6',  masa:'10.30 - 11.00',dur:'30 MIN', bidang:'SAINS AWAL',         kompetensi:'Kemahiran Berfikir', defAkt:'Guru memberikan contoh benda bukan hidup ciptaan manusia seperti jam, cawan, kereta, telefon, kapal terbang.\n- Kemudian guru menerangkan ciri-ciri benda bukan hidup:\n1. Tidak bernafas\n2. Tidak makan dan minum\n3. Tidak membesar\n4. Tidak bergerak dengan sendiri\n- Seterusnya murid mengelaskan objek benda hidup dan benda bukan hidup pada carta pengelasan.' },
+  { id:'s7',  masa:'11.00 - 11.20',dur:'20 MIN', bidang:'MATEMATIK AWAL',     kompetensi:'Kemahiran Berfikir', defAkt:'Murid dikehendaki membilang nombor 1-20 dalam kumpulan kecil menggunakan alat pembilang seperti cube, cotton bud dan blok kayu\n- Murid dikehendaki mengecam nombor 11-20 secara kelas dengan mencari nombor 11-20\n- Murid dapat membezakan nombor 11 dengan 12, 13 dengan 14\n- Kemudian murid dikehendaki menulis nombor 11-14 dengan betul pada lembaran kerja yang diberikan.' },
+  { id:'s8',  masa:'11.20 - 11.50',dur:'30 MIN', bidang:'BAHASA MELAYU',      kompetensi:'Kemahiran Bahasa', defAkt:'' },
+];
 
-// ── LOAD/SAVE ──
-function load() {
+const PENUTUP = {
+  masa:'11.50 - 12.00', dur:'10 MIN',
+  defAkt:'Guru bersoal jawab dengan murid mengenai pembelajaran hari ini.\nGuru membuat rumusan keseluruhan mengenai aktiviti PdPc yang telah dijalankan.\nMurid berbaris dan mengucapkan ucapan selamat pulang serta membaca doa untuk pulang.\nMurid bersalaman dengan guru dan pembantu pengurusan murid.'
+};
+
+const PENTAKSIRAN_OPT = ['Lisan','Pemerhatian','Hasil Kerja','Buku Kerja','Projek','Modul Bacaan','Tingkah Laku','Lembaran Kerja','Gabungan'];
+const IMPAK_OPT = ['Mencapai objektif','Memerlukan bimbingan','Pemulihan','Pengayaan'];
+const TP_OPT = ['TP 1','TP 2','TP 3'];
+
+let rphData = {};
+let gasUrl = '';
+let view = 'dashboard';
+
+// ── INIT ──
+function init() {
   try {
-    const d = localStorage.getItem('erph_v2');
+    const d = localStorage.getItem('erph_psk_v3');
     if (d) rphData = JSON.parse(d);
-    const a = localStorage.getItem('erph_att_v2');
-    if (a) attachments = JSON.parse(a);
     const g = localStorage.getItem('erph_gas');
-    if (g) { gasUrl = g; updateGasBadge(true); }
+    if (g) { gasUrl = g; setGasBadge(true); }
   } catch(e) {}
+  setTodayLabel();
+  renderDayNav();
+  renderDashboard();
 }
-function save() {
-  localStorage.setItem('erph_v2', JSON.stringify(rphData));
-  localStorage.setItem('erph_att_v2', JSON.stringify(attachments));
+function persist() { localStorage.setItem('erph_psk_v3', JSON.stringify(rphData)); }
+
+function setTodayLabel() {
+  const d = new Date();
+  const days = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+  const mon = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'];
+  document.getElementById('today-lbl').textContent = `${days[d.getDay()]}, ${d.getDate()} ${mon[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 // ── TOAST ──
-let toastTimer;
-function showToast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (type !== 'success' ? ' ' + type : '');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+let _tt;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (type ? ' '+type : '');
+  clearTimeout(_tt);
+  _tt = setTimeout(()=> el.classList.remove('show'), 3000);
 }
 
-// ── DATE ──
-function setDate() {
-  const d = new Date();
-  const days = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
-  const months = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
-  document.getElementById('today-date').textContent = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-}
-
-// ── SIDEBAR NAV ──
-function renderSidebarNav() {
-  const nav = document.getElementById('subject-nav');
-  nav.innerHTML = SUBJECTS.map(s => {
-    const saved = rphData[s.id] && Object.keys(rphData[s.id]).length > 1;
-    return `<div class="nav-item ${currentView === s.id ? 'active' : ''}" id="nav-${s.id}" onclick="switchView('${s.id}')">
-      <div class="nav-icon" style="background:${s.bg}; font-size:13px;">${s.emoji}</div>
-      <span style="flex:1; font-size:13px;">${s.label}</span>
-      ${saved ? '<div class="nav-dot"></div>' : ''}
+// ── NAV ──
+function renderDayNav() {
+  document.getElementById('day-nav').innerHTML = DAYS.map(d => {
+    const saved = rphData[d.id] && rphData[d.id]._saved;
+    return `<div class="nav-item ${view===d.id?'active':''}" id="nav-${d.id}" onclick="go('${d.id}')">
+      <div class="nav-icon" style="background:#e8f5ee;">${d.emoji}</div>
+      <span style="flex:1;">${d.label}</span>
+      ${saved?'<div class="nav-dot"></div>':''}
     </div>`;
   }).join('');
-
-  // update dashboard/history active
   ['dashboard','history'].forEach(v => {
-    const el = document.getElementById('nav-' + v);
-    if (el) el.classList.toggle('active', currentView === v);
+    const el = document.getElementById('nav-'+v);
+    if (el) el.classList.toggle('active', view===v);
   });
 }
 
-// ── VIEW SWITCH ──
-function switchView(view) {
-  currentView = view;
-  renderSidebarNav();
-  const main = document.getElementById('main-content');
-  if (view === 'dashboard') renderDashboard(main);
-  else if (view === 'history') renderHistory(main);
-  else {
-    const s = SUBJECTS.find(x => x.id === view);
-    if (s) renderForm(s, main);
-  }
+function go(v) {
+  view = v;
+  renderDayNav();
+  const m = document.getElementById('main');
+  if (v === 'dashboard') renderDashboard(m);
+  else if (v === 'history') renderHistory(m);
+  else renderRPH(v, m);
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════
 //  DASHBOARD
-// ══════════════════════════════════════════
-function renderDashboard(main) {
-  const total = Object.keys(rphData).length;
-  const totalSubjects = SUBJECTS.length;
-  const thisWeek = countThisWeek();
-  const lastSaved = getLastSaved();
-
-  main.innerHTML = `
-  <div class="page-header">
-    <div>
-      <h2>Dashboard</h2>
-      <p>Gambaran keseluruhan rekod RPH anda</p>
-    </div>
-    <div class="page-actions">
-      <button class="btn btn-outline btn-sm" onclick="switchView('history')">Lihat Semua RPH</button>
+// ═══════════════════════════════════════
+function renderDashboard() {
+  const m = document.getElementById('main');
+  const saved = DAYS.filter(d => rphData[d.id] && rphData[d.id]._saved).length;
+  m.innerHTML = `
+  <div class="page-hd">
+    <div><h2>Dashboard</h2><p>Gambaran keseluruhan RPH minggu ini</p></div>
+    <div class="page-actions no-print">
+      <button class="btn btn-outline btn-sm" onclick="go('history')">📋 Semua RPH</button>
+      <button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button>
     </div>
   </div>
-
-  <div class="stats-bar">
-    <div class="stat-card">
-      <div class="stat-label">Jumlah RPH</div>
-      <div class="stat-value">${total}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Mata Pelajaran</div>
-      <div class="stat-value">${total}/${totalSubjects}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Minggu Ini</div>
-      <div class="stat-value">${thisWeek}</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Terakhir Simpan</div>
-      <div class="stat-value" style="font-size:15px; margin-top:6px;">${lastSaved}</div>
-    </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-lbl">RPH Disimpan</div><div class="stat-val">${saved}/5</div></div>
+    <div class="stat"><div class="stat-lbl">Minggu Ini</div><div class="stat-val">${saved}</div></div>
+    <div class="stat"><div class="stat-lbl">Belum Isi</div><div class="stat-val">${5-saved}</div></div>
+    <div class="stat"><div class="stat-lbl">Terakhir Simpan</div><div class="stat-val" style="font-size:14px;margin-top:5px;">${getLastSaved()}</div></div>
   </div>
-
-  <div class="card">
-    <div class="card-title"><div class="card-title-icon">📚</div> Status Mata Pelajaran</div>
-    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
-      ${SUBJECTS.map(s => {
-        const d = rphData[s.id];
-        const saved = d && Object.keys(d).length > 1;
-        return `<div onclick="switchView('${s.id}')" style="border:1.5px solid ${saved ? s.color : '#e0e8e3'}; border-radius:8px; padding:12px 14px; cursor:pointer; transition:all 0.15s; background:${saved ? s.bg : 'white'};"
-          onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-          <div style="font-size:18px; margin-bottom:6px;">${s.emoji}</div>
-          <div style="font-size:12.5px; font-weight:600; color:${saved ? s.text : '#6b6b6b'};">${s.label}</div>
-          <div style="font-size:11px; margin-top:4px; color:${saved ? s.color : '#aaa'};">
-            ${saved ? '✓ Ada RPH — ' + (d.tarikh || 'tiada tarikh') : 'Belum ada RPH'}
-          </div>
+  <div class="rph-card" style="padding:16px;">
+    <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;">📅 Status RPH Mingguan</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
+      ${DAYS.map(d => {
+        const r = rphData[d.id];
+        const ok = r && r._saved;
+        return `<div onclick="go('${d.id}')" style="border:2px solid ${ok?'var(--green)':'#cde0d4'};border-radius:8px;padding:12px;text-align:center;cursor:pointer;background:${ok?'var(--green-light)':'white'};transition:all .15s;"
+          onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:20px;margin-bottom:5px;">${d.emoji}</div>
+          <div style="font-weight:700;font-size:12.5px;color:${ok?'var(--green)':'var(--gray-700)'};">${d.label}</div>
+          <div style="font-size:10px;margin-top:3px;color:${ok?'var(--green-mid)':'#aaa'};">${ok?'✓ '+r._lbl:'Belum ada'}</div>
         </div>`;
       }).join('')}
     </div>
   </div>
-
-  <div class="card">
-    <div class="card-title"><div class="card-title-icon">🚀</div> Mula dengan cepat</div>
-    <p style="font-size:13px; color:#6b6b6b; margin-bottom:14px;">Pilih mata pelajaran untuk isi RPH hari ini:</p>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-      ${SUBJECTS.map(s => `<button class="btn btn-outline btn-sm" onclick="switchView('${s.id}')" style="border-color:${s.color}; color:${s.color};">${s.emoji} ${s.label}</button>`).join('')}
+  <div class="rph-card" style="padding:16px;">
+    <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">⚡ Mula Isi RPH</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      ${DAYS.map(d=>`<button class="btn btn-outline" onclick="go('${d.id}')">${d.emoji} ${d.label}</button>`).join('')}
     </div>
   </div>`;
-}
-
-function countThisWeek() {
-  const now = new Date();
-  const weekStart = new Date(now);
-  weekStart.setDate(now.getDate() - now.getDay());
-  let count = 0;
-  Object.values(rphData).forEach(d => {
-    if (d._saved && new Date(d._saved) >= weekStart) count++;
-  });
-  return count;
 }
 
 function getLastSaved() {
   let latest = null;
-  Object.values(rphData).forEach(d => {
-    if (d._saved) {
-      const t = new Date(d._saved);
-      if (!latest || t > latest) latest = t;
-    }
-  });
-  if (!latest) return '—';
-  return latest.toLocaleDateString('ms-MY', { day:'2-digit', month:'short' });
+  Object.values(rphData).forEach(d => { if (d._saved) { const t = new Date(d._saved); if (!latest||t>latest) latest=t; } });
+  return latest ? latest.toLocaleDateString('ms-MY',{day:'2-digit',month:'short'}) : '—';
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════════
 //  HISTORY
-// ══════════════════════════════════════════
-function renderHistory(main) {
-  const entries = Object.entries(rphData);
-  main.innerHTML = `
-  <div class="page-header">
+// ═══════════════════════════════════════
+function renderHistory() {
+  const m = document.getElementById('main');
+  const entries = Object.entries(rphData).filter(([,v])=>v&&v._saved);
+  m.innerHTML = `
+  <div class="page-hd">
     <div><h2>Semua RPH</h2><p>${entries.length} rekod tersimpan</p></div>
-    <div class="page-actions">
-      <button class="btn btn-outline btn-sm" onclick="exportAllCSV()">📥 Export CSV</button>
-    </div>
+    <div class="page-actions no-print"><button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button></div>
   </div>`;
-
-  if (entries.length === 0) {
-    main.innerHTML += `<div class="empty"><div class="empty-icon">📋</div><h3>Tiada RPH Tersimpan</h3><p>Pilih mata pelajaran di sidebar untuk mula isi RPH.</p></div>`;
+  if (!entries.length) {
+    m.innerHTML += `<div class="empty"><div class="empty-icon">📋</div><h3>Tiada RPH Tersimpan</h3><p>Pilih hari di sidebar untuk mula isi RPH.</p></div>`;
     return;
   }
-
-  main.innerHTML += `<div class="history-grid">` + entries.map(([id, d]) => {
-    const s = SUBJECTS.find(x => x.id === id);
-    const saved = d._saved ? new Date(d._saved).toLocaleString('ms-MY', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
-    return `<div class="history-card" onclick="switchView('${id}')">
+  m.innerHTML += `<div class="hist-list">` + entries.map(([id,d]) => {
+    const day = DAYS.find(x=>x.id===id);
+    const saved = d._saved ? new Date(d._saved).toLocaleString('ms-MY',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    return `<div class="hitem" onclick="go('${id}')">
       <div>
-        <span class="badge" style="background:${s.bg}; color:${s.text}; margin-bottom:6px; display:inline-flex; gap:5px;">${s.emoji} ${s.label}</span>
-        <div style="font-size:14px; font-weight:600;">${d.tajuk || 'Tiada tajuk'}</div>
-        <div class="history-meta">Tarikh: ${d.tarikh||'—'} &nbsp;|&nbsp; Kelas: ${d.kelas||'—'} &nbsp;|&nbsp; Disimpan: ${saved}</div>
+        <span class="badge" style="background:var(--green-light);color:var(--green);margin-bottom:5px;display:inline-flex;gap:5px;">${day.emoji} ${day.label}</span>
+        <div style="font-weight:700;font-size:13px;">Minggu: ${d.minggu||'—'} &nbsp;|&nbsp; Tarikh: ${d.tarikh||'—'} &nbsp;|&nbsp; Tema: ${d.tema||'—'}</div>
+        <div class="hitem-meta">Nama Guru: ${d.guru||'—'} &nbsp;|&nbsp; Disimpan: ${saved}</div>
       </div>
-      <div style="font-size:20px; color:#c4c4c4;">›</div>
+      <span style="font-size:18px;color:#ccc;">›</span>
     </div>`;
-  }).join('') + `</div>`;
+  }).join('') + '</div>';
 }
 
-function exportAllCSV() {
-  const rows = [['Mata Pelajaran','Tarikh','Hari','Masa','Kelas','Tajuk','Objektif','Disimpan']];
-  Object.entries(rphData).forEach(([id, d]) => {
-    const s = SUBJECTS.find(x => x.id === id);
-    rows.push([s.label, d.tarikh||'', d.hari||'', d.masa||'', d.kelas||'', d.tajuk||'', (d.objektif||'').replace(/\n/g,' '), d._saved||'']);
+function exportCSV() {
+  const rows = [['Hari','Minggu','Tarikh','Nama Guru','Tema','Strategi','Disimpan']];
+  Object.entries(rphData).forEach(([id,d]) => {
+    if (!d._saved) return;
+    const day = DAYS.find(x=>x.id===id);
+    rows.push([day.label,d.minggu||'',d.tarikh||'',d.guru||'',d.tema||'',d.strategi||'',d._saved]);
   });
-  const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const csv = rows.map(r=>r.map(c=>`"${(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
   a.download = 'e-RPH-export.csv';
   a.click();
-  showToast('CSV berjaya dieksport!');
+  toast('✅ CSV berjaya dieksport!');
 }
 
-// ══════════════════════════════════════════
-//  FORM
-// ══════════════════════════════════════════
-function renderForm(s, main) {
-  const d = rphData[s.id] || {};
-  const att = attachments[s.id] || [];
+// ═══════════════════════════════════════
+//  RPH FORM — FORMAT IKUT DOC BUSU
+// ═══════════════════════════════════════
+function renderRPH(dayId, mainEl) {
+  const m = mainEl || document.getElementById('main');
+  const day = DAYS.find(d=>d.id===dayId);
+  const D = rphData[dayId] || {};
 
-  main.innerHTML = `
-  <div class="page-header">
-    <div>
-      <h2>${s.emoji} ${s.label}</h2>
-      <p>Rancangan Pengajaran Harian</p>
-    </div>
-    <div class="page-actions">
-      <button class="btn btn-print" onclick="printRPH()">🖨️ Cetak / PDF</button>
-      <button class="btn btn-primary" onclick="saveRPH('${s.id}')">💾 Simpan RPH</button>
+  m.innerHTML = `
+  <div class="page-hd">
+    <div><h2>${day.emoji} RPH Hari ${day.label}</h2><p>Rancangan Pengajaran Prasekolah</p></div>
+    <div class="page-actions no-print">
+      <button class="btn btn-print" onclick="window.print()">🖨️ Cetak / PDF</button>
+      <button class="btn btn-green" onclick="saveRPH('${dayId}')">💾 Simpan RPH</button>
     </div>
   </div>
 
-  <div id="print-area">
+  <div class="rph-card" id="print-area">
 
-  <!-- MAKLUMAT ASAS -->
-  <div class="card">
-    <div class="card-title"><div class="card-title-icon">📌</div> Maklumat Asas</div>
-    <div class="row col-4">
-      <div class="field"><label>Tarikh</label><input type="date" id="f_tarikh" value="${d.tarikh||''}"></div>
-      <div class="field"><label>Hari</label><select id="f_hari">${['Isnin','Selasa','Rabu','Khamis','Jumaat'].map(h=>`<option ${d.hari===h?'selected':''}>${h}</option>`).join('')}</select></div>
-      <div class="field"><label>Masa</label><input type="text" id="f_masa" placeholder="cth: 8:00–9:00 pagi" value="${d.masa||''}"></div>
-      <div class="field"><label>Tahun / Kelas</label><input type="text" id="f_kelas" placeholder="cth: 4 Bestari" value="${d.kelas||''}"></div>
+    <!-- HEADER SEKOLAH -->
+    <div class="sch-hd">
+      <div class="sch-name" contenteditable="true" id="sch-name">${D.sekolah||'SEKOLAH KEBANGSAAN PULAU SEBANG'}</div>
+      <div class="sch-addr" contenteditable="true" id="sch-addr">${D.alamat||'78000 ALOR GAJAH, MELAKA.'}</div>
+      <div class="sch-addr" contenteditable="true" id="sch-kelas">${D.kelas||'PRASEKOLAH KASIH SAYANG'}</div>
+      <div class="sch-doc">RANCANGAN PENGAJARAN PRASEKOLAH</div>
     </div>
-    <div class="row col-3">
-      <div class="field"><label>Tema / Unit</label><input type="text" id="f_tema" placeholder="Tema pembelajaran" value="${d.tema||''}"></div>
-      <div class="field"><label>Tajuk Pelajaran</label><input type="text" id="f_tajuk" placeholder="Tajuk spesifik" value="${d.tajuk||''}"></div>
-      <div class="field"><label>Bilangan Murid</label><input type="number" id="f_murid" placeholder="cth: 30" value="${d.murid||''}"></div>
-    </div>
-  </div>
 
-  <!-- STANDARD KURIKULUM -->
-  <div class="card">
-    <div class="card-title"><div class="card-title-icon">📐</div> Standard Kurikulum (DSKP)</div>
-    <div class="row col-2">
-      <div class="field"><label>Standard Kandungan (SK)</label><input type="text" id="f_sk" placeholder="cth: 1.1" value="${d.sk||''}"></div>
-      <div class="field"><label>Standard Pembelajaran (SP)</label><input type="text" id="f_sp" placeholder="cth: 1.1.1, 1.1.2" value="${d.sp||''}"></div>
+    <!-- INFO ROW (Nama Guru, Minggu, Hari, Tarikh, Tema, Strategi) -->
+    <div class="info-grid">
+      <div class="ig-cell"><label>Nama Guru</label><input type="text" id="f_guru" value="${D.guru||''}" placeholder="Puan / Cikgu ..."></div>
+      <div class="ig-cell"><label>Minggu</label><input type="text" id="f_minggu" value="${D.minggu||''}" placeholder="11"></div>
+      <div class="ig-cell"><label>Hari</label><select id="f_hari">${['Isnin','Selasa','Rabu','Khamis','Jumaat'].map(h=>`<option ${(D.hari||day.label)===h?'selected':''}>${h}</option>`).join('')}</select></div>
+      <div class="ig-cell"><label>Tarikh</label><input type="date" id="f_tarikh" value="${D.tarikh||''}"></div>
+      <div class="ig-cell"><label>Tema</label><input type="text" id="f_tema" value="${D.tema||''}" placeholder="cth: DIRI SAYA (RUMAH SAYA)"></div>
+      <div class="ig-cell"><label>Strategi</label><input type="text" id="f_strategi" value="${D.strategi||''}" placeholder="cth: Bertema / Berpusat Pembelajaran / Bersepadu"></div>
     </div>
-    <div class="row col-2">
-      <div class="field"><label>Kemahiran Berfikir Aras Tinggi (KBAT)</label><input type="text" id="f_kbat" placeholder="cth: Menganalisis, Menilai..." value="${d.kbat||''}"></div>
-      <div class="field"><label>Elemen Merentas Kurikulum (EMK)</label><input type="text" id="f_emk" placeholder="cth: Kreativiti, TMK, Nilai Murni" value="${d.emk||''}"></div>
-    </div>
-  </div>
 
-  <!-- OBJEKTIF -->
-  <div class="card">
-    <div class="card-title"><div class="card-title-icon">🎯</div> Objektif & Pengetahuan</div>
-    <div class="row">
-      <div class="field"><label>Objektif Pembelajaran (Pada akhir pelajaran, murid dapat...)</label>
-      <textarea id="f_objektif" placeholder="1. Murid dapat...\n2. Murid dapat...">${d.objektif||''}</textarea></div>
-    </div>
-    <div class="row col-2">
-      <div class="field"><label>Pengetahuan Sedia Ada (PSA)</label><textarea id="f_psa" placeholder="Apa yang murid sudah tahu sebelum pelajaran ini...">${d.psa||''}</textarea></div>
-      <div class="field"><label>Bahan Bantu Mengajar (BBM)</label><textarea id="f_bbm" placeholder="cth: Buku teks, kad imbasan, laptop, projektor...">${d.bbm||''}</textarea></div>
-    </div>
-  </div>
+    <!-- RUTIN ROW -->
+    <table class="t">
+      <tr class="rutin-row">
+        <td class="tlbl" style="width:88px;">
+          <div class="tm">7.30 - 8.00</div>
+          <div class="bd">RUTIN</div>
+          <div class="dur">(30 MIN)</div>
+        </td>
+        <td colspan="6">
+          <div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Aktiviti Rutin:</div>
+          <textarea id="f_rutin" style="min-height:55px;">${D.rutin||'Ucap salam, minum pagi, pemeriksaan diri dan kebersihan, membaca doa, kalender dan kehadiran murid. Bersalam/mengucapkan selamat antara guru dan PPM dengan murid. Menyusun kasut di rak yang disediakan.'}</textarea>
+          <div class="rutin-extra">
+            <div style="display:flex;align-items:center;gap:6px;"><label>KEHADIRAN:</label><input type="text" id="f_hadir" value="${D.hadir||''}" placeholder="__ / __" style="width:70px;"></div>
+            <div style="display:flex;align-items:center;gap:6px;"><label>PERISTIWA:</label><input type="text" id="f_peristiwa" value="${D.peristiwa||''}" placeholder="cth: Mesyuarat PIBG" style="width:200px;"></div>
+          </div>
+        </td>
+      </tr>
+    </table>
 
-  <!-- AKTIVITI P&P -->
-  <div class="card">
-    <div class="card-title"><div class="card-title-icon">📖</div> Aktiviti Pengajaran &amp; Pembelajaran</div>
-    <div class="row">
-      <div class="field">
-        <label>Set Induksi <span style="font-weight:400; color:#6b6b6b;">(5–10 minit) — Bagaimana guru memulakan pelajaran</span></label>
-        <textarea id="f_induksi" placeholder="Contoh: Guru menunjukkan video pendek berkaitan topik. Soal jawab untuk menarik minat murid...">${d.induksi||''}</textarea>
-      </div>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Langkah 1 — Penerangan &amp; Pengenalan <span style="font-weight:400; color:#6b6b6b;">(15 minit)</span></label>
-        <textarea id="f_l1" placeholder="Guru menerangkan konsep utama. Tunjukkan contoh. Murid mencatat nota...">${d.l1||''}</textarea>
-      </div>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Langkah 2 — Aktiviti Murid <span style="font-weight:400; color:#6b6b6b;">(15 minit)</span></label>
-        <textarea id="f_l2" placeholder="Kerja berkumpulan / berpasangan. Murid berbincang dan menjawab soalan...">${d.l2||''}</textarea>
-      </div>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Langkah 3 — Pengukuhan <span style="font-weight:400; color:#6b6b6b;">(10 minit)</span></label>
-        <textarea id="f_l3" placeholder="Latihan pengukuhan. Murid mempersembahkan hasil kerja. Soal jawab...">${d.l3||''}</textarea>
-      </div>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>Penutup <span style="font-weight:400; color:#6b6b6b;">(5 minit) — Rumusan &amp; tugasan rumah</span></label>
-        <textarea id="f_penutup" placeholder="Guru merumuskan isi pelajaran. Tugasan rumah diberikan. Murid mencatat...">${d.penutup||''}</textarea>
-      </div>
-    </div>
-  </div>
+    <!-- MAIN TABLE HEADER + SLOTS -->
+    <table class="t">
+      <thead>
+        <tr>
+          <th style="width:88px;">Masa / Bidang Pembelajaran</th>
+          <th style="width:110px;">Kompetensi</th>
+          <th style="width:130px;">Kemahiran / Standard Pembelajaran</th>
+          <th style="width:150px;">Objektif (Diakhir Pelajaran Murid Dapat)</th>
+          <th>Aktiviti</th>
+          <th style="width:95px;">Bahan</th>
+          <th style="width:115px;">Impak</th>
+        </tr>
+      </thead>
+      <tbody id="slots-body"></tbody>
+    </table>
 
-  <!-- PENTAKSIRAN -->
-  <div class="card">
-    <div class="card-title"><div class="card-title-icon">📊</div> Pentaksiran &amp; Penilaian</div>
-    <div class="row col-2">
-      <div class="field"><label>Kaedah Pentaksiran</label><textarea id="f_pentaksiran" placeholder="cth: Soal jawab lisan, kuiz bertulis, portfolio, pemerhatian...">${d.pentaksiran||''}</textarea></div>
-      <div class="field"><label>Kriteria Kejayaan</label><textarea id="f_kriteria" placeholder="Murid dianggap berjaya jika...">${d.kriteria||''}</textarea></div>
-    </div>
-  </div>
+    <!-- PENUTUP -->
+    <table class="t" style="margin-top:0;">
+      <tbody>
+        <tr>
+          <td class="tlbl" style="width:88px;">
+            <div class="tm">11.50 - 12.00</div>
+            <div class="bd">PENUTUP</div>
+            <div class="dur">(10 MIN)</div>
+          </td>
+          <td colspan="5">
+            <textarea id="f_penutup" style="min-height:60px;">${D.penutup||PENUTUP.defAkt}</textarea>
+          </td>
+          <td style="width:115px;">
+            <span style="color:#bbb;font-size:11px;">—</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- REFLEKSI -->
-  <div class="card">
-    <div class="card-title"><div class="card-title-icon">🔍</div> Refleksi Guru</div>
-    <div class="row col-3">
-      <div class="field"><label>Murid capai objektif</label><input type="text" id="f_capai" placeholder="cth: 28/30 murid" value="${d.capai||''}"></div>
-      <div class="field"><label>Tindakan susulan</label><input type="text" id="f_susulan" placeholder="cth: Pemulihan kumpulan A" value="${d.susulan||''}"></div>
-      <div class="field"><label>Tarikh tindakan susulan</label><input type="date" id="f_tarikh_susulan" value="${d.tarikh_susulan||''}"></div>
-    </div>
-    <div class="row">
-      <div class="field"><label>Catatan &amp; Refleksi Pengajaran</label>
-      <textarea id="f_catatan" placeholder="Apa yang berjaya dalam P&P hari ini? Apa yang perlu diperbaiki? Cadangan untuk masa hadapan...">${d.catatan||''}</textarea></div>
-    </div>
-  </div>
+    <!-- PENTAKSIRAN & REFLEKSI -->
+    <table class="t" style="margin-top:0;">
+      <tbody>
+        <tr>
+          <td class="tlbl" style="width:88px;text-align:center;">
+            <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">PENTAKSIRAN<br>DAN<br>PENGUASAAN</div>
+            <div style="font-size:9.5px;color:#888;margin-top:3px;">KESELURUHAN</div>
+          </td>
+          <td colspan="6">
+            <div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;">Kaedah Pentaksiran:</div>
+            <div class="pent-grid">
+              ${PENTAKSIRAN_OPT.map(p => {
+                const chk = D.pentaksiran && D.pentaksiran.includes(p) ? 'checked' : '';
+                return `<label class="pent-item"><input type="checkbox" name="pent" value="${p}" ${chk}> ${p}</label>`;
+              }).join('')}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="tlbl" style="text-align:center;">
+            <div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">REFLEKSI<br>GURU</div>
+          </td>
+          <td colspan="6">
+            <textarea id="f_refleksi" style="min-height:55px;" placeholder="Catatan refleksi guru, tindakan susulan, pemerhatian murid...">${D.refleksi||''}</textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- LAMPIRAN -->
-  <div class="card" id="attach-card">
-    <div class="card-title"><div class="card-title-icon">📎</div> Lampiran &amp; Bahan</div>
-    <div class="drop-zone" onclick="document.getElementById('file-input').click()">
-      📁 Klik untuk tambah lampiran (gambar, PDF, Word, PowerPoint)
-      <div id="att-list-${s.id}"></div>
-    </div>
-  </div>
+  </div><!-- /rph-card -->
 
-  </div><!-- /print-area -->
-
-  <div class="btn-row" style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
-    <button class="btn btn-primary" onclick="saveRPH('${s.id}')">💾 Simpan RPH</button>
-    <button class="btn btn-print" onclick="printRPH()">🖨️ Cetak / Export PDF</button>
-    <button class="btn btn-amber" onclick="syncGAS('${s.id}')">☁️ Hantar ke Google Sheets</button>
-    <button class="btn btn-danger" onclick="clearRPH('${s.id}')">🗑️ Kosongkan</button>
+  <!-- ACTION BUTTONS -->
+  <div class="btn-row-bottom no-print" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+    <button class="btn btn-green" onclick="saveRPH('${dayId}')">💾 Simpan RPH</button>
+    <button class="btn btn-print" onclick="window.print()">🖨️ Cetak / Export PDF</button>
+    <button class="btn btn-amber" onclick="syncGAS('${dayId}')">☁️ Hantar ke Sheets</button>
+    <button class="btn btn-danger" onclick="clearRPH('${dayId}')">🗑️ Kosongkan</button>
   </div>`;
 
-  renderAttList(s.id);
-
-  document.getElementById('file-input').onchange = function(e) {
-    const files = Array.from(e.target.files);
-    if (!attachments[s.id]) attachments[s.id] = [];
-    files.forEach(f => {
-      const reader = new FileReader();
-      reader.onload = ev => {
-        attachments[s.id].push({ name: f.name, type: f.type, size: f.size, data: ev.target.result });
-        save();
-        renderAttList(s.id);
-      };
-      reader.readAsDataURL(f);
-    });
-    this.value = '';
-  };
+  buildSlots(dayId, D);
 }
 
-function renderAttList(sid) {
-  const el = document.getElementById('att-list-' + sid);
-  if (!el) return;
-  const att = attachments[sid] || [];
-  if (!att.length) { el.innerHTML = ''; return; }
-  el.innerHTML = '<div style="margin-top:12px;">' + att.map((a,i) =>
-    `<div class="att-item">
-      <span>📄 ${a.name} <span style="color:#aaa; font-size:11px;">(${(a.size/1024).toFixed(1)} KB)</span></span>
-      <span class="att-remove" onclick="removeAtt('${sid}',${i})">Buang</span>
-    </div>`
-  ).join('') + '</div>';
+function buildSlots(dayId, D) {
+  const body = document.getElementById('slots-body');
+  if (!body) return;
+  body.innerHTML = SLOTS.map(s => {
+    const sd = D[s.id] || {};
+    const impakHtml = `<div class="impak-wrap">
+      ${IMPAK_OPT.map(im => {
+        const chk = sd.impak && sd.impak.includes(im) ? 'checked' : '';
+        return `<label class="ck-item"><input type="checkbox" data-slot="${s.id}" data-impak="${im}" ${chk}> ${im}</label>`;
+      }).join('')}
+      <div class="tp-sec">
+        <div class="tp-lbl">Tahap Penguasaan:</div>
+        ${TP_OPT.map(tp => {
+          const chk = sd.tp && sd.tp.includes(tp) ? 'checked' : '';
+          return `<label class="ck-item"><input type="checkbox" data-slot="${s.id}" data-tp="${tp}" ${chk}> ${tp}</label>`;
+        }).join('')}
+      </div>
+    </div>`;
+
+    return `<tr>
+      <td class="tlbl">
+        <div class="tm">${s.masa}</div>
+        <input class="bd-edit" type="text" data-slot="${s.id}" data-field="bidang" value="${sd.bidang||s.bidang}">
+        <div class="dur">(${s.dur})</div>
+      </td>
+      <td><textarea data-slot="${s.id}" data-field="kompetensi" style="min-height:50px;">${sd.kompetensi||s.kompetensi}</textarea></td>
+      <td><textarea data-slot="${s.id}" data-field="standard" style="min-height:50px;">${sd.standard||''}</textarea></td>
+      <td><textarea data-slot="${s.id}" data-field="objektif" style="min-height:50px;">${sd.objektif||''}</textarea></td>
+      <td><textarea data-slot="${s.id}" data-field="aktiviti" style="min-height:80px;">${sd.aktiviti||s.defAkt}</textarea></td>
+      <td><textarea data-slot="${s.id}" data-field="bahan" style="min-height:50px;">${sd.bahan||''}</textarea></td>
+      <td>${impakHtml}</td>
+    </tr>`;
+  }).join('');
 }
 
-function removeAtt(sid, idx) {
-  attachments[sid].splice(idx, 1);
-  save();
-  renderAttList(sid);
-}
-
-// ── GET FORM VALUES ──
-function getFormValues() {
-  const fields = ['tarikh','hari','masa','kelas','tema','tajuk','murid','sk','sp','kbat','emk','objektif','psa','bbm','induksi','l1','l2','l3','penutup','pentaksiran','kriteria','capai','susulan','tarikh_susulan','catatan'];
+// ── COLLECT ──
+function collectRPH(dayId) {
   const d = {};
-  fields.forEach(f => {
-    const el = document.getElementById('f_' + f);
+  // school info (editable divs)
+  const sn = document.getElementById('sch-name');
+  if (sn) d.sekolah = sn.textContent;
+  const sa = document.getElementById('sch-addr');
+  if (sa) d.alamat = sa.textContent;
+  const sk = document.getElementById('sch-kelas');
+  if (sk) d.kelas = sk.textContent;
+
+  ['guru','minggu','hari','tarikh','tema','strategi','rutin','hadir','peristiwa','penutup','refleksi'].forEach(f => {
+    const el = document.getElementById('f_'+f);
     if (el) d[f] = el.value;
+  });
+
+  d.pentaksiran = [...document.querySelectorAll('input[name="pent"]:checked')].map(cb=>cb.value);
+
+  SLOTS.forEach(s => {
+    d[s.id] = {};
+    document.querySelectorAll(`[data-slot="${s.id}"][data-field]`).forEach(el => { d[s.id][el.dataset.field] = el.value||el.textContent; });
+    d[s.id].impak = [...document.querySelectorAll(`input[data-slot="${s.id}"][data-impak]:checked`)].map(cb=>cb.dataset.impak);
+    d[s.id].tp = [...document.querySelectorAll(`input[data-slot="${s.id}"][data-tp]:checked`)].map(cb=>cb.dataset.tp);
   });
   return d;
 }
 
-// ── SAVE ──
-function saveRPH(sid) {
-  const d = getFormValues();
+function saveRPH(dayId) {
+  const d = collectRPH(dayId);
   d._saved = new Date().toISOString();
-  d._subject = sid;
-  rphData[sid] = d;
-  save();
-  renderSidebarNav();
-  showToast('✅ RPH ' + SUBJECTS.find(s=>s.id===sid).label + ' berjaya disimpan!');
+  d._lbl = new Date().toLocaleDateString('ms-MY',{day:'2-digit',month:'short'});
+  rphData[dayId] = d;
+  persist();
+  renderDayNav();
+  toast(`✅ RPH Hari ${DAYS.find(x=>x.id===dayId).label} berjaya disimpan!`);
 }
 
-// ── CLEAR ──
-function clearRPH(sid) {
-  if (!confirm('Kosongkan semua data RPH untuk mata pelajaran ini?')) return;
-  delete rphData[sid];
-  delete attachments[sid];
-  save();
-  renderSidebarNav();
-  switchView(sid);
-  showToast('Borang dikosongkan.', 'warning');
+function clearRPH(dayId) {
+  if (!confirm('Kosongkan semua data RPH hari ini?')) return;
+  delete rphData[dayId];
+  persist();
+  renderDayNav();
+  renderRPH(dayId);
+  toast('Borang dikosongkan.','warn');
 }
 
-// ── PRINT ──
-function printRPH() { window.print(); }
-
-// ══════════════════════════════════════════
-//  GAS INTEGRATION
-// ══════════════════════════════════════════
-function openGasModal() {
-  document.getElementById('gas-url-input').value = gasUrl;
-  document.getElementById('gas-modal').classList.add('open');
+// ── GAS ──
+function openGas() { document.getElementById('gas-input').value=gasUrl; document.getElementById('gas-modal').classList.add('open'); }
+function closeGas() { document.getElementById('gas-modal').classList.remove('open'); }
+function saveGas() {
+  const url = document.getElementById('gas-input').value.trim();
+  if (!url.startsWith('https://script.google.com')) { toast('URL GAS tidak sah!','err'); return; }
+  gasUrl = url; localStorage.setItem('erph_gas', gasUrl);
+  setGasBadge(true); closeGas(); toast('✅ GAS berjaya disambung!');
 }
-function closeGasModal() {
-  document.getElementById('gas-modal').classList.remove('open');
-}
-function saveGasUrl() {
-  const url = document.getElementById('gas-url-input').value.trim();
-  if (!url || !url.startsWith('https://script.google.com')) {
-    showToast('URL GAS tidak sah!', 'error');
-    return;
-  }
-  gasUrl = url;
-  localStorage.setItem('erph_gas', gasUrl);
-  updateGasBadge(true);
-  closeGasModal();
-  showToast('GAS berjaya disambung!');
-}
-
-function updateGasBadge(connected) {
+function setGasBadge(on) {
   const el = document.getElementById('gas-badge');
-  el.className = 'gas-status ' + (connected ? 'connected' : 'disconnected');
-  el.textContent = connected ? '⚡ GAS: Tersambung' : '⚡ GAS: Tidak Tersambung';
+  el.className = 'gas-btn '+(on?'on':'off');
+  el.textContent = on ? '⚡ GAS: Tersambung' : '⚡ GAS: Tidak Tersambung';
 }
-
-async function syncGAS(sid) {
-  if (!gasUrl) { openGasModal(); return; }
-  const d = getFormValues();
-  d._subject = sid;
-  d._subjectLabel = SUBJECTS.find(s=>s.id===sid).label;
+async function syncGAS(dayId) {
+  if (!gasUrl) { openGas(); return; }
+  const d = collectRPH(dayId);
+  d._dayLabel = DAYS.find(x=>x.id===dayId).label;
   d._saved = new Date().toISOString();
-
-  const badge = document.getElementById('gas-badge');
-  badge.classList.add('syncing');
-  showToast('Menghantar data ke Google Sheets...', 'warning');
-
+  document.getElementById('gas-badge').classList.add('syncing');
+  toast('Menghantar data...','warn');
   try {
-    const resp = await fetch(gasUrl, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(d)
-    });
-    showToast('✅ Data berjaya dihantar ke Google Sheets!');
-    rphData[sid] = { ...d, _saved: new Date().toISOString() };
-    save();
-    renderSidebarNav();
-  } catch(err) {
-    showToast('Gagal hantar ke GAS. Semak URL.', 'error');
+    await fetch(gasUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+    toast('✅ Data berjaya dihantar ke Google Sheets!');
+    rphData[dayId] = {...d, _lbl: new Date().toLocaleDateString('ms-MY',{day:'2-digit',month:'short'})};
+    persist(); renderDayNav();
+  } catch(e) {
+    toast('Gagal hantar ke GAS. Semak URL.','err');
   } finally {
-    badge.classList.remove('syncing');
+    document.getElementById('gas-badge').classList.remove('syncing');
   }
 }
 
-// ══════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════
-load();
-setDate();
-renderSidebarNav();
-renderDashboard(document.getElementById('main-content'));
+init();
 </script>
 </body>
 </html>
