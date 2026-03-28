@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>e-RPH Guru — Sistem Rancangan Pengajaran Harian</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Lora:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green-dark: #1a4a2e;
+  --green: #2d6a4f;
+  --green-mid: #40916c;
+  --green-light: #d8f3dc;
+  --green-xlight: #f0faf2;
+  --amber: #e07b1f;
+  --amber-light: #fef3e2;
+  --blue: #1565c0;
+  --blue-light: #e8f0fe;
+  --red: #c0392b;
+  --red-light: #fdecea;
+  --gray-900: #1a1a1a;
+  --gray-700: #3d3d3d;
+  --gray-500: #6b6b6b;
+  --gray-300: #c4c4c4;
+  --gray-100: #f5f5f5;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #f0f4f0;
+  color: var(--gray-900);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--green-dark);
+  color: white;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px; }
+.topbar-logo {
+  width: 32px; height: 32px;
+  background: var(--green-mid);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Lora', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+.topbar-title { font-family: 'Lora', serif; font-size: 18px; font-weight: 500; }
+.topbar-subtitle { font-size: 11px; opacity: 0.65; margin-top: 1px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-date { font-size: 12px; opacity: 0.75; }
+.gas-status {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.gas-status:hover { background: rgba(255,255,255,0.1); }
+.gas-status.connected { border-color: #69f0ae; color: #69f0ae; }
+.gas-status.disconnected { border-color: #ff8a65; color: #ff8a65; }
+
+/* ── LAYOUT ── */
+.layout { display: flex; min-height: calc(100vh - 56px); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 220px;
+  background: var(--white);
+  border-right: 1px solid #e0e8e3;
+  padding: 16px 0;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  padding: 8px 16px 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+  font-size: 13.5px;
+  color: var(--gray-700);
+  position: relative;
+}
+.nav-item:hover { background: var(--green-xlight); color: var(--green); }
+.nav-item.active {
+  background: var(--green-xlight);
+  color: var(--green-dark);
+  border-left-color: var(--green);
+  font-weight: 600;
+}
+.nav-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--amber);
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.nav-icon {
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* ── MAIN ── */
+.main { flex: 1; padding: 24px; max-width: 900px; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.page-header h2 { font-family: 'Lora', serif; font-size: 22px; font-weight: 500; }
+.page-header p { font-size: 13px; color: var(--gray-500); margin-top: 3px; }
+.page-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* ── BUTTONS ── */
+.btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary { background: var(--green); color: white; }
+.btn-primary:hover { background: var(--green-dark); }
+.btn-outline { background: white; color: var(--gray-700); border: 1px solid var(--gray-300); }
+.btn-outline:hover { border-color: var(--green); color: var(--green); }
+.btn-danger { background: var(--red-light); color: var(--red); }
+.btn-danger:hover { background: #f7c5bf; }
+.btn-print { background: var(--blue-light); color: var(--blue); }
+.btn-print:hover { background: #c5d8fb; }
+.btn-amber { background: var(--amber-light); color: var(--amber); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid #e0e8e3;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8f0ea;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title-icon {
+  width: 22px; height: 22px;
+  background: var(--green-light);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+
+/* ── FORM ── */
+.row { display: grid; gap: 14px; margin-bottom: 14px; }
+.col-2 { grid-template-columns: 1fr 1fr; }
+.col-3 { grid-template-columns: 1fr 1fr 1fr; }
+.col-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 5px;
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 8px 11px;
+  border: 1.5px solid #dde8e1;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--gray-900);
+  background: #fafcfa;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--green-mid);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(64,145,108,0.12);
+}
+.field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+.field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── SUBJECT BADGE ── */
+.subject-pill {
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 18px;
+}
+
+/* ── HISTORY ── */
+.history-grid { display: flex; flex-direction: column; gap: 10px; }
+.history-card {
+  background: white;
+  border: 1px solid #e0e8e3;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+.history-card:hover {
+  border-color: var(--green-mid);
+  box-shadow: 0 3px 10px rgba(45,106,79,0.1);
+  transform: translateY(-1px);
+}
+.history-meta { font-size: 12px; color: var(--gray-500); margin-top: 3px; }
+
+/* ── ATTACH ── */
+.drop-zone {
+  border: 2px dashed #c4d9ca;
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  color: var(--gray-500);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.drop-zone:hover { border-color: var(--green-mid); background: var(--green-xlight); color: var(--green); }
+.att-item {
+  background: #f5f9f6;
+  border: 1px solid #dde8e1;
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+.att-remove { color: var(--red); cursor: pointer; font-size: 11px; padding: 2px 6px; border-radius: 4px; }
+.att-remove:hover { background: var(--red-light); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--green-dark);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s;
+  pointer-events: none;
+  z-index: 999;
+  max-width: 320px;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.error { background: var(--red); }
+.toast.warning { background: var(--amber); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white;
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 480px;
+  max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.modal h3 { font-family: 'Lora', serif; font-size: 18px; margin-bottom: 8px; }
+.modal p { color: var(--gray-500); font-size: 13px; margin-bottom: 18px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-500);
+}
+.empty-icon { font-size: 48px; margin-bottom: 16px; }
+.empty h3 { font-size: 16px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: white;
+  border: 1px solid #e0e8e3;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  box-shadow: var(--shadow-sm);
+}
+.stat-label { font-size: 11px; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-value { font-size: 24px; font-weight: 700; color: var(--green-dark); font-family: 'Lora', serif; margin-top: 4px; }
+
+/* ── PRINT ── */
+@media print {
+  body { background: white; font-size: 12px; }
+  .topbar, .sidebar, .page-actions, .btn-row, .drop-zone, .att-remove { display: none !important; }
+  .layout { display: block; }
+  .main { padding: 0; max-width: 100%; }
+  .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  .page-header { margin-bottom: 16px; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .col-4 { grid-template-columns: 1fr 1fr; }
+  .col-3 { grid-template-columns: 1fr 1fr; }
+  .stats-bar { grid-template-columns: 1fr 1fr; }
+}
+
+.syncing { animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+.divider { height: 1px; background: #e8f0ea; margin: 8px 0 12px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">e</div>
+    <div>
+      <div class="topbar-title">e-RPH Guru</div>
+      <div class="topbar-subtitle">Sistem Rancangan Pengajaran Harian Digital</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-date" id="today-date"></span>
+    <span class="gas-status disconnected" id="gas-badge" onclick="openGasModal()">⚡ GAS: Tidak Tersambung</span>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Menu</div>
+    <div class="nav-item active" onclick="switchView('dashboard')" id="nav-dashboard">
+      <div class="nav-icon" style="background:#e8f5e9;">📊</div> Dashboard
+    </div>
+    <div class="nav-item" onclick="switchView('history')" id="nav-history">
+      <div class="nav-icon" style="background:#e8f0fe;">📋</div> Semua RPH
+    </div>
+
+    <div class="divider" style="margin: 12px 16px;"></div>
+    <div class="sidebar-section-label">Mata Pelajaran</div>
+
+    <div id="subject-nav"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main-content"></main>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- GAS MODAL -->
+<div class="modal-overlay" id="gas-modal">
+  <div class="modal">
+    <h3>🔗 Sambung Google Apps Script</h3>
+    <p>Masukkan URL Web App GAS anda untuk simpan data RPH ke Google Sheets secara automatik.</p>
+    <div class="field">
+      <label>URL Google Apps Script Web App</label>
+      <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/XXXX/exec">
+    </div>
+    <div style="background:#f0faf2; border-radius:8px; padding:12px 14px; font-size:12px; color:#2d6a4f; margin-top:12px; line-height:1.7;">
+      <strong>Cara deploy GAS:</strong><br>
+      1. Buka <strong>Code.gs</strong> yang disediakan dalam Google Apps Script<br>
+      2. Klik <em>Deploy → New Deployment → Web App</em><br>
+      3. Tetapkan <em>Execute as: Me</em> dan <em>Who has access: Anyone</em><br>
+      4. Copy URL dan tampal di sini
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeGasModal()">Batal</button>
+      <button class="btn btn-primary" onclick="saveGasUrl()">Sambung</button>
+    </div>
+  </div>
+</div>
+
+<!-- FILE INPUT -->
+<input type="file" id="file-input" style="display:none" multiple accept="image/*,.pdf,.doc,.docx,.ppt,.pptx">
+
+<script>
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+const SUBJECTS = [
+  { id:'bm',        label:'Bahasa Melayu',      emoji:'🇲🇾', color:'#2d6a4f', bg:'#d8f3dc', text:'#1a4a2e' },
+  { id:'bi',        label:'Bahasa Inggeris',     emoji:'🔤', color:'#1565c0', bg:'#e8f0fe', text:'#0d3c91' },
+  { id:'math',      label:'Matematik',           emoji:'🔢', color:'#6a1f6e', bg:'#f3e5f5', text:'#4a1550' },
+  { id:'sains',     label:'Sains',               emoji:'🔬', color:'#00695c', bg:'#e0f2f1', text:'#004d40' },
+  { id:'creativity',label:'Kreativiti',          emoji:'🎨', color:'#c0392b', bg:'#fdecea', text:'#922b21' },
+  { id:'music',     label:'Muzik',               emoji:'🎵', color:'#6d4c41', bg:'#efebe9', text:'#4e342e' },
+  { id:'activity',  label:'Aktiviti Luar',       emoji:'⚽', color:'#e07b1f', bg:'#fef3e2', text:'#a85a0f' },
+  { id:'health',    label:'Kesihatan',            emoji:'💪', color:'#388e3c', bg:'#e8f5e9', text:'#1b5e20' },
+  { id:'civic',     label:'Kewarganegaraan',     emoji:'🏛️', color:'#455a64', bg:'#eceff1', text:'#263238' }
+];
+
+let rphData = {};
+let attachments = {};
+let gasUrl = '';
+let currentView = 'dashboard';
+let currentSubject = null;
+
+// ── LOAD/SAVE ──
+function load() {
+  try {
+    const d = localStorage.getItem('erph_v2');
+    if (d) rphData = JSON.parse(d);
+    const a = localStorage.getItem('erph_att_v2');
+    if (a) attachments = JSON.parse(a);
+    const g = localStorage.getItem('erph_gas');
+    if (g) { gasUrl = g; updateGasBadge(true); }
+  } catch(e) {}
+}
+function save() {
+  localStorage.setItem('erph_v2', JSON.stringify(rphData));
+  localStorage.setItem('erph_att_v2', JSON.stringify(attachments));
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type !== 'success' ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── DATE ──
+function setDate() {
+  const d = new Date();
+  const days = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+  const months = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+  document.getElementById('today-date').textContent = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+// ── SIDEBAR NAV ──
+function renderSidebarNav() {
+  const nav = document.getElementById('subject-nav');
+  nav.innerHTML = SUBJECTS.map(s => {
+    const saved = rphData[s.id] && Object.keys(rphData[s.id]).length > 1;
+    return `<div class="nav-item ${currentView === s.id ? 'active' : ''}" id="nav-${s.id}" onclick="switchView('${s.id}')">
+      <div class="nav-icon" style="background:${s.bg}; font-size:13px;">${s.emoji}</div>
+      <span style="flex:1; font-size:13px;">${s.label}</span>
+      ${saved ? '<div class="nav-dot"></div>' : ''}
+    </div>`;
+  }).join('');
+
+  // update dashboard/history active
+  ['dashboard','history'].forEach(v => {
+    const el = document.getElementById('nav-' + v);
+    if (el) el.classList.toggle('active', currentView === v);
+  });
+}
+
+// ── VIEW SWITCH ──
+function switchView(view) {
+  currentView = view;
+  renderSidebarNav();
+  const main = document.getElementById('main-content');
+  if (view === 'dashboard') renderDashboard(main);
+  else if (view === 'history') renderHistory(main);
+  else {
+    const s = SUBJECTS.find(x => x.id === view);
+    if (s) renderForm(s, main);
+  }
+}
+
+// ══════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════
+function renderDashboard(main) {
+  const total = Object.keys(rphData).length;
+  const totalSubjects = SUBJECTS.length;
+  const thisWeek = countThisWeek();
+  const lastSaved = getLastSaved();
+
+  main.innerHTML = `
+  <div class="page-header">
+    <div>
+      <h2>Dashboard</h2>
+      <p>Gambaran keseluruhan rekod RPH anda</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-outline btn-sm" onclick="switchView('history')">Lihat Semua RPH</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">Jumlah RPH</div>
+      <div class="stat-value">${total}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Mata Pelajaran</div>
+      <div class="stat-value">${total}/${totalSubjects}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Minggu Ini</div>
+      <div class="stat-value">${thisWeek}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Terakhir Simpan</div>
+      <div class="stat-value" style="font-size:15px; margin-top:6px;">${lastSaved}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">📚</div> Status Mata Pelajaran</div>
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+      ${SUBJECTS.map(s => {
+        const d = rphData[s.id];
+        const saved = d && Object.keys(d).length > 1;
+        return `<div onclick="switchView('${s.id}')" style="border:1.5px solid ${saved ? s.color : '#e0e8e3'}; border-radius:8px; padding:12px 14px; cursor:pointer; transition:all 0.15s; background:${saved ? s.bg : 'white'};"
+          onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size:18px; margin-bottom:6px;">${s.emoji}</div>
+          <div style="font-size:12.5px; font-weight:600; color:${saved ? s.text : '#6b6b6b'};">${s.label}</div>
+          <div style="font-size:11px; margin-top:4px; color:${saved ? s.color : '#aaa'};">
+            ${saved ? '✓ Ada RPH — ' + (d.tarikh || 'tiada tarikh') : 'Belum ada RPH'}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">🚀</div> Mula dengan cepat</div>
+    <p style="font-size:13px; color:#6b6b6b; margin-bottom:14px;">Pilih mata pelajaran untuk isi RPH hari ini:</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      ${SUBJECTS.map(s => `<button class="btn btn-outline btn-sm" onclick="switchView('${s.id}')" style="border-color:${s.color}; color:${s.color};">${s.emoji} ${s.label}</button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function countThisWeek() {
+  const now = new Date();
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - now.getDay());
+  let count = 0;
+  Object.values(rphData).forEach(d => {
+    if (d._saved && new Date(d._saved) >= weekStart) count++;
+  });
+  return count;
+}
+
+function getLastSaved() {
+  let latest = null;
+  Object.values(rphData).forEach(d => {
+    if (d._saved) {
+      const t = new Date(d._saved);
+      if (!latest || t > latest) latest = t;
+    }
+  });
+  if (!latest) return '—';
+  return latest.toLocaleDateString('ms-MY', { day:'2-digit', month:'short' });
+}
+
+// ══════════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════════
+function renderHistory(main) {
+  const entries = Object.entries(rphData);
+  main.innerHTML = `
+  <div class="page-header">
+    <div><h2>Semua RPH</h2><p>${entries.length} rekod tersimpan</p></div>
+    <div class="page-actions">
+      <button class="btn btn-outline btn-sm" onclick="exportAllCSV()">📥 Export CSV</button>
+    </div>
+  </div>`;
+
+  if (entries.length === 0) {
+    main.innerHTML += `<div class="empty"><div class="empty-icon">📋</div><h3>Tiada RPH Tersimpan</h3><p>Pilih mata pelajaran di sidebar untuk mula isi RPH.</p></div>`;
+    return;
+  }
+
+  main.innerHTML += `<div class="history-grid">` + entries.map(([id, d]) => {
+    const s = SUBJECTS.find(x => x.id === id);
+    const saved = d._saved ? new Date(d._saved).toLocaleString('ms-MY', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    return `<div class="history-card" onclick="switchView('${id}')">
+      <div>
+        <span class="badge" style="background:${s.bg}; color:${s.text}; margin-bottom:6px; display:inline-flex; gap:5px;">${s.emoji} ${s.label}</span>
+        <div style="font-size:14px; font-weight:600;">${d.tajuk || 'Tiada tajuk'}</div>
+        <div class="history-meta">Tarikh: ${d.tarikh||'—'} &nbsp;|&nbsp; Kelas: ${d.kelas||'—'} &nbsp;|&nbsp; Disimpan: ${saved}</div>
+      </div>
+      <div style="font-size:20px; color:#c4c4c4;">›</div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+function exportAllCSV() {
+  const rows = [['Mata Pelajaran','Tarikh','Hari','Masa','Kelas','Tajuk','Objektif','Disimpan']];
+  Object.entries(rphData).forEach(([id, d]) => {
+    const s = SUBJECTS.find(x => x.id === id);
+    rows.push([s.label, d.tarikh||'', d.hari||'', d.masa||'', d.kelas||'', d.tajuk||'', (d.objektif||'').replace(/\n/g,' '), d._saved||'']);
+  });
+  const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = 'e-RPH-export.csv';
+  a.click();
+  showToast('CSV berjaya dieksport!');
+}
+
+// ══════════════════════════════════════════
+//  FORM
+// ══════════════════════════════════════════
+function renderForm(s, main) {
+  const d = rphData[s.id] || {};
+  const att = attachments[s.id] || [];
+
+  main.innerHTML = `
+  <div class="page-header">
+    <div>
+      <h2>${s.emoji} ${s.label}</h2>
+      <p>Rancangan Pengajaran Harian</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-print" onclick="printRPH()">🖨️ Cetak / PDF</button>
+      <button class="btn btn-primary" onclick="saveRPH('${s.id}')">💾 Simpan RPH</button>
+    </div>
+  </div>
+
+  <div id="print-area">
+
+  <!-- MAKLUMAT ASAS -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">📌</div> Maklumat Asas</div>
+    <div class="row col-4">
+      <div class="field"><label>Tarikh</label><input type="date" id="f_tarikh" value="${d.tarikh||''}"></div>
+      <div class="field"><label>Hari</label><select id="f_hari">${['Isnin','Selasa','Rabu','Khamis','Jumaat'].map(h=>`<option ${d.hari===h?'selected':''}>${h}</option>`).join('')}</select></div>
+      <div class="field"><label>Masa</label><input type="text" id="f_masa" placeholder="cth: 8:00–9:00 pagi" value="${d.masa||''}"></div>
+      <div class="field"><label>Tahun / Kelas</label><input type="text" id="f_kelas" placeholder="cth: 4 Bestari" value="${d.kelas||''}"></div>
+    </div>
+    <div class="row col-3">
+      <div class="field"><label>Tema / Unit</label><input type="text" id="f_tema" placeholder="Tema pembelajaran" value="${d.tema||''}"></div>
+      <div class="field"><label>Tajuk Pelajaran</label><input type="text" id="f_tajuk" placeholder="Tajuk spesifik" value="${d.tajuk||''}"></div>
+      <div class="field"><label>Bilangan Murid</label><input type="number" id="f_murid" placeholder="cth: 30" value="${d.murid||''}"></div>
+    </div>
+  </div>
+
+  <!-- STANDARD KURIKULUM -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">📐</div> Standard Kurikulum (DSKP)</div>
+    <div class="row col-2">
+      <div class="field"><label>Standard Kandungan (SK)</label><input type="text" id="f_sk" placeholder="cth: 1.1" value="${d.sk||''}"></div>
+      <div class="field"><label>Standard Pembelajaran (SP)</label><input type="text" id="f_sp" placeholder="cth: 1.1.1, 1.1.2" value="${d.sp||''}"></div>
+    </div>
+    <div class="row col-2">
+      <div class="field"><label>Kemahiran Berfikir Aras Tinggi (KBAT)</label><input type="text" id="f_kbat" placeholder="cth: Menganalisis, Menilai..." value="${d.kbat||''}"></div>
+      <div class="field"><label>Elemen Merentas Kurikulum (EMK)</label><input type="text" id="f_emk" placeholder="cth: Kreativiti, TMK, Nilai Murni" value="${d.emk||''}"></div>
+    </div>
+  </div>
+
+  <!-- OBJEKTIF -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">🎯</div> Objektif & Pengetahuan</div>
+    <div class="row">
+      <div class="field"><label>Objektif Pembelajaran (Pada akhir pelajaran, murid dapat...)</label>
+      <textarea id="f_objektif" placeholder="1. Murid dapat...\n2. Murid dapat...">${d.objektif||''}</textarea></div>
+    </div>
+    <div class="row col-2">
+      <div class="field"><label>Pengetahuan Sedia Ada (PSA)</label><textarea id="f_psa" placeholder="Apa yang murid sudah tahu sebelum pelajaran ini...">${d.psa||''}</textarea></div>
+      <div class="field"><label>Bahan Bantu Mengajar (BBM)</label><textarea id="f_bbm" placeholder="cth: Buku teks, kad imbasan, laptop, projektor...">${d.bbm||''}</textarea></div>
+    </div>
+  </div>
+
+  <!-- AKTIVITI P&P -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">📖</div> Aktiviti Pengajaran &amp; Pembelajaran</div>
+    <div class="row">
+      <div class="field">
+        <label>Set Induksi <span style="font-weight:400; color:#6b6b6b;">(5–10 minit) — Bagaimana guru memulakan pelajaran</span></label>
+        <textarea id="f_induksi" placeholder="Contoh: Guru menunjukkan video pendek berkaitan topik. Soal jawab untuk menarik minat murid...">${d.induksi||''}</textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Langkah 1 — Penerangan &amp; Pengenalan <span style="font-weight:400; color:#6b6b6b;">(15 minit)</span></label>
+        <textarea id="f_l1" placeholder="Guru menerangkan konsep utama. Tunjukkan contoh. Murid mencatat nota...">${d.l1||''}</textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Langkah 2 — Aktiviti Murid <span style="font-weight:400; color:#6b6b6b;">(15 minit)</span></label>
+        <textarea id="f_l2" placeholder="Kerja berkumpulan / berpasangan. Murid berbincang dan menjawab soalan...">${d.l2||''}</textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Langkah 3 — Pengukuhan <span style="font-weight:400; color:#6b6b6b;">(10 minit)</span></label>
+        <textarea id="f_l3" placeholder="Latihan pengukuhan. Murid mempersembahkan hasil kerja. Soal jawab...">${d.l3||''}</textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Penutup <span style="font-weight:400; color:#6b6b6b;">(5 minit) — Rumusan &amp; tugasan rumah</span></label>
+        <textarea id="f_penutup" placeholder="Guru merumuskan isi pelajaran. Tugasan rumah diberikan. Murid mencatat...">${d.penutup||''}</textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- PENTAKSIRAN -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">📊</div> Pentaksiran &amp; Penilaian</div>
+    <div class="row col-2">
+      <div class="field"><label>Kaedah Pentaksiran</label><textarea id="f_pentaksiran" placeholder="cth: Soal jawab lisan, kuiz bertulis, portfolio, pemerhatian...">${d.pentaksiran||''}</textarea></div>
+      <div class="field"><label>Kriteria Kejayaan</label><textarea id="f_kriteria" placeholder="Murid dianggap berjaya jika...">${d.kriteria||''}</textarea></div>
+    </div>
+  </div>
+
+  <!-- REFLEKSI -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">🔍</div> Refleksi Guru</div>
+    <div class="row col-3">
+      <div class="field"><label>Murid capai objektif</label><input type="text" id="f_capai" placeholder="cth: 28/30 murid" value="${d.capai||''}"></div>
+      <div class="field"><label>Tindakan susulan</label><input type="text" id="f_susulan" placeholder="cth: Pemulihan kumpulan A" value="${d.susulan||''}"></div>
+      <div class="field"><label>Tarikh tindakan susulan</label><input type="date" id="f_tarikh_susulan" value="${d.tarikh_susulan||''}"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>Catatan &amp; Refleksi Pengajaran</label>
+      <textarea id="f_catatan" placeholder="Apa yang berjaya dalam P&P hari ini? Apa yang perlu diperbaiki? Cadangan untuk masa hadapan...">${d.catatan||''}</textarea></div>
+    </div>
+  </div>
+
+  <!-- LAMPIRAN -->
+  <div class="card" id="attach-card">
+    <div class="card-title"><div class="card-title-icon">📎</div> Lampiran &amp; Bahan</div>
+    <div class="drop-zone" onclick="document.getElementById('file-input').click()">
+      📁 Klik untuk tambah lampiran (gambar, PDF, Word, PowerPoint)
+      <div id="att-list-${s.id}"></div>
+    </div>
+  </div>
+
+  </div><!-- /print-area -->
+
+  <div class="btn-row" style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+    <button class="btn btn-primary" onclick="saveRPH('${s.id}')">💾 Simpan RPH</button>
+    <button class="btn btn-print" onclick="printRPH()">🖨️ Cetak / Export PDF</button>
+    <button class="btn btn-amber" onclick="syncGAS('${s.id}')">☁️ Hantar ke Google Sheets</button>
+    <button class="btn btn-danger" onclick="clearRPH('${s.id}')">🗑️ Kosongkan</button>
+  </div>`;
+
+  renderAttList(s.id);
+
+  document.getElementById('file-input').onchange = function(e) {
+    const files = Array.from(e.target.files);
+    if (!attachments[s.id]) attachments[s.id] = [];
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        attachments[s.id].push({ name: f.name, type: f.type, size: f.size, data: ev.target.result });
+        save();
+        renderAttList(s.id);
+      };
+      reader.readAsDataURL(f);
+    });
+    this.value = '';
+  };
+}
+
+function renderAttList(sid) {
+  const el = document.getElementById('att-list-' + sid);
+  if (!el) return;
+  const att = attachments[sid] || [];
+  if (!att.length) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div style="margin-top:12px;">' + att.map((a,i) =>
+    `<div class="att-item">
+      <span>📄 ${a.name} <span style="color:#aaa; font-size:11px;">(${(a.size/1024).toFixed(1)} KB)</span></span>
+      <span class="att-remove" onclick="removeAtt('${sid}',${i})">Buang</span>
+    </div>`
+  ).join('') + '</div>';
+}
+
+function removeAtt(sid, idx) {
+  attachments[sid].splice(idx, 1);
+  save();
+  renderAttList(sid);
+}
+
+// ── GET FORM VALUES ──
+function getFormValues() {
+  const fields = ['tarikh','hari','masa','kelas','tema','tajuk','murid','sk','sp','kbat','emk','objektif','psa','bbm','induksi','l1','l2','l3','penutup','pentaksiran','kriteria','capai','susulan','tarikh_susulan','catatan'];
+  const d = {};
+  fields.forEach(f => {
+    const el = document.getElementById('f_' + f);
+    if (el) d[f] = el.value;
+  });
+  return d;
+}
+
+// ── SAVE ──
+function saveRPH(sid) {
+  const d = getFormValues();
+  d._saved = new Date().toISOString();
+  d._subject = sid;
+  rphData[sid] = d;
+  save();
+  renderSidebarNav();
+  showToast('✅ RPH ' + SUBJECTS.find(s=>s.id===sid).label + ' berjaya disimpan!');
+}
+
+// ── CLEAR ──
+function clearRPH(sid) {
+  if (!confirm('Kosongkan semua data RPH untuk mata pelajaran ini?')) return;
+  delete rphData[sid];
+  delete attachments[sid];
+  save();
+  renderSidebarNav();
+  switchView(sid);
+  showToast('Borang dikosongkan.', 'warning');
+}
+
+// ── PRINT ──
+function printRPH() { window.print(); }
+
+// ══════════════════════════════════════════
+//  GAS INTEGRATION
+// ══════════════════════════════════════════
+function openGasModal() {
+  document.getElementById('gas-url-input').value = gasUrl;
+  document.getElementById('gas-modal').classList.add('open');
+}
+function closeGasModal() {
+  document.getElementById('gas-modal').classList.remove('open');
+}
+function saveGasUrl() {
+  const url = document.getElementById('gas-url-input').value.trim();
+  if (!url || !url.startsWith('https://script.google.com')) {
+    showToast('URL GAS tidak sah!', 'error');
+    return;
+  }
+  gasUrl = url;
+  localStorage.setItem('erph_gas', gasUrl);
+  updateGasBadge(true);
+  closeGasModal();
+  showToast('GAS berjaya disambung!');
+}
+
+function updateGasBadge(connected) {
+  const el = document.getElementById('gas-badge');
+  el.className = 'gas-status ' + (connected ? 'connected' : 'disconnected');
+  el.textContent = connected ? '⚡ GAS: Tersambung' : '⚡ GAS: Tidak Tersambung';
+}
+
+async function syncGAS(sid) {
+  if (!gasUrl) { openGasModal(); return; }
+  const d = getFormValues();
+  d._subject = sid;
+  d._subjectLabel = SUBJECTS.find(s=>s.id===sid).label;
+  d._saved = new Date().toISOString();
+
+  const badge = document.getElementById('gas-badge');
+  badge.classList.add('syncing');
+  showToast('Menghantar data ke Google Sheets...', 'warning');
+
+  try {
+    const resp = await fetch(gasUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(d)
+    });
+    showToast('✅ Data berjaya dihantar ke Google Sheets!');
+    rphData[sid] = { ...d, _saved: new Date().toISOString() };
+    save();
+    renderSidebarNav();
+  } catch(err) {
+    showToast('Gagal hantar ke GAS. Semak URL.', 'error');
+  } finally {
+    badge.classList.remove('syncing');
+  }
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+load();
+setDate();
+renderSidebarNav();
+renderDashboard(document.getElementById('main-content'));
+</script>
+</body>
+</html>
