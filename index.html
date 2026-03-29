@@ -223,20 +223,15 @@ body {
 .sch-addr:focus { background: var(--green-xlight); border-radius: 4px; }
 .sch-doc { font-size: 13px; font-weight: 700; margin-top: 5px; letter-spacing: 0.04em; color: var(--gray-900); }
 
-/* ══ INFO GRID — responsive 2 kolum di mobile ══ */
+/* ══ INFO GRID ══ */
 .info-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr 2fr 2fr;
   border-bottom: 1.5px solid var(--border);
 }
 @media (max-width: 900px) {
-  .info-grid {
-    grid-template-columns: 1fr 1fr;
-    border-bottom: none;
-  }
-  .ig-cell {
-    border-bottom: 1.5px solid var(--border) !important;
-  }
+  .info-grid { grid-template-columns: 1fr 1fr; border-bottom: none; }
+  .ig-cell { border-bottom: 1.5px solid var(--border) !important; }
 }
 .ig-cell { padding: 7px 9px; border-right: 1.5px solid var(--border); }
 .ig-cell:last-child { border-right: none; }
@@ -250,7 +245,6 @@ body {
   -webkit-overflow-scrolling: touch;
   border-bottom: 1px solid var(--border);
 }
-/* Scroll indicator bar */
 .tbl-scroll::-webkit-scrollbar { height: 6px; }
 .tbl-scroll::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 3px; }
 .tbl-scroll::-webkit-scrollbar-thumb { background: #9dc4ad; border-radius: 3px; }
@@ -267,6 +261,36 @@ table.t thead th { background: var(--green); color: white; font-size: 10px; font
 .tlbl .dur { font-size: 8.5px; color: #888; margin-top: 2px; }
 table.t textarea { width: 100%; padding: 4px 5px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 11px; font-family: inherit; background: #fafdfc; outline: none; resize: vertical; line-height: 1.5; }
 table.t textarea:focus { border-color: var(--green-mid); background: white; }
+
+/* ══ S1 SPECIAL LAYOUT — Bahan column dengan sub-fields ══ */
+.s1-bahan-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.s1-bahan-field { display: flex; flex-direction: column; gap: 2px; }
+.s1-bahan-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--green-light);
+  padding: 2px 5px;
+  border-radius: 3px;
+  display: block;
+}
+.s1-bahan-field input {
+  width: 100%;
+  padding: 3px 5px;
+  border: 1px solid #cad8cf;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-family: inherit;
+  background: #fafdfc;
+  outline: none;
+}
+.s1-bahan-field input:focus { border-color: var(--green-mid); background: white; }
 
 /* ══ IMPAK + TP ══ */
 .impak-wrap { display: flex; flex-direction: column; gap: 3px; }
@@ -322,6 +346,7 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
   .sch-hd { border-bottom: 2px solid #333; }
   .img-thumb { width: 110px; height: 85px; }
   .img-rm, .btn-img-upload { display: none !important; }
+  .s1-bahan-field input { border: none; background: transparent; }
 }
 
 @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.5;} }
@@ -346,7 +371,6 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
   </div>
 </div>
 
-<!-- SIDEBAR OVERLAY (untuk tutup sidebar apabila klik luar) -->
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <div class="wrap">
@@ -366,7 +390,6 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
   <main class="main" id="main"></main>
 </div>
 
-<!-- ZOOM CONTROLS (butang terapung) -->
 <div class="zoom-bar no-print" id="zoom-bar">
   <button class="zoom-btn" onclick="changeZoom(0.1)" title="Besarkan">+</button>
   <div class="zoom-lbl" id="zoom-lbl">100%</div>
@@ -391,7 +414,7 @@ const DAYS = [
 ];
 
 const SLOTS = [
-  { id:'s1', masa:'8.00 - 8.20',   dur:'20 MIN', bidang:'PERBUALAN AWAL',    kompetensi:'Perkembangan Diri',  defAkt:'Guru bersoal jawab dengan murid tentang apa itu keperluan dan kehendak.\n- Keperluan ialah sesuatu yang diperlukan dan mesti dipenuhi\n- Kehendak ialah sesuatu yang ingin dimiliki\n- Murid menonton video pembelajaran perbezaan antara keperluan dan kehendak\n- Contoh keperluan yang mesti dipenuhi ialah makanan, tempat tinggal, pakaian, kasut, buku dan alat tulis\n- Contoh kehendak yang ingin kanak-kanak miliki ialah telefon bimbit, permainan, kasut roda, aiskrim dan makanan ringan' },
+  { id:'s1', masa:'8.00 - 8.20',   dur:'20 MIN', bidang:'PERBUALAN AWAL',    kompetensi:'Perkembangan Diri',  defAkt:'Guru bersoal jawab dengan murid tentang apa itu keperluan dan kehendak.\n- Keperluan ialah sesuatu yang diperlukan dan mesti dipenuhi\n- Kehendak ialah sesuatu yang ingin dimiliki\n- Murid menonton video pembelajaran perbezaan antara keperluan dan kehendak\n- Contoh keperluan yang mesti dipenuhi ialah makanan, tempat tinggal, pakaian, kasut, buku dan alat tulis\n- Contoh kehendak yang ingin kanak-kanak miliki ialah telefon bimbit, permainan, kasut roda, aiskrim dan makanan ringan', specialLayout: true },
   { id:'s2', masa:'8.20 - 8.50',   dur:'30 MIN', bidang:'PERKEMBANGAN DIRI', kompetensi:'Perkembangan Diri',  defAkt:'' },
   { id:'s3', masa:'9.00 - 9.30',   dur:'30 MIN', bidang:'REHAT AKTIF',       kompetensi:'Kemahiran Fizikal',  defAkt:'Murid berjalan di atas garisan lurus menggunakan wisel dan Music' },
   { id:'s4', masa:'9.30 - 10.00',  dur:'30 MIN', bidang:'KEMAHIRAN ASAS',    kompetensi:'Kemahiran Berfikir', defAkt:'' },
@@ -412,22 +435,15 @@ let view    = 'dashboard';
 let currentZoom = 1.0;
 const gasReady = GAS_URL && GAS_URL !== 'MASUKKAN_URL_GAS_DI_SINI';
 
-// ════ ZOOM FUNCTIONS ════
+// ════ ZOOM ════
 function changeZoom(delta) {
   currentZoom = Math.min(1.5, Math.max(0.5, currentZoom + delta));
   applyZoom();
 }
-function resetZoom() {
-  currentZoom = 1.0;
-  applyZoom();
-}
+function resetZoom() { currentZoom = 1.0; applyZoom(); }
 function applyZoom() {
   const wz = document.querySelector('.zoom-wrap');
-  if (wz) {
-    wz.style.transform = 'scale('+currentZoom+')';
-    wz.style.width = 'calc(100% / '+currentZoom+')';
-    wz.style.transformOrigin = 'top left';
-  }
+  if (wz) { wz.style.transform = 'scale('+currentZoom+')'; wz.style.width = 'calc(100% / '+currentZoom+')'; wz.style.transformOrigin = 'top left'; }
   const lbl = document.getElementById('zoom-lbl');
   if (lbl) lbl.textContent = Math.round(currentZoom*100)+'%';
   localStorage.setItem('erph_zoom', currentZoom);
@@ -437,7 +453,7 @@ function loadZoom() {
   if (saved && saved >= 0.5 && saved <= 1.5) currentZoom = saved;
 }
 
-// ════ SIDEBAR TOGGLE ════
+// ════ SIDEBAR ════
 function toggleSidebar() {
   const sb = document.getElementById('sidebar');
   const ov = document.getElementById('sidebar-overlay');
@@ -451,20 +467,12 @@ function closeSidebar() {
 
 // ════ INIT ════
 async function init() {
-  try {
-    const d = localStorage.getItem('erph_psk_v3');
-    if (d) rphData = JSON.parse(d);
-  } catch(e) {}
+  try { const d = localStorage.getItem('erph_psk_v3'); if (d) rphData = JSON.parse(d); } catch(e) {}
   loadZoom();
   setTodayLabel();
   renderDayNav();
   renderDashboard();
-  if (gasReady) {
-    setSyncInd('loading');
-    await loadAllFromGAS();
-  } else {
-    setSyncInd('nogas');
-  }
+  if (gasReady) { setSyncInd('loading'); await loadAllFromGAS(); } else { setSyncInd('nogas'); }
 }
 
 function persist() { localStorage.setItem('erph_psk_v3', JSON.stringify(rphData)); }
@@ -518,7 +526,6 @@ function go(v) {
   if (v === 'dashboard') renderDashboard();
   else if (v === 'history') renderHistory();
   else renderRPH(v);
-  // Scroll ke atas setiap kali tukar halaman
   window.scrollTo(0, 0);
 }
 
@@ -568,7 +575,7 @@ function renderDashboard() {
         DAYS.map(function(d){ return '<button class="btn btn-outline" onclick="go(\'' + d.id + '\')">' + d.emoji + ' ' + d.label + '</button>'; }).join('') +
       '</div>' +
     '</div>' +
-    '</div>'; // close zoom-wrap
+    '</div>';
 
   applyZoom();
 }
@@ -602,7 +609,7 @@ function renderHistory() {
         '<span style="font-size:18px;color:#ccc;">›</span></div>';
     }).join('') + '</div>';
   }
-  html += '</div>'; // close zoom-wrap
+  html += '</div>';
   m.innerHTML = html;
   applyZoom();
 }
@@ -635,10 +642,7 @@ function renderRPH(dayId) {
 
   m.innerHTML =
     '<div class="zoom-wrap" id="zoom-wrap">' +
-
-    // Scroll hint — hanya nampak di mobile/tablet
     '<div class="scroll-hint no-print">👆 Sapukan ke kiri untuk lihat semua kolum jadual</div>' +
-
     '<div class="page-hd">' +
       '<div style="display:flex;align-items:center;gap:8px;">' +
         '<button class="btn btn-outline btn-sm no-print" onclick="go(\'dashboard\')" style="gap:4px;">← Dashboard</button>' +
@@ -649,7 +653,6 @@ function renderRPH(dayId) {
         '<button class="btn btn-green btn-sm" onclick="saveRPH(\'' + dayId + '\')">💾 Simpan</button>' +
       '</div>' +
     '</div>' +
-
     '<div class="rph-card" id="print-area">' +
       '<div class="sch-hd">' +
         '<div class="sch-name" contenteditable="true" id="sch-name">'+(D.sekolah||'SEKOLAH KEBANGSAAN PULAU SEBANG')+'</div>' +
@@ -657,7 +660,6 @@ function renderRPH(dayId) {
         '<div class="sch-addr" contenteditable="true" id="sch-kelas">'+(D.kelas||'PRASEKOLAH KASIH SAYANG')+'</div>' +
         '<div class="sch-doc">RANCANGAN PENGAJARAN PRASEKOLAH</div>' +
       '</div>' +
-
       '<div class="info-grid">' +
         '<div class="ig-cell"><label>Nama Guru</label><input type="text" id="f_guru" value="'+(D.guru||'')+'" placeholder="Puan / Cikgu ..."></div>' +
         '<div class="ig-cell"><label>Minggu</label><input type="text" id="f_minggu" value="'+(D.minggu||'')+'" placeholder="11"></div>' +
@@ -667,7 +669,7 @@ function renderRPH(dayId) {
         '<div class="ig-cell"><label>Strategi</label><input type="text" id="f_strategi" value="'+(D.strategi||'')+'" placeholder="cth: Bertema"></div>' +
       '</div>' +
 
-      // ── RUTIN (dalam scroll wrapper sendiri) ──
+      // ── RUTIN ──
       '<div class="tbl-scroll"><table class="t">' +
         '<tr class="rutin-row">' +
           '<td class="tlbl" style="width:80px;"><div class="tm">7.30 - 8.00</div><div class="bd">RUTIN</div><div class="dur">(30 MIN)</div></td>' +
@@ -682,7 +684,7 @@ function renderRPH(dayId) {
         '</tr>' +
       '</table></div>' +
 
-      // ── JADUAL UTAMA (scroll mendatar bebas) ──
+      // ── JADUAL UTAMA ──
       '<div class="tbl-scroll"><table class="t">' +
         '<colgroup><col style="width:80px;"><col style="width:95px;"><col style="width:110px;"><col style="width:110px;"><col><col style="width:85px;"><col style="width:105px;"></colgroup>' +
         '<thead><tr>' +
@@ -717,7 +719,7 @@ function renderRPH(dayId) {
           '<td colspan="6"><textarea id="f_refleksi" style="min-height:52px;" placeholder="Catatan refleksi guru, tindakan susulan, pemerhatian murid...">'+(D.refleksi||'')+'</textarea></td>' +
         '</tr>' +
       '</tbody></table></div>' +
-    '</div>' + // close rph-card
+    '</div>' +
 
     '<div class="btn-row-bottom no-print" style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;">' +
       '<button class="btn btn-outline" onclick="go(\'dashboard\')">← Dashboard</button>' +
@@ -725,19 +727,78 @@ function renderRPH(dayId) {
       '<button class="btn btn-print" onclick="window.print()">🖨️ Cetak / Export PDF</button>' +
       '<button class="btn btn-danger" onclick="clearRPH(\'' + dayId + '\')">🗑️ Kosongkan</button>' +
     '</div>' +
-
-    '</div>'; // close zoom-wrap
+    '</div>';
 
   buildSlots(dayId, D);
   applyZoom();
 }
 
+// ════ BUILD SLOTS — S1 dengan layout merge khas ════
 function buildSlots(dayId, D) {
   const body = document.getElementById('slots-body');
   if (!body) return;
   body.innerHTML = SLOTS.map(function(s) {
     const sd = D[s.id] || {};
     const imgs = sd.images || [];
+
+    // ── S1 SPECIAL LAYOUT (Perbualan Awal) ──
+    // Kompetensi, Standard, Objektif di-merge ke dalam Aktiviti
+    // Bahan mempunyai sub-fields: Kandungan, Sub Kandungan, Tajuk, Nilai Teras Sivik, Bahan dan Alatan
+    if (s.specialLayout) {
+      const imgThumbsHtml = imgs.length
+        ? '<div class="img-thumbs" id="thumbs-'+s.id+'">' +
+            imgs.map(function(src,i){
+              return '<div class="img-thumb-wrap"><img src="'+src+'" class="img-thumb" onclick="viewImg(\''+s.id+'\','+i+')"><button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+s.id+'\','+i+')">✕</button></div>';
+            }).join('') + '</div>'
+        : '<div class="img-thumbs" id="thumbs-'+s.id+'"></div>';
+
+      const bahanGrid =
+        '<div class="s1-bahan-grid">' +
+          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Kandungan:</span><input type="text" data-slot="s1" data-field="kandungan" value="'+(sd.kandungan||'')+'" placeholder="cth: DIRI SAYA/RUMAH SAYA"></div>' +
+          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Sub Kandungan:</span><input type="text" data-slot="s1" data-field="subkandungan" value="'+(sd.subkandungan||'')+'" placeholder="cth: MEMBEZAKAN ANTARA KEPERLUAN DAN KEHENDAK"></div>' +
+          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Tajuk:</span><input type="text" data-slot="s1" data-field="tajuk" value="'+(sd.tajuk||'')+'" placeholder="cth: MEMBERI KEUTAMAAN KEPADA KEPERLUAN"></div>' +
+          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Nilai Teras Sivik:</span><input type="text" data-slot="s1" data-field="nilaisivik" value="'+(sd.nilaisivik||'')+'" placeholder="cth: KEGEMBIRAAN"></div>' +
+          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Bahan dan Alatan:</span><input type="text" data-slot="s1" data-field="bahan" value="'+(sd.bahan||'')+'" placeholder="cth: VIDEO PEMBELAJARAN, GAMBAR ICT"></div>' +
+          imgThumbsHtml +
+          '<div class="no-print" style="margin-top:5px;"><label class="btn-img-upload">🖼️ Tambah Gambar<input type="file" accept="image/*" multiple style="display:none;" onchange="addImages(\''+dayId+'\',\''+s.id+'\',this)"></label></div>' +
+        '</div>';
+
+      // Aktiviti merangkumi Kompetensi + Standard + Objektif + Aktiviti (colspan=4)
+      const aktivitiMerged =
+        '<div style="margin-bottom:6px;">' +
+          '<div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Aktiviti:</div>' +
+          '<textarea data-slot="s1" data-field="aktiviti" style="min-height:100px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;border-top:1px dashed #cde0d4;padding-top:5px;">' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Kompetensi:</div><textarea data-slot="s1" data-field="kompetensi" style="min-height:42px;font-size:10.5px;">'+(sd.kompetensi||s.kompetensi)+'</textarea></div>' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Standard Pembelajaran:</div><textarea data-slot="s1" data-field="standard" style="min-height:42px;font-size:10.5px;">'+(sd.standard||'')+'</textarea></div>' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Objektif:</div><textarea data-slot="s1" data-field="objektif" style="min-height:42px;font-size:10.5px;">'+(sd.objektif||'')+'</textarea></div>' +
+        '</div>';
+
+      const impakHtml = '<div class="impak-wrap">' +
+        IMPAK_OPT.map(function(im) {
+          return '<label class="ck-item"><input type="checkbox" data-slot="s1" data-impak="'+im+'" '+(sd.impak&&sd.impak.includes(im)?'checked':'')+'>'+im+'</label>';
+        }).join('') +
+        '<div class="tp-sec"><div class="tp-lbl">Tahap Penguasaan:</div>' +
+        TP_OPT.map(function(tp) {
+          return '<label class="ck-item"><input type="checkbox" data-slot="s1" data-tp="'+tp+'" '+(sd.tp&&sd.tp.includes(tp)?'checked':'')+'>'+tp+'</label>';
+        }).join('') + '</div></div>';
+
+      return '<tr id="row-s1">' +
+        '<td class="tlbl"><div class="tm">'+s.masa+'</div><input class="bd-edit" type="text" data-slot="s1" data-field="bidang" value="'+(sd.bidang||s.bidang)+'"><div class="dur">('+s.dur+')</div></td>' +
+        '<td colspan="4">'+aktivitiMerged+'</td>' +
+        '<td>'+bahanGrid+'</td>' +
+        '<td>'+impakHtml+'</td>' +
+      '</tr>';
+    }
+
+    // ── SLOT BIASA (S2–S8) ──
+    const imgThumbsHtml = imgs.length
+      ? '<div class="img-thumbs" id="thumbs-'+s.id+'">' +
+          imgs.map(function(src,i){
+            return '<div class="img-thumb-wrap"><img src="'+src+'" class="img-thumb" onclick="viewImg(\''+s.id+'\','+i+')"><button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+s.id+'\','+i+')">✕</button></div>';
+          }).join('') + '</div>'
+      : '<div class="img-thumbs" id="thumbs-'+s.id+'"></div>';
 
     const impakHtml = '<div class="impak-wrap">' +
       IMPAK_OPT.map(function(im) {
@@ -747,13 +808,6 @@ function buildSlots(dayId, D) {
       TP_OPT.map(function(tp) {
         return '<label class="ck-item"><input type="checkbox" data-slot="'+s.id+'" data-tp="'+tp+'" '+(sd.tp&&sd.tp.includes(tp)?'checked':'')+'>'+tp+'</label>';
       }).join('') + '</div></div>';
-
-    const imgThumbsHtml = imgs.length
-      ? '<div class="img-thumbs" id="thumbs-'+s.id+'">' +
-          imgs.map(function(src,i){
-            return '<div class="img-thumb-wrap"><img src="'+src+'" class="img-thumb" onclick="viewImg(\''+s.id+'\','+i+')"><button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+s.id+'\','+i+')">✕</button></div>';
-          }).join('') + '</div>'
-      : '<div class="img-thumbs" id="thumbs-'+s.id+'"></div>';
 
     const aktivitiCell =
       '<textarea data-slot="'+s.id+'" data-field="aktiviti" style="min-height:90px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
@@ -828,7 +882,10 @@ function collectRPH(dayId) {
   d.pentaksiran = Array.from(document.querySelectorAll('input[name="pent"]:checked')).map(function(cb){ return cb.value; });
   SLOTS.forEach(function(s) {
     d[s.id] = {};
-    document.querySelectorAll('[data-slot="'+s.id+'"][data-field]').forEach(function(el){ d[s.id][el.dataset.field]=el.value||el.textContent; });
+    // Kumpul semua field biasa
+    document.querySelectorAll('[data-slot="'+s.id+'"][data-field]').forEach(function(el){
+      d[s.id][el.dataset.field] = el.value !== undefined ? el.value : el.textContent;
+    });
     d[s.id].impak = Array.from(document.querySelectorAll('input[data-slot="'+s.id+'"][data-impak]:checked')).map(function(cb){ return cb.dataset.impak; });
     d[s.id].tp    = Array.from(document.querySelectorAll('input[data-slot="'+s.id+'"][data-tp]:checked')).map(function(cb){ return cb.dataset.tp; });
     const existing = rphData[dayId]&&rphData[dayId][s.id]&&rphData[dayId][s.id].images;
