@@ -763,16 +763,23 @@ function buildSlots(dayId, D) {
           '<div class="no-print" style="margin-top:5px;"><label class="btn-img-upload">🖼️ Tambah Gambar<input type="file" accept="image/*" multiple style="display:none;" onchange="addImages(\''+dayId+'\',\''+s.id+'\',this)"></label></div>' +
         '</div>';
 
-      // Aktiviti merangkumi Kompetensi + Standard + Objektif + Aktiviti (colspan=4)
-      const aktivitiMerged =
-        '<div style="margin-bottom:6px;">' +
-          '<div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Aktiviti:</div>' +
-          '<textarea data-slot="s1" data-field="aktiviti" style="min-height:100px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
-        '</div>' +
-        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;border-top:1px dashed #cde0d4;padding-top:5px;">' +
-          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Kompetensi:</div><textarea data-slot="s1" data-field="kompetensi" style="min-height:42px;font-size:10.5px;">'+(sd.kompetensi||s.kompetensi)+'</textarea></div>' +
-          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Standard Pembelajaran:</div><textarea data-slot="s1" data-field="standard" style="min-height:42px;font-size:10.5px;">'+(sd.standard||'')+'</textarea></div>' +
-          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Objektif:</div><textarea data-slot="s1" data-field="objektif" style="min-height:42px;font-size:10.5px;">'+(sd.objektif||'')+'</textarea></div>' +
+      // Aktiviti + Bahan merged (colspan=5): Aktiviti besar di kiri, Bahan sub-fields di kanan dalam flex layout
+      const aktivitiDanBahan =
+        '<div style="display:flex;gap:8px;">' +
+          // Kiri: Aktiviti + Kompetensi/Standard/Objektif
+          '<div style="flex:1.6;min-width:0;">' +
+            '<div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Aktiviti:</div>' +
+            '<textarea data-slot="s1" data-field="aktiviti" style="min-height:100px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
+            '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;border-top:1px dashed #cde0d4;padding-top:5px;margin-top:5px;">' +
+              '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Kompetensi:</div><textarea data-slot="s1" data-field="kompetensi" style="min-height:42px;font-size:10.5px;">'+(sd.kompetensi||s.kompetensi)+'</textarea></div>' +
+              '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Standard Pembelajaran:</div><textarea data-slot="s1" data-field="standard" style="min-height:42px;font-size:10.5px;">'+(sd.standard||'')+'</textarea></div>' +
+              '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Objektif:</div><textarea data-slot="s1" data-field="objektif" style="min-height:42px;font-size:10.5px;">'+(sd.objektif||'')+'</textarea></div>' +
+            '</div>' +
+          '</div>' +
+          // Kanan: Bahan sub-fields (seperti dalam gambar)
+          '<div style="flex:1;min-width:0;border-left:1.5px solid var(--border);padding-left:8px;">' +
+            bahanGrid +
+          '</div>' +
         '</div>';
 
       const impakHtml = '<div class="impak-wrap">' +
@@ -786,8 +793,7 @@ function buildSlots(dayId, D) {
 
       return '<tr id="row-s1">' +
         '<td class="tlbl"><div class="tm">'+s.masa+'</div><input class="bd-edit" type="text" data-slot="s1" data-field="bidang" value="'+(sd.bidang||s.bidang)+'"><div class="dur">('+s.dur+')</div></td>' +
-        '<td colspan="4">'+aktivitiMerged+'</td>' +
-        '<td>'+bahanGrid+'</td>' +
+        '<td colspan="5">'+aktivitiDanBahan+'</td>' +
         '<td>'+impakHtml+'</td>' +
       '</tr>';
     }
