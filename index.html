@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>e-RPH Prasekolah</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -22,26 +22,124 @@
   --white: #fff;
   --shadow: 0 2px 8px rgba(0,0,0,0.08);
   --radius: 10px;
+  --zoom: 1;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; overflow-x: hidden; }
-body { font-family: 'Plus Jakarta Sans', sans-serif; background: #eaf2ed; min-height: 100vh; font-size: 13px; color: var(--gray-900); }
+html { overflow-x: hidden; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #eaf2ed;
+  min-height: 100vh;
+  font-size: 13px;
+  color: var(--gray-900);
+  overflow-x: hidden;
+  width: 100%;
+}
 
-/* TOPBAR */
-.topbar { background: var(--green); color: white; padding: 0 18px; height: 50px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
-.tb-brand { display: flex; align-items: center; gap: 10px; }
+/* ══ TOPBAR ══ */
+.topbar {
+  background: var(--green);
+  color: white;
+  padding: 0 12px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  width: 100%;
+  z-index: 200;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.tb-brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .tb-logo { width: 28px; height: 28px; background: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--green); flex-shrink: 0; }
-.tb-title { font-weight: 700; font-size: 14px; }
-.tb-sub { font-size: 10px; opacity: 0.7; }
-.tb-right { display: flex; align-items: center; gap: 8px; }
-.sync-indicator { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); white-space: nowrap; }
+.tb-title { font-weight: 700; font-size: 13px; white-space: nowrap; }
+.tb-sub { font-size: 10px; opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.sync-indicator { font-size: 10px; padding: 3px 8px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); white-space: nowrap; }
 .sync-indicator.syncing { border-color: #ffd54f; color: #ffd54f; }
 
-/* LAYOUT */
+/* ══ ZOOM CONTROLS ══ */
+.zoom-bar {
+  position: fixed;
+  bottom: 16px;
+  right: 12px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: white;
+  border: 1.5px solid #cde0d4;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.zoom-btn {
+  width: 36px; height: 36px;
+  border: none;
+  border-radius: 7px;
+  background: var(--green-light);
+  color: var(--green);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.zoom-btn:hover { background: var(--green); color: white; }
+.zoom-lbl { font-size: 10px; font-weight: 700; color: var(--green); text-align: center; padding: 1px 0; }
+@media print { .zoom-bar { display: none !important; } }
+
+/* ══ SIDEBAR TOGGLE BUTTON ══ */
+.sidebar-toggle {
+  display: none;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+@media (max-width: 900px) { .sidebar-toggle { display: flex; align-items: center; } }
+
+/* ══ LAYOUT ══ */
 .wrap { display: flex; min-height: calc(100vh - 50px); margin-top: 50px; }
 
-/* SIDEBAR */
-.sidebar { width: 200px; background: white; border-right: 1px solid #cde0d4; padding: 10px 0; position: sticky; top: 50px; margin-top: 0; height: calc(100vh - 50px); overflow-y: auto; flex-shrink: 0; }
+/* ══ SIDEBAR ══ */
+.sidebar {
+  width: 190px;
+  background: white;
+  border-right: 1px solid #cde0d4;
+  padding: 10px 0;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  height: calc(100vh - 50px);
+  overflow-y: auto;
+  z-index: 150;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 140;
+}
+.sidebar-overlay.show { display: block; }
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0 !important; }
+}
+@media (min-width: 901px) {
+  .main { margin-left: 190px; }
+}
+
 .sb-label { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; color: var(--gray-500); text-transform: uppercase; padding: 10px 13px 3px; }
 .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 13px; cursor: pointer; border-left: 3px solid transparent; font-size: 12.5px; color: var(--gray-700); transition: all 0.12s; position: relative; }
 .nav-item:hover { background: var(--green-xlight); color: var(--green); }
@@ -50,17 +148,25 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #eaf2ed; min-he
 .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); position: absolute; right: 11px; }
 .divider { height: 1px; background: #ddeee3; margin: 8px 12px; }
 
-/* MAIN */
-.main { flex: 1; padding: 18px 20px; }
+/* ══ MAIN ══ */
+.main { flex: 1; padding: 14px 12px; min-width: 0; }
 
-/* PAGE HEADER */
-.page-hd { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
-.page-hd h2 { font-size: 19px; font-weight: 700; color: var(--green); }
+/* ══ ZOOM WRAPPER ══ */
+.zoom-wrap {
+  transform-origin: top left;
+  transform: scale(var(--zoom));
+  width: calc(100% / var(--zoom));
+  transition: transform 0.2s ease;
+}
+
+/* ══ PAGE HEADER ══ */
+.page-hd { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.page-hd h2 { font-size: 17px; font-weight: 700; color: var(--green); }
 .page-hd p { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
-.page-actions { display: flex; gap: 7px; flex-wrap: wrap; flex-shrink: 0; }
+.page-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
-/* BUTTONS */
-.btn { padding: 7px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 600; font-family: inherit; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; }
+/* ══ BUTTONS ══ */
+.btn { padding: 7px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s; }
 .btn-green { background: var(--green); color: white; }
 .btn-green:hover { background: #13472a; }
 .btn-outline { background: white; color: var(--gray-700); border: 1px solid var(--gray-300); }
@@ -68,125 +174,158 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #eaf2ed; min-he
 .btn-print { background: #e8f0fb; color: var(--blue); border: 1px solid #b3c6e8; }
 .btn-amber { background: #fff3e0; color: var(--amber); border: 1px solid #f0c98a; }
 .btn-danger { background: #ffebee; color: var(--red); border: 1px solid #f5c0c0; }
-.btn-sm { padding: 5px 10px; font-size: 11.5px; }
+.btn-sm { padding: 5px 9px; font-size: 11px; }
 
-/* STATS */
-.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
-.stat { background: white; border: 1px solid #cde0d4; border-radius: 8px; padding: 12px 14px; box-shadow: var(--shadow); }
+/* ══ STATS ══ */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+@media (max-width: 600px) { .stats { grid-template-columns: 1fr 1fr; } }
+.stat { background: white; border: 1px solid #cde0d4; border-radius: 8px; padding: 10px 12px; box-shadow: var(--shadow); }
 .stat-lbl { font-size: 10px; color: var(--gray-500); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-.stat-val { font-size: 22px; font-weight: 700; color: var(--green); margin-top: 3px; }
+.stat-val { font-size: 20px; font-weight: 700; color: var(--green); margin-top: 3px; }
 
-/* HISTORY */
+/* ══ HISTORY ══ */
 .hist-list { display: flex; flex-direction: column; gap: 8px; }
-.hitem { background: white; border: 1px solid #cde0d4; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.12s; }
+.hitem { background: white; border: 1px solid #cde0d4; border-radius: 8px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.12s; }
 .hitem:hover { border-color: var(--green-mid); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(26,92,54,0.1); }
 .hitem-meta { font-size: 11px; color: var(--gray-500); margin-top: 3px; }
 .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 
-/* EMPTY */
-.empty { text-align: center; padding: 50px 20px; color: var(--gray-500); }
-.empty-icon { font-size: 40px; margin-bottom: 10px; }
-.empty h3 { font-size: 15px; font-weight: 700; color: var(--gray-700); margin-bottom: 5px; }
+/* ══ EMPTY ══ */
+.empty { text-align: center; padding: 40px 20px; color: var(--gray-500); }
+.empty-icon { font-size: 36px; margin-bottom: 10px; }
+.empty h3 { font-size: 14px; font-weight: 700; color: var(--gray-700); margin-bottom: 5px; }
 
-/* RPH CARD */
+/* ══ RPH CARD ══ */
 .rph-card { background: white; border-radius: var(--radius); border: 1px solid #cde0d4; box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
 
-/* School header */
-.sch-hd { text-align: center; padding: 14px 16px 10px; border-bottom: 2px solid var(--green); }
-.sch-name { font-size: 15px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.03em; outline: none; }
+/* ══ SCROLL HINT ══ */
+.scroll-hint {
+  display: none;
+  background: #fff8e1;
+  border: 1px solid #f0c98a;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 11.5px;
+  color: var(--amber);
+  font-weight: 600;
+  margin-bottom: 8px;
+  align-items: center;
+  gap: 6px;
+}
+@media (max-width: 900px) { .scroll-hint { display: flex; } }
+@media print { .scroll-hint { display: none !important; } }
+
+/* ══ SCHOOL HEADER ══ */
+.sch-hd { text-align: center; padding: 12px 14px 8px; border-bottom: 2px solid var(--green); }
+.sch-name { font-size: 14px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.03em; outline: none; }
 .sch-name:focus { background: var(--green-xlight); border-radius: 4px; }
 .sch-addr { font-size: 12px; color: var(--gray-700); margin-top: 2px; outline: none; }
 .sch-addr:focus { background: var(--green-xlight); border-radius: 4px; }
-.sch-doc { font-size: 13.5px; font-weight: 700; margin-top: 6px; letter-spacing: 0.04em; color: var(--gray-900); }
+.sch-doc { font-size: 13px; font-weight: 700; margin-top: 5px; letter-spacing: 0.04em; color: var(--gray-900); }
 
-/* Info grid */
-.info-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 2fr 2fr; border-bottom: 1.5px solid var(--border); }
-.ig-cell { padding: 7px 10px; border-right: 1.5px solid var(--border); }
+/* ══ INFO GRID — responsive 2 kolum di mobile ══ */
+.info-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 2fr 2fr;
+  border-bottom: 1.5px solid var(--border);
+}
+@media (max-width: 900px) {
+  .info-grid {
+    grid-template-columns: 1fr 1fr;
+    border-bottom: none;
+  }
+  .ig-cell {
+    border-bottom: 1.5px solid var(--border) !important;
+  }
+}
+.ig-cell { padding: 7px 9px; border-right: 1.5px solid var(--border); }
 .ig-cell:last-child { border-right: none; }
 .ig-cell label { display: block; font-size: 10px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
-.ig-cell input, .ig-cell select { width: 100%; padding: 4px 7px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 12.5px; font-family: inherit; background: #fafdfc; outline: none; }
+.ig-cell input, .ig-cell select { width: 100%; padding: 4px 6px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 12px; font-family: inherit; background: #fafdfc; outline: none; }
 .ig-cell input:focus, .ig-cell select:focus { border-color: var(--green-mid); background: white; }
 
-/* RPH table */
-table.t { width: 100%; min-width: 1100px; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
-table.t th, table.t td { border: 1.5px solid var(--border); padding: 7px 9px; vertical-align: top; }
-table.t thead th { background: var(--green); color: white; font-size: 10.5px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; white-space: normal; word-wrap: break-word; padding: 8px 6px; line-height: 1.3; }
-.tlbl { background: var(--green-light); font-weight: 700; color: var(--green); text-align: center; vertical-align: middle; min-width: 80px; }
-.tlbl .tm { font-size: 12px; font-weight: 700; line-height: 1.3; }
-.tlbl .bd { font-size: 9.5px; font-weight: 700; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
-.tlbl input.bd-edit { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--green); padding: 1px 3px; border: none; background: transparent; text-align: center; width: 100%; outline: none; }
+/* ══ TABLE SCROLL WRAPPER ══ */
+.tbl-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid var(--border);
+}
+/* Scroll indicator bar */
+.tbl-scroll::-webkit-scrollbar { height: 6px; }
+.tbl-scroll::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 3px; }
+.tbl-scroll::-webkit-scrollbar-thumb { background: #9dc4ad; border-radius: 3px; }
+
+/* ══ RPH TABLE ══ */
+table.t { width: 100%; min-width: 900px; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+table.t th, table.t td { border: 1.5px solid var(--border); padding: 6px 8px; vertical-align: top; }
+table.t thead th { background: var(--green); color: white; font-size: 10px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; white-space: normal; word-wrap: break-word; padding: 7px 5px; line-height: 1.3; }
+.tlbl { background: var(--green-light); font-weight: 700; color: var(--green); text-align: center; vertical-align: middle; min-width: 75px; }
+.tlbl .tm { font-size: 11px; font-weight: 700; line-height: 1.3; }
+.tlbl .bd { font-size: 9px; font-weight: 700; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
+.tlbl input.bd-edit { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--green); padding: 1px 3px; border: none; background: transparent; text-align: center; width: 100%; outline: none; }
 .tlbl input.bd-edit:focus { background: white; border-radius: 3px; }
-.tlbl .dur { font-size: 9px; color: #888; margin-top: 2px; }
-table.t textarea { width: 100%; padding: 5px 6px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 11.5px; font-family: inherit; background: #fafdfc; outline: none; resize: vertical; line-height: 1.5; }
+.tlbl .dur { font-size: 8.5px; color: #888; margin-top: 2px; }
+table.t textarea { width: 100%; padding: 4px 5px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 11px; font-family: inherit; background: #fafdfc; outline: none; resize: vertical; line-height: 1.5; }
 table.t textarea:focus { border-color: var(--green-mid); background: white; }
 
-/* Impak + TP */
+/* ══ IMPAK + TP ══ */
 .impak-wrap { display: flex; flex-direction: column; gap: 3px; }
-.ck-item { display: flex; align-items: center; gap: 5px; font-size: 11px; cursor: pointer; color: var(--gray-700); }
+.ck-item { display: flex; align-items: center; gap: 5px; font-size: 10.5px; cursor: pointer; color: var(--gray-700); }
 .ck-item input[type=checkbox] { width: 13px; height: 13px; accent-color: var(--green); flex-shrink: 0; margin: 0; }
-.tp-sec { margin-top: 6px; padding-top: 5px; border-top: 1px dashed #cde0d4; }
-.tp-lbl { font-size: 9.5px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+.tp-sec { margin-top: 5px; padding-top: 4px; border-top: 1px dashed #cde0d4; }
+.tp-lbl { font-size: 9px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
 
-/* Pentaksiran */
+/* ══ PENTAKSIRAN ══ */
 .pent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
-.pent-item { background: var(--green-xlight); border: 1px solid #b8d9c5; border-radius: 5px; padding: 5px 8px; display: flex; align-items: center; gap: 5px; font-size: 11.5px; cursor: pointer; }
+@media (max-width: 600px) { .pent-grid { grid-template-columns: 1fr 1fr; } }
+.pent-item { background: var(--green-xlight); border: 1px solid #b8d9c5; border-radius: 5px; padding: 5px 7px; display: flex; align-items: center; gap: 5px; font-size: 11px; cursor: pointer; }
 .pent-item input[type=checkbox] { width: 13px; height: 13px; accent-color: var(--green); flex-shrink: 0; margin: 0; }
 
-/* Rutin row */
+/* ══ RUTIN ROW ══ */
 .rutin-row td { background: #f8fcfa; }
-.rutin-extra { display: flex; gap: 16px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+.rutin-extra { display: flex; gap: 12px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
 .rutin-extra label { font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
-.rutin-extra input { padding: 4px 7px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 12px; font-family: inherit; background: #fafdfc; outline: none; }
+.rutin-extra input { padding: 4px 6px; border: 1px solid #cad8cf; border-radius: 5px; font-size: 12px; font-family: inherit; background: #fafdfc; outline: none; }
 .rutin-extra input:focus { border-color: var(--green-mid); background: white; }
 
-/* Sync banner */
-.sync-banner { padding: 7px 16px; font-size: 11px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid; }
+/* ══ SYNC BANNER ══ */
+.sync-banner { padding: 7px 14px; font-size: 11px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid; flex-wrap: wrap; }
 .sync-banner.ok  { background: var(--green-xlight); border-color: #b8d9c5; color: var(--green); }
 .sync-banner.warn { background: #fff8f0; border-color: #f0c98a; color: var(--amber); }
 
-/* Toast */
-.toast { position: fixed; bottom: 22px; right: 22px; background: var(--green); color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,0.15); opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 999; max-width: 320px; }
+/* ══ TOAST ══ */
+.toast { position: fixed; bottom: 70px; right: 60px; background: var(--green); color: white; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,0.15); opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 999; max-width: 280px; }
 .toast.show { opacity: 1; transform: translateY(0); }
 .toast.err { background: var(--red); }
 .toast.warn { background: var(--amber); }
 
-/* Print */
+/* ══ IMAGE UPLOAD ══ */
+.btn-img-upload { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 5px; background: #e8f5ee; border: 1px dashed #8dc9a5; color: var(--green); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.btn-img-upload:hover { background: var(--green-light); border-color: var(--green); }
+.img-thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.img-thumb-wrap { position: relative; display: inline-block; }
+.img-thumb { width: 80px; height: 65px; object-fit: cover; border-radius: 5px; border: 1.5px solid #b8d9c5; cursor: zoom-in; display: block; transition: transform 0.15s; }
+.img-thumb:hover { transform: scale(1.04); border-color: var(--green); }
+.img-rm { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; border-radius: 50%; background: var(--red); color: white; border: none; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+/* ══ PRINT ══ */
 @media print {
   body { background: white; font-size: 11px; }
-  .topbar, .sidebar, .page-actions, .btn-row-bottom, .no-print { display: none !important; }
+  .topbar, .sidebar, .page-actions, .btn-row-bottom, .no-print, .scroll-hint, .zoom-bar, .sidebar-overlay { display: none !important; }
   .wrap { display: block; }
-  .main { padding: 0; max-width: 100%; }
+  .main { padding: 0; margin: 0 !important; }
+  .zoom-wrap { transform: none !important; width: 100% !important; }
   .rph-card { box-shadow: none; border: 1px solid #aaa; page-break-inside: avoid; }
   table.t thead th { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .tlbl { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   table.t textarea { border: none; background: transparent; resize: none; }
   .sch-hd { border-bottom: 2px solid #333; }
+  .img-thumb { width: 110px; height: 85px; }
+  .img-rm, .btn-img-upload { display: none !important; }
 }
 
-@media (max-width: 768px) {
-  .sidebar { display: none; }
-  .stats { grid-template-columns: 1fr 1fr; }
-  .info-grid { grid-template-columns: 1fr 1fr 1fr; }
-  .pent-grid { grid-template-columns: 1fr 1fr; }
-}
-
-@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+@keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.5;} }
 .syncing { animation: pulse 1.5s infinite; }
-
-/* IMAGE UPLOAD */
-.btn-img-upload { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 5px; background: #e8f5ee; border: 1px dashed #8dc9a5; color: var(--green); font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
-.btn-img-upload:hover { background: var(--green-light); border-color: var(--green); }
-.img-thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.img-thumb-wrap { position: relative; display: inline-block; }
-.img-thumb { width: 90px; height: 70px; object-fit: cover; border-radius: 5px; border: 1.5px solid #b8d9c5; cursor: zoom-in; display: block; transition: transform 0.15s; }
-.img-thumb:hover { transform: scale(1.04); border-color: var(--green); }
-.img-rm { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; border-radius: 50%; background: var(--red); color: white; border: none; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; }
-.img-rm:hover { background: #8b0000; }
-@media print {
-  .img-thumb { width: 120px; height: 95px; }
-  .img-rm { display: none !important; }
-  .btn-img-upload { display: none !important; }
-}
 </style>
 </head>
 <body>
@@ -194,6 +333,7 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="tb-brand">
+    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Menu">☰</button>
     <div class="tb-logo">e</div>
     <div>
       <div class="tb-title">e-RPH Prasekolah</div>
@@ -201,37 +341,46 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
     </div>
   </div>
   <div class="tb-right">
-    <span style="font-size:11px;opacity:.7;" id="today-lbl"></span>
+    <span style="font-size:10px;opacity:.7;" id="today-lbl"></span>
     <span class="sync-indicator" id="sync-ind">☁️ Memuatkan...</span>
   </div>
 </div>
 
+<!-- SIDEBAR OVERLAY (untuk tutup sidebar apabila klik luar) -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <div class="wrap">
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sb-label">Menu</div>
-    <div class="nav-item" id="nav-dashboard" onclick="go('dashboard')">
+    <div class="nav-item" id="nav-dashboard" onclick="go('dashboard');closeSidebar()">
       <div class="nav-icon" style="background:#e8f5ee;">📊</div> Dashboard
     </div>
-    <div class="nav-item" id="nav-history" onclick="go('history')">
+    <div class="nav-item" id="nav-history" onclick="go('history');closeSidebar()">
       <div class="nav-icon" style="background:#e8f0fe;">📋</div> Semua RPH
     </div>
     <div class="divider"></div>
     <div class="sb-label">Hari</div>
     <div id="day-nav"></div>
   </aside>
+
   <main class="main" id="main"></main>
+</div>
+
+<!-- ZOOM CONTROLS (butang terapung) -->
+<div class="zoom-bar no-print" id="zoom-bar">
+  <button class="zoom-btn" onclick="changeZoom(0.1)" title="Besarkan">+</button>
+  <div class="zoom-lbl" id="zoom-lbl">100%</div>
+  <button class="zoom-btn" onclick="changeZoom(-0.1)" title="Kecilkan">−</button>
+  <button class="zoom-btn" onclick="resetZoom()" title="Reset" style="font-size:13px;">↺</button>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 // ══════════════════════════════════════════════════════
-//  ⚙️  TETAPAN — TUKAR URL GAS DI SINI SAHAJA
+//  ⚙️  TETAPAN
 // ══════════════════════════════════════════════════════
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxk2h2k3CYCPHTZ9b0N2cqFCImEUyn19AN9Py9yOW-M1NQOXn-RzztteNjhX8YApc4-/exec';
-// Contoh:
-// const GAS_URL = 'https://script.google.com/macros/s/AKfycbxXXXXXXXXX/exec';
-// ══════════════════════════════════════════════════════
 
 const DAYS = [
   { id:'isnin',  label:'Isnin',  emoji:'1️⃣' },
@@ -260,7 +409,45 @@ const TP_OPT = ['TP 1','TP 2','TP 3'];
 
 let rphData = {};
 let view    = 'dashboard';
+let currentZoom = 1.0;
 const gasReady = GAS_URL && GAS_URL !== 'MASUKKAN_URL_GAS_DI_SINI';
+
+// ════ ZOOM FUNCTIONS ════
+function changeZoom(delta) {
+  currentZoom = Math.min(1.5, Math.max(0.5, currentZoom + delta));
+  applyZoom();
+}
+function resetZoom() {
+  currentZoom = 1.0;
+  applyZoom();
+}
+function applyZoom() {
+  const wz = document.querySelector('.zoom-wrap');
+  if (wz) {
+    wz.style.transform = 'scale('+currentZoom+')';
+    wz.style.width = 'calc(100% / '+currentZoom+')';
+    wz.style.transformOrigin = 'top left';
+  }
+  const lbl = document.getElementById('zoom-lbl');
+  if (lbl) lbl.textContent = Math.round(currentZoom*100)+'%';
+  localStorage.setItem('erph_zoom', currentZoom);
+}
+function loadZoom() {
+  const saved = parseFloat(localStorage.getItem('erph_zoom'));
+  if (saved && saved >= 0.5 && saved <= 1.5) currentZoom = saved;
+}
+
+// ════ SIDEBAR TOGGLE ════
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  const open = sb.classList.toggle('open');
+  ov.classList.toggle('show', open);
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
 
 // ════ INIT ════
 async function init() {
@@ -268,6 +455,7 @@ async function init() {
     const d = localStorage.getItem('erph_psk_v3');
     if (d) rphData = JSON.parse(d);
   } catch(e) {}
+  loadZoom();
   setTodayLabel();
   renderDayNav();
   renderDashboard();
@@ -275,7 +463,7 @@ async function init() {
     setSyncInd('loading');
     await loadAllFromGAS();
   } else {
-    setSyncInd('nogас');
+    setSyncInd('nogas');
   }
 }
 
@@ -312,7 +500,7 @@ function toast(msg, type) {
 function renderDayNav() {
   document.getElementById('day-nav').innerHTML = DAYS.map(function(d) {
     const saved = rphData[d.id] && rphData[d.id]._saved;
-    return '<div class="nav-item ' + (view===d.id?'active':'') + '" id="nav-' + d.id + '" onclick="go(\'' + d.id + '\')">' +
+    return '<div class="nav-item ' + (view===d.id?'active':'') + '" id="nav-' + d.id + '" onclick="go(\'' + d.id + '\');closeSidebar()">' +
       '<div class="nav-icon" style="background:#e8f5ee;">' + d.emoji + '</div>' +
       '<span style="flex:1;">' + d.label + '</span>' +
       (saved ? '<div class="nav-dot"></div>' : '') +
@@ -330,6 +518,8 @@ function go(v) {
   if (v === 'dashboard') renderDashboard();
   else if (v === 'history') renderHistory();
   else renderRPH(v);
+  // Scroll ke atas setiap kali tukar halaman
+  window.scrollTo(0, 0);
 }
 
 // ════ DASHBOARD ════
@@ -339,44 +529,48 @@ function renderDashboard() {
 
   const syncBanner = gasReady
     ? '<div class="sync-banner ok no-print">☁️ Data disegerakkan dengan Google Sheets secara automatik. <a href="#" onclick="loadAllFromGAS();return false;" style="color:var(--green);font-weight:700;margin-left:4px;">Muat semula ↺</a></div>'
-    : '<div class="sync-banner warn no-print">⚠️ GAS belum dikonfigurasi — data hanya tersimpan di device ini. Edit <strong>GAS_URL</strong> dalam kod HTML untuk aktifkan segerak automatik.</div>';
+    : '<div class="sync-banner warn no-print">⚠️ GAS belum dikonfigurasi — data hanya tersimpan di device ini.</div>';
 
   const cards = DAYS.map(function(d) {
     const r = rphData[d.id]; const ok = r && r._saved;
-    return '<div onclick="go(\'' + d.id + '\')" style="border:2px solid ' + (ok?'var(--green)':'#cde0d4') + ';border-radius:8px;padding:12px;text-align:center;cursor:pointer;background:' + (ok?'var(--green-light)':'white') + ';transition:all .15s;" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">' +
-      '<div style="font-size:20px;margin-bottom:5px;">' + d.emoji + '</div>' +
-      '<div style="font-weight:700;font-size:12.5px;color:' + (ok?'var(--green)':'var(--gray-700)') + ';">' + d.label + '</div>' +
-      '<div style="font-size:10px;margin-top:3px;color:' + (ok?'var(--green-mid)':'#aaa') + ';">' + (ok?'✓ '+r._lbl:'Belum ada') + '</div>' +
-      '</div>';
+    return '<div onclick="go(\'' + d.id + '\')" style="border:2px solid '+(ok?'var(--green)':'#cde0d4')+';border-radius:8px;padding:10px;text-align:center;cursor:pointer;background:'+(ok?'var(--green-light)':'white')+';transition:all .15s;">' +
+      '<div style="font-size:18px;margin-bottom:4px;">' + d.emoji + '</div>' +
+      '<div style="font-weight:700;font-size:12px;color:'+(ok?'var(--green)':'var(--gray-700)')+'">' + d.label + '</div>' +
+      '<div style="font-size:10px;margin-top:2px;color:'+(ok?'var(--green-mid)':'#aaa')+'">' + (ok?'✓ '+r._lbl:'Belum ada') + '</div>' +
+    '</div>';
   }).join('');
 
   m.innerHTML =
+    '<div class="zoom-wrap" id="zoom-wrap">' +
     '<div class="page-hd">' +
       '<div><h2>Dashboard</h2><p>Gambaran keseluruhan RPH minggu ini</p></div>' +
       '<div class="page-actions no-print">' +
         '<button class="btn btn-outline btn-sm" onclick="go(\'history\')">📋 Semua RPH</button>' +
-        '<button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button>' +
-        (gasReady ? '<button class="btn btn-amber btn-sm" onclick="loadAllFromGAS()">🔄 Muat dari Sheets</button>' : '') +
+        '<button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 CSV</button>' +
+        (gasReady ? '<button class="btn btn-amber btn-sm" onclick="loadAllFromGAS()">🔄 Sheets</button>' : '') +
       '</div>' +
     '</div>' +
     syncBanner +
-    '<div style="height:14px;"></div>' +
+    '<div style="height:12px;"></div>' +
     '<div class="stats">' +
       '<div class="stat"><div class="stat-lbl">RPH Disimpan</div><div class="stat-val">' + saved + '/5</div></div>' +
       '<div class="stat"><div class="stat-lbl">Minggu Ini</div><div class="stat-val">' + saved + '</div></div>' +
       '<div class="stat"><div class="stat-lbl">Belum Isi</div><div class="stat-val">' + (5-saved) + '</div></div>' +
-      '<div class="stat"><div class="stat-lbl">Terakhir Simpan</div><div class="stat-val" style="font-size:14px;margin-top:5px;">' + getLastSaved() + '</div></div>' +
+      '<div class="stat"><div class="stat-lbl">Terakhir Simpan</div><div class="stat-val" style="font-size:13px;margin-top:5px;">' + getLastSaved() + '</div></div>' +
     '</div>' +
-    '<div class="rph-card" style="padding:16px;">' +
-      '<div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;">📅 Status RPH Mingguan</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">' + cards + '</div>' +
+    '<div class="rph-card" style="padding:14px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">📅 Status RPH Mingguan</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">' + cards + '</div>' +
     '</div>' +
-    '<div class="rph-card" style="padding:16px;">' +
+    '<div class="rph-card" style="padding:14px;">' +
       '<div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">⚡ Mula Isi RPH</div>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+      '<div style="display:flex;gap:7px;flex-wrap:wrap;">' +
         DAYS.map(function(d){ return '<button class="btn btn-outline" onclick="go(\'' + d.id + '\')">' + d.emoji + ' ' + d.label + '</button>'; }).join('') +
       '</div>' +
-    '</div>';
+    '</div>' +
+    '</div>'; // close zoom-wrap
+
+  applyZoom();
 }
 
 function getLastSaved() {
@@ -391,10 +585,11 @@ function getLastSaved() {
 function renderHistory() {
   const m = document.getElementById('main');
   const entries = Object.entries(rphData).filter(function(e){ return e[1]&&e[1]._saved; });
-  var html = '<div class="page-hd"><div><h2>Semua RPH</h2><p>' + entries.length + ' rekod tersimpan</p></div>' +
+  var html = '<div class="zoom-wrap" id="zoom-wrap">' +
+    '<div class="page-hd"><div><h2>Semua RPH</h2><p>' + entries.length + ' rekod tersimpan</p></div>' +
     '<div class="page-actions no-print"><button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button></div></div>';
   if (!entries.length) {
-    html += '<div class="empty"><div class="empty-icon">📋</div><h3>Tiada RPH Tersimpan</h3><p>Pilih hari di sidebar untuk mula isi RPH.</p></div>';
+    html += '<div class="empty"><div class="empty-icon">📋</div><h3>Tiada RPH Tersimpan</h3><p>Pilih hari di menu untuk mula isi RPH.</p></div>';
   } else {
     html += '<div class="hist-list">' + entries.map(function(e) {
       const id=e[0]; const d=e[1];
@@ -402,12 +597,14 @@ function renderHistory() {
       const saved = d._saved ? new Date(d._saved).toLocaleString('ms-MY',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
       return '<div class="hitem" onclick="go(\'' + id + '\')">' +
         '<div><span class="badge" style="background:var(--green-light);color:var(--green);margin-bottom:5px;display:inline-flex;gap:5px;">' + day.emoji + ' ' + day.label + '</span>' +
-        '<div style="font-weight:700;font-size:13px;">Minggu: ' + (d.minggu||'—') + ' &nbsp;|&nbsp; Tarikh: ' + (d.tarikh||'—') + ' &nbsp;|&nbsp; Tema: ' + (d.tema||'—') + '</div>' +
+        '<div style="font-weight:700;font-size:12.5px;">Minggu: ' + (d.minggu||'—') + ' &nbsp;|&nbsp; Tarikh: ' + (d.tarikh||'—') + ' &nbsp;|&nbsp; Tema: ' + (d.tema||'—') + '</div>' +
         '<div class="hitem-meta">Nama Guru: ' + (d.guru||'—') + ' &nbsp;|&nbsp; Disimpan: ' + saved + '</div></div>' +
         '<span style="font-size:18px;color:#ccc;">›</span></div>';
     }).join('') + '</div>';
   }
+  html += '</div>'; // close zoom-wrap
   m.innerHTML = html;
+  applyZoom();
 }
 
 function exportCSV() {
@@ -437,14 +634,19 @@ function renderRPH(dayId) {
   }).join('');
 
   m.innerHTML =
+    '<div class="zoom-wrap" id="zoom-wrap">' +
+
+    // Scroll hint — hanya nampak di mobile/tablet
+    '<div class="scroll-hint no-print">👆 Sapukan ke kiri untuk lihat semua kolum jadual</div>' +
+
     '<div class="page-hd">' +
-      '<div style="display:flex;align-items:center;gap:10px;">' +
+      '<div style="display:flex;align-items:center;gap:8px;">' +
         '<button class="btn btn-outline btn-sm no-print" onclick="go(\'dashboard\')" style="gap:4px;">← Dashboard</button>' +
         '<div><h2>' + day.emoji + ' RPH Hari ' + day.label + '</h2><p>Rancangan Pengajaran Prasekolah</p></div>' +
       '</div>' +
       '<div class="page-actions no-print">' +
-        '<button class="btn btn-print" onclick="window.print()">🖨️ Cetak / PDF</button>' +
-        '<button class="btn btn-green" onclick="saveRPH(\'' + dayId + '\')">💾 Simpan RPH</button>' +
+        '<button class="btn btn-print btn-sm" onclick="window.print()">🖨️ Cetak</button>' +
+        '<button class="btn btn-green btn-sm" onclick="saveRPH(\'' + dayId + '\')">💾 Simpan</button>' +
       '</div>' +
     '</div>' +
 
@@ -462,25 +664,27 @@ function renderRPH(dayId) {
         '<div class="ig-cell"><label>Hari</label><select id="f_hari">'+hariOpts+'</select></div>' +
         '<div class="ig-cell"><label>Tarikh</label><input type="date" id="f_tarikh" value="'+(D.tarikh||'')+'"></div>' +
         '<div class="ig-cell"><label>Tema</label><input type="text" id="f_tema" value="'+(D.tema||'')+'" placeholder="cth: DIRI SAYA (RUMAH SAYA)"></div>' +
-        '<div class="ig-cell"><label>Strategi</label><input type="text" id="f_strategi" value="'+(D.strategi||'')+'" placeholder="cth: Bertema / Berpusat Pembelajaran / Bersepadu"></div>' +
+        '<div class="ig-cell"><label>Strategi</label><input type="text" id="f_strategi" value="'+(D.strategi||'')+'" placeholder="cth: Bertema"></div>' +
       '</div>' +
 
-      '<div style="overflow-x:auto;"><table class="t">' +
+      // ── RUTIN (dalam scroll wrapper sendiri) ──
+      '<div class="tbl-scroll"><table class="t">' +
         '<tr class="rutin-row">' +
-          '<td class="tlbl" style="width:90px;"><div class="tm">7.30 - 8.00</div><div class="bd">RUTIN</div><div class="dur">(30 MIN)</div></td>' +
+          '<td class="tlbl" style="width:80px;"><div class="tm">7.30 - 8.00</div><div class="bd">RUTIN</div><div class="dur">(30 MIN)</div></td>' +
           '<td colspan="6">' +
-            '<div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Aktiviti Rutin:</div>' +
-            '<textarea id="f_rutin" style="min-height:55px;">'+(D.rutin||RUTIN_DEF)+'</textarea>' +
+            '<div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Aktiviti Rutin:</div>' +
+            '<textarea id="f_rutin" style="min-height:52px;">'+(D.rutin||RUTIN_DEF)+'</textarea>' +
             '<div class="rutin-extra">' +
-              '<div style="display:flex;align-items:center;gap:6px;"><label>KEHADIRAN:</label><input type="text" id="f_hadir" value="'+(D.hadir||'')+'" placeholder="__ / __" style="width:70px;"></div>' +
-              '<div style="display:flex;align-items:center;gap:6px;"><label>PERISTIWA:</label><input type="text" id="f_peristiwa" value="'+(D.peristiwa||'')+'" placeholder="cth: Mesyuarat PIBG" style="width:200px;"></div>' +
+              '<div style="display:flex;align-items:center;gap:6px;"><label>KEHADIRAN:</label><input type="text" id="f_hadir" value="'+(D.hadir||'')+'" placeholder="__ / __" style="width:65px;"></div>' +
+              '<div style="display:flex;align-items:center;gap:6px;"><label>PERISTIWA:</label><input type="text" id="f_peristiwa" value="'+(D.peristiwa||'')+'" placeholder="cth: Mesyuarat PIBG" style="width:180px;"></div>' +
             '</div>' +
           '</td>' +
         '</tr>' +
       '</table></div>' +
 
-      '<div style="overflow-x:auto;"><table class="t">' +
-        '<colgroup><col style="width:90px;"><col style="width:100px;"><col style="width:120px;"><col style="width:120px;"><col><col style="width:90px;"><col style="width:115px;"></colgroup>' +
+      // ── JADUAL UTAMA (scroll mendatar bebas) ──
+      '<div class="tbl-scroll"><table class="t">' +
+        '<colgroup><col style="width:80px;"><col style="width:95px;"><col style="width:110px;"><col style="width:110px;"><col><col style="width:85px;"><col style="width:105px;"></colgroup>' +
         '<thead><tr>' +
           '<th>Masa /<br>Bidang<br>Pembelajaran</th>' +
           '<th>Kompetensi</th>' +
@@ -493,34 +697,39 @@ function renderRPH(dayId) {
         '<tbody id="slots-body"></tbody>' +
       '</table></div>' +
 
-      '<div style="overflow-x:auto;"><table class="t" style="margin-top:0;"><tbody>' +
+      // ── PENUTUP ──
+      '<div class="tbl-scroll"><table class="t" style="margin-top:0;"><tbody>' +
         '<tr>' +
-          '<td class="tlbl" style="width:90px;"><div class="tm">11.50 - 12.00</div><div class="bd">PENUTUP</div><div class="dur">(10 MIN)</div></td>' +
-          '<td colspan="5"><textarea id="f_penutup" style="min-height:60px;">'+(D.penutup||PENUTUP_DEF)+'</textarea></td>' +
-          '<td style="width:115px;"><span style="color:#bbb;font-size:11px;">—</span></td>' +
+          '<td class="tlbl" style="width:80px;"><div class="tm">11.50 - 12.00</div><div class="bd">PENUTUP</div><div class="dur">(10 MIN)</div></td>' +
+          '<td colspan="5"><textarea id="f_penutup" style="min-height:55px;">'+(D.penutup||PENUTUP_DEF)+'</textarea></td>' +
+          '<td style="width:105px;"><span style="color:#bbb;font-size:11px;">—</span></td>' +
         '</tr>' +
       '</tbody></table></div>' +
 
-      '<div style="overflow-x:auto;"><table class="t" style="margin-top:0;"><tbody>' +
+      // ── PENTAKSIRAN + REFLEKSI ──
+      '<div class="tbl-scroll"><table class="t" style="margin-top:0;"><tbody>' +
         '<tr>' +
-          '<td class="tlbl" style="width:90px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">PENTAKSIRAN<br>DAN<br>PENGUASAAN</div><div style="font-size:9.5px;color:#888;margin-top:3px;">KESELURUHAN</div></td>' +
-          '<td colspan="6"><div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;">Kaedah Pentaksiran:</div><div class="pent-grid">'+pentHtml+'</div></td>' +
+          '<td class="tlbl" style="width:80px;text-align:center;"><div style="font-size:9.5px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">PENTAKSIRAN<br>DAN<br>PENGUASAAN</div><div style="font-size:9px;color:#888;margin-top:3px;">KESELURUHAN</div></td>' +
+          '<td colspan="6"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;">Kaedah Pentaksiran:</div><div class="pent-grid">'+pentHtml+'</div></td>' +
         '</tr>' +
         '<tr>' +
-          '<td class="tlbl" style="text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">REFLEKSI<br>GURU</div></td>' +
-          '<td colspan="6"><textarea id="f_refleksi" style="min-height:55px;" placeholder="Catatan refleksi guru, tindakan susulan, pemerhatian murid...">'+(D.refleksi||'')+'</textarea></td>' +
+          '<td class="tlbl" style="text-align:center;"><div style="font-size:9.5px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">REFLEKSI<br>GURU</div></td>' +
+          '<td colspan="6"><textarea id="f_refleksi" style="min-height:52px;" placeholder="Catatan refleksi guru, tindakan susulan, pemerhatian murid...">'+(D.refleksi||'')+'</textarea></td>' +
         '</tr>' +
       '</tbody></table></div>' +
-    '</div>' +
+    '</div>' + // close rph-card
 
-    '<div class="btn-row-bottom no-print" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">' +
+    '<div class="btn-row-bottom no-print" style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;">' +
       '<button class="btn btn-outline" onclick="go(\'dashboard\')">← Dashboard</button>' +
       '<button class="btn btn-green" onclick="saveRPH(\'' + dayId + '\')">💾 Simpan RPH</button>' +
       '<button class="btn btn-print" onclick="window.print()">🖨️ Cetak / Export PDF</button>' +
       '<button class="btn btn-danger" onclick="clearRPH(\'' + dayId + '\')">🗑️ Kosongkan</button>' +
-    '</div>';
+    '</div>' +
+
+    '</div>'; // close zoom-wrap
 
   buildSlots(dayId, D);
+  applyZoom();
 }
 
 function buildSlots(dayId, D) {
@@ -539,35 +748,25 @@ function buildSlots(dayId, D) {
         return '<label class="ck-item"><input type="checkbox" data-slot="'+s.id+'" data-tp="'+tp+'" '+(sd.tp&&sd.tp.includes(tp)?'checked':'')+'>'+tp+'</label>';
       }).join('') + '</div></div>';
 
-    // Image thumbnails
     const imgThumbsHtml = imgs.length
       ? '<div class="img-thumbs" id="thumbs-'+s.id+'">' +
           imgs.map(function(src,i){
-            return '<div class="img-thumb-wrap">' +
-              '<img src="'+src+'" class="img-thumb" onclick="viewImg(\''+s.id+'\','+i+')">' +
-              '<button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+s.id+'\','+i+')">✕</button>' +
-            '</div>';
-          }).join('') +
-        '</div>'
+            return '<div class="img-thumb-wrap"><img src="'+src+'" class="img-thumb" onclick="viewImg(\''+s.id+'\','+i+')"><button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+s.id+'\','+i+')">✕</button></div>';
+          }).join('') + '</div>'
       : '<div class="img-thumbs" id="thumbs-'+s.id+'"></div>';
 
     const aktivitiCell =
-      '<textarea data-slot="'+s.id+'" data-field="aktiviti" style="min-height:100px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
+      '<textarea data-slot="'+s.id+'" data-field="aktiviti" style="min-height:90px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
       imgThumbsHtml +
-      '<div class="no-print" style="margin-top:6px;">' +
-        '<label class="btn-img-upload" title="Tambah gambar">' +
-          '🖼️ Tambah Gambar' +
-          '<input type="file" accept="image/*" multiple style="display:none;" onchange="addImages(\''+dayId+'\',\''+s.id+'\',this)">' +
-        '</label>' +
-      '</div>';
+      '<div class="no-print" style="margin-top:5px;"><label class="btn-img-upload">🖼️ Tambah Gambar<input type="file" accept="image/*" multiple style="display:none;" onchange="addImages(\''+dayId+'\',\''+s.id+'\',this)"></label></div>';
 
     return '<tr id="row-'+s.id+'">' +
       '<td class="tlbl"><div class="tm">'+s.masa+'</div><input class="bd-edit" type="text" data-slot="'+s.id+'" data-field="bidang" value="'+(sd.bidang||s.bidang)+'"><div class="dur">('+s.dur+')</div></td>' +
-      '<td><textarea data-slot="'+s.id+'" data-field="kompetensi" style="min-height:50px;">'+(sd.kompetensi||s.kompetensi)+'</textarea></td>' +
-      '<td><textarea data-slot="'+s.id+'" data-field="standard" style="min-height:50px;">'+(sd.standard||'')+'</textarea></td>' +
-      '<td><textarea data-slot="'+s.id+'" data-field="objektif" style="min-height:50px;">'+(sd.objektif||'')+'</textarea></td>' +
+      '<td><textarea data-slot="'+s.id+'" data-field="kompetensi" style="min-height:48px;">'+(sd.kompetensi||s.kompetensi)+'</textarea></td>' +
+      '<td><textarea data-slot="'+s.id+'" data-field="standard" style="min-height:48px;">'+(sd.standard||'')+'</textarea></td>' +
+      '<td><textarea data-slot="'+s.id+'" data-field="objektif" style="min-height:48px;">'+(sd.objektif||'')+'</textarea></td>' +
       '<td>'+aktivitiCell+'</td>' +
-      '<td><textarea data-slot="'+s.id+'" data-field="bahan" style="min-height:50px;">'+(sd.bahan||'')+'</textarea></td>' +
+      '<td><textarea data-slot="'+s.id+'" data-field="bahan" style="min-height:48px;">'+(sd.bahan||'')+'</textarea></td>' +
       '<td>'+impakHtml+'</td>' +
     '</tr>';
   }).join('');
@@ -585,11 +784,7 @@ function addImages(dayId, slotId, input) {
     reader.onload = function(e) {
       rphData[dayId][slotId].images.push(e.target.result);
       done++;
-      if (done === files.length) {
-        persist();
-        refreshThumbs(dayId, slotId);
-        toast('✅ ' + files.length + ' gambar ditambah!');
-      }
+      if (done === files.length) { persist(); refreshThumbs(dayId, slotId); toast('✅ '+files.length+' gambar ditambah!'); }
     };
     reader.readAsDataURL(file);
   });
@@ -599,30 +794,24 @@ function addImages(dayId, slotId, input) {
 function removeImg(dayId, slotId, idx) {
   if (!confirm('Buang gambar ini?')) return;
   rphData[dayId][slotId].images.splice(idx, 1);
-  persist();
-  refreshThumbs(dayId, slotId);
+  persist(); refreshThumbs(dayId, slotId);
 }
 
 function refreshThumbs(dayId, slotId) {
   const el = document.getElementById('thumbs-'+slotId);
   if (!el) return;
-  const imgs = (rphData[dayId] && rphData[dayId][slotId] && rphData[dayId][slotId].images) || [];
+  const imgs = (rphData[dayId]&&rphData[dayId][slotId]&&rphData[dayId][slotId].images)||[];
   el.innerHTML = imgs.map(function(src,i){
-    return '<div class="img-thumb-wrap">' +
-      '<img src="'+src+'" class="img-thumb" onclick="viewImg(\''+slotId+'\','+i+')">' +
-      '<button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+slotId+'\','+i+')">✕</button>' +
-    '</div>';
+    return '<div class="img-thumb-wrap"><img src="'+src+'" class="img-thumb" onclick="viewImg(\''+slotId+'\','+i+')"><button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+slotId+'\','+i+')">✕</button></div>';
   }).join('');
 }
 
-// Lightbox
 function viewImg(slotId, idx) {
   const imgs = document.querySelectorAll('#thumbs-'+slotId+' .img-thumb');
   if (!imgs[idx]) return;
-  const src = imgs[idx].src;
   const ov = document.createElement('div');
   ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
-  ov.innerHTML = '<img src="'+src+'" style="max-width:90vw;max-height:90vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);">';
+  ov.innerHTML = '<img src="'+imgs[idx].src+'" style="max-width:90vw;max-height:90vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);">';
   ov.onclick = function(){ document.body.removeChild(ov); };
   document.body.appendChild(ov);
 }
@@ -642,14 +831,13 @@ function collectRPH(dayId) {
     document.querySelectorAll('[data-slot="'+s.id+'"][data-field]').forEach(function(el){ d[s.id][el.dataset.field]=el.value||el.textContent; });
     d[s.id].impak = Array.from(document.querySelectorAll('input[data-slot="'+s.id+'"][data-impak]:checked')).map(function(cb){ return cb.dataset.impak; });
     d[s.id].tp    = Array.from(document.querySelectorAll('input[data-slot="'+s.id+'"][data-tp]:checked')).map(function(cb){ return cb.dataset.tp; });
-    // Kekalkan gambar yang sudah di-upload
-    const existing = rphData[dayId] && rphData[dayId][s.id] && rphData[dayId][s.id].images;
-    if (existing && existing.length) d[s.id].images = existing;
+    const existing = rphData[dayId]&&rphData[dayId][s.id]&&rphData[dayId][s.id].images;
+    if (existing&&existing.length) d[s.id].images = existing;
   });
   return d;
 }
 
-// ════ SAVE — simpan tempatan + auto-sync ke GAS ════
+// ════ SAVE ════
 async function saveRPH(dayId) {
   const d = collectRPH(dayId);
   d._saved = new Date().toISOString();
@@ -657,7 +845,7 @@ async function saveRPH(dayId) {
   rphData[dayId] = d;
   persist();
   renderDayNav();
-  toast('✅ RPH Hari ' + DAYS.find(function(x){ return x.id===dayId; }).label + ' disimpan!');
+  toast('✅ RPH Hari '+DAYS.find(function(x){ return x.id===dayId; }).label+' disimpan!');
   if (gasReady) await pushToGAS(dayId, d);
 }
 
@@ -667,20 +855,16 @@ function clearRPH(dayId) {
   toast('Borang dikosongkan.','warn');
 }
 
-// ════ GAS — PUSH (POST) — auto dipanggil semasa save ════
+// ════ GAS ════
 async function pushToGAS(dayId, d) {
   const payload = Object.assign({}, d, { _dayId: dayId, _dayLabel: DAYS.find(function(x){ return x.id===dayId; }).label, _action:'save' });
   setSyncInd('sync');
   try {
     await fetch(GAS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
     setSyncInd('ok');
-  } catch(e) {
-    setSyncInd('err');
-    console.warn('GAS push failed:', e.message);
-  }
+  } catch(e) { setSyncInd('err'); console.warn('GAS push failed:', e.message); }
 }
 
-// ════ GAS — LOAD (GET) — dipanggil masa init ════
 async function loadAllFromGAS() {
   if (!gasReady) return;
   setSyncInd('loading');
@@ -704,10 +888,7 @@ async function loadAllFromGAS() {
       toast('✅ Data dimuatkan dari Google Sheets!');
     }
     setSyncInd('ok');
-  } catch(e) {
-    console.warn('GAS load failed:', e.message);
-    setSyncInd('err');
-  }
+  } catch(e) { console.warn('GAS load failed:', e.message); setSyncInd('err'); }
 }
 
 init();
