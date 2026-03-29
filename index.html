@@ -33,10 +33,8 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: #eaf2ed; min-he
 .tb-title { font-weight: 700; font-size: 14px; }
 .tb-sub { font-size: 10px; opacity: 0.7; }
 .tb-right { display: flex; align-items: center; gap: 8px; }
-.gas-btn { font-size: 11px; padding: 4px 11px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; color: white; background: transparent; font-family: inherit; transition: all 0.2s; white-space: nowrap; }
-.gas-btn:hover { background: rgba(255,255,255,0.1); }
-.gas-btn.on { border-color: #69f0ae; color: #69f0ae; }
-.gas-btn.off { border-color: #ff8a65; color: #ff8a65; }
+.sync-indicator { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); white-space: nowrap; }
+.sync-indicator.syncing { border-color: #ffd54f; color: #ffd54f; }
 
 /* LAYOUT */
 .wrap { display: flex; min-height: calc(100vh - 50px); }
@@ -141,27 +139,15 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
 .rutin-extra input:focus { border-color: var(--green-mid); background: white; }
 
 /* Sync banner */
-.sync-banner { background: var(--green-xlight); border-bottom: 1px solid #b8d9c5; padding: 6px 16px; font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 8px; }
-.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.sync-banner { padding: 7px 16px; font-size: 11px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid; }
+.sync-banner.ok  { background: var(--green-xlight); border-color: #b8d9c5; color: var(--green); }
+.sync-banner.warn { background: #fff8f0; border-color: #f0c98a; color: var(--amber); }
 
 /* Toast */
 .toast { position: fixed; bottom: 22px; right: 22px; background: var(--green); color: white; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; box-shadow: 0 6px 20px rgba(0,0,0,0.15); opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; z-index: 999; max-width: 320px; }
 .toast.show { opacity: 1; transform: translateY(0); }
 .toast.err { background: var(--red); }
 .toast.warn { background: var(--amber); }
-
-/* Modal */
-.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; }
-.overlay.open { display: flex; }
-.modal { background: white; border-radius: 11px; padding: 24px; width: 500px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-.modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: var(--green); }
-.modal p { font-size: 12px; color: var(--gray-500); margin-bottom: 13px; }
-.modal label { font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 4px; }
-.modal input { width: 100%; padding: 7px 10px; border: 1.5px solid #cad8cf; border-radius: 6px; font-size: 13px; font-family: inherit; outline: none; }
-.modal input:focus { border-color: var(--green-mid); }
-.gas-guide { background: var(--green-xlight); border: 1px solid #b8d9c5; border-radius: 7px; padding: 11px 13px; font-size: 11.5px; color: var(--green); line-height: 1.75; margin-top: 10px; }
-.gas-code { background: #1e1e1e; color: #9cdcfe; border-radius: 7px; padding: 11px 13px; font-size: 11px; font-family: monospace; margin-top: 8px; white-space: pre; overflow-x: auto; line-height: 1.7; }
-.modal-actions { display: flex; gap: 8px; margin-top: 18px; justify-content: flex-end; }
 
 /* Print */
 @media print {
@@ -185,6 +171,21 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
 
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 .syncing { animation: pulse 1.5s infinite; }
+
+/* IMAGE UPLOAD */
+.btn-img-upload { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 5px; background: #e8f5ee; border: 1px dashed #8dc9a5; color: var(--green); font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.btn-img-upload:hover { background: var(--green-light); border-color: var(--green); }
+.img-thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.img-thumb-wrap { position: relative; display: inline-block; }
+.img-thumb { width: 90px; height: 70px; object-fit: cover; border-radius: 5px; border: 1.5px solid #b8d9c5; cursor: zoom-in; display: block; transition: transform 0.15s; }
+.img-thumb:hover { transform: scale(1.04); border-color: var(--green); }
+.img-rm { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; border-radius: 50%; background: var(--red); color: white; border: none; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; padding: 0; }
+.img-rm:hover { background: #8b0000; }
+@media print {
+  .img-thumb { width: 120px; height: 95px; }
+  .img-rm { display: none !important; }
+  .btn-img-upload { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -195,12 +196,12 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
     <div class="tb-logo">e</div>
     <div>
       <div class="tb-title">e-RPH Prasekolah</div>
-      <div class="tb-sub" id="tb-sekolah">SK Pulau Sebang — Prasekolah Kasih Sayang</div>
+      <div class="tb-sub">SK Pulau Sebang — Prasekolah Kasih Sayang</div>
     </div>
   </div>
   <div class="tb-right">
     <span style="font-size:11px;opacity:.7;" id="today-lbl"></span>
-    <button class="gas-btn off" id="gas-badge" onclick="openGas()">⚡ GAS: Tidak Tersambung</button>
+    <span class="sync-indicator" id="sync-ind">☁️ Memuatkan...</span>
   </div>
 </div>
 
@@ -222,48 +223,15 @@ table.t textarea:focus { border-color: var(--green-mid); background: white; }
 
 <div class="toast" id="toast"></div>
 
-<!-- GAS MODAL -->
-<div class="overlay" id="gas-modal">
-  <div class="modal">
-    <h3>🔗 Sambung Google Apps Script</h3>
-    <p>Sambung ke GAS untuk simpan &amp; muat data dari Google Sheets — boleh akses dari mana-mana device.</p>
-    <label>URL Google Apps Script Web App</label>
-    <input type="text" id="gas-input" placeholder="https://script.google.com/macros/s/XXXX/exec">
-    <div class="gas-guide">
-      <strong>Cara setup GAS (salin kod di bawah ke Code.gs):</strong><br>
-      1. Pergi ke <strong>script.google.com</strong> → projek baru<br>
-      2. Salin &amp; tampal kod di bawah ke <strong>Code.gs</strong><br>
-      3. Deploy → New Deployment → <strong>Web App</strong><br>
-      4. Execute as: <strong>Me</strong> &nbsp;|&nbsp; Access: <strong>Anyone</strong><br>
-      5. Copy URL → tampal di atas → klik Sambung
-    </div>
-    <div class="gas-code">function doPost(e){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var data = JSON.parse(e.postData.contents);
-  var sheet = ss.getSheetByName(data._dayId) || ss.insertSheet(data._dayId);
-  sheet.clearContents();
-  sheet.getRange(1,1).setValue(JSON.stringify(data));
-  return ContentService.createTextOutput('OK');
-}
-function doGet(e){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var result = {};
-  ss.getSheets().forEach(function(s){
-    var v = s.getRange(1,1).getValue();
-    if(v) try{ result[s.getName()]=JSON.parse(v); }catch(err){}
-  });
-  return ContentService.createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
-}</div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeGas()">Batal</button>
-      <button class="btn btn-amber btn-sm" onclick="copyGasCode()">📋 Salin Kod GAS</button>
-      <button class="btn btn-green" onclick="saveGas()">⚡ Sambung</button>
-    </div>
-  </div>
-</div>
-
 <script>
+// ══════════════════════════════════════════════════════
+//  ⚙️  TETAPAN — TUKAR URL GAS DI SINI SAHAJA
+// ══════════════════════════════════════════════════════
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzNYsBGkl6nBJVhuRHzEaTG8XAhwRZ-jU4Md5vFEfdxVYX66hRATlYeQbTUHJfA335YGQ/exec';
+// Contoh:
+// const GAS_URL = 'https://script.google.com/macros/s/AKfycbxXXXXXXXXX/exec';
+// ══════════════════════════════════════════════════════
+
 const DAYS = [
   { id:'isnin',  label:'Isnin',  emoji:'1️⃣' },
   { id:'selasa', label:'Selasa', emoji:'2️⃣' },
@@ -290,21 +258,24 @@ const IMPAK_OPT = ['Mencapai objektif','Memerlukan bimbingan','Pemulihan','Penga
 const TP_OPT = ['TP 1','TP 2','TP 3'];
 
 let rphData = {};
-let gasUrl  = '';
 let view    = 'dashboard';
+const gasReady = GAS_URL && GAS_URL !== 'MASUKKAN_URL_GAS_DI_SINI';
 
 // ════ INIT ════
 async function init() {
   try {
     const d = localStorage.getItem('erph_psk_v3');
     if (d) rphData = JSON.parse(d);
-    const g = localStorage.getItem('erph_gas');
-    if (g) { gasUrl = g; setGasBadge(true, false); }
   } catch(e) {}
   setTodayLabel();
   renderDayNav();
   renderDashboard();
-  if (gasUrl) loadAllFromGAS();
+  if (gasReady) {
+    setSyncInd('loading');
+    await loadAllFromGAS();
+  } else {
+    setSyncInd('nogас');
+  }
 }
 
 function persist() { localStorage.setItem('erph_psk_v3', JSON.stringify(rphData)); }
@@ -314,6 +285,16 @@ function setTodayLabel() {
   const dys = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
   const mon = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'];
   document.getElementById('today-lbl').textContent = dys[d.getDay()] + ', ' + d.getDate() + ' ' + mon[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function setSyncInd(state) {
+  const el = document.getElementById('sync-ind');
+  if (!el) return;
+  if (state === 'loading') { el.className = 'sync-indicator syncing'; el.textContent = '☁️ Memuatkan...'; }
+  else if (state === 'ok')  { el.className = 'sync-indicator'; el.textContent = '✅ Sheets Tersambung'; }
+  else if (state === 'sync'){ el.className = 'sync-indicator syncing'; el.textContent = '⏫ Menyimpan...'; }
+  else if (state === 'err') { el.className = 'sync-indicator'; el.style.color='#ff8a65'; el.textContent = '⚠️ GAS Gagal'; }
+  else                      { el.className = 'sync-indicator'; el.textContent = '💾 Simpan Tempatan'; }
 }
 
 // ════ TOAST ════
@@ -330,8 +311,7 @@ function toast(msg, type) {
 function renderDayNav() {
   document.getElementById('day-nav').innerHTML = DAYS.map(function(d) {
     const saved = rphData[d.id] && rphData[d.id]._saved;
-    const active = view === d.id ? 'active' : '';
-    return '<div class="nav-item ' + active + '" id="nav-' + d.id + '" onclick="go(\'' + d.id + '\')">' +
+    return '<div class="nav-item ' + (view===d.id?'active':'') + '" id="nav-' + d.id + '" onclick="go(\'' + d.id + '\')">' +
       '<div class="nav-icon" style="background:#e8f5ee;">' + d.emoji + '</div>' +
       '<span style="flex:1;">' + d.label + '</span>' +
       (saved ? '<div class="nav-dot"></div>' : '') +
@@ -339,7 +319,7 @@ function renderDayNav() {
   }).join('');
   ['dashboard','history'].forEach(function(v) {
     const el = document.getElementById('nav-'+v);
-    if (el) el.classList.toggle('active', view === v);
+    if (el) el.classList.toggle('active', view===v);
   });
 }
 
@@ -355,26 +335,19 @@ function go(v) {
 function renderDashboard() {
   const m = document.getElementById('main');
   const saved = DAYS.filter(function(d){ return rphData[d.id] && rphData[d.id]._saved; }).length;
+
+  const syncBanner = gasReady
+    ? '<div class="sync-banner ok no-print">☁️ Data disegerakkan dengan Google Sheets secara automatik. <a href="#" onclick="loadAllFromGAS();return false;" style="color:var(--green);font-weight:700;margin-left:4px;">Muat semula ↺</a></div>'
+    : '<div class="sync-banner warn no-print">⚠️ GAS belum dikonfigurasi — data hanya tersimpan di device ini. Edit <strong>GAS_URL</strong> dalam kod HTML untuk aktifkan segerak automatik.</div>';
+
   const cards = DAYS.map(function(d) {
-    const r  = rphData[d.id];
-    const ok = r && r._saved;
-    const border = ok ? 'var(--green)' : '#cde0d4';
-    const bg     = ok ? 'var(--green-light)' : 'white';
-    const clr    = ok ? 'var(--green)' : 'var(--gray-700)';
-    const sub    = ok ? '✓ ' + r._lbl : 'Belum ada';
-    const subclr = ok ? 'var(--green-mid)' : '#aaa';
-    return '<div onclick="go(\'' + d.id + '\')" style="border:2px solid ' + border + ';border-radius:8px;padding:12px;text-align:center;cursor:pointer;background:' + bg + ';transition:all .15s;" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">' +
+    const r = rphData[d.id]; const ok = r && r._saved;
+    return '<div onclick="go(\'' + d.id + '\')" style="border:2px solid ' + (ok?'var(--green)':'#cde0d4') + ';border-radius:8px;padding:12px;text-align:center;cursor:pointer;background:' + (ok?'var(--green-light)':'white') + ';transition:all .15s;" onmouseover="this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.transform=\'\'">' +
       '<div style="font-size:20px;margin-bottom:5px;">' + d.emoji + '</div>' +
-      '<div style="font-weight:700;font-size:12.5px;color:' + clr + ';">' + d.label + '</div>' +
-      '<div style="font-size:10px;margin-top:3px;color:' + subclr + ';">' + sub + '</div>' +
+      '<div style="font-weight:700;font-size:12.5px;color:' + (ok?'var(--green)':'var(--gray-700)') + ';">' + d.label + '</div>' +
+      '<div style="font-size:10px;margin-top:3px;color:' + (ok?'var(--green-mid)':'#aaa') + ';">' + (ok?'✓ '+r._lbl:'Belum ada') + '</div>' +
       '</div>';
   }).join('');
-  const dayBtns = DAYS.map(function(d){
-    return '<button class="btn btn-outline" onclick="go(\'' + d.id + '\')">' + d.emoji + ' ' + d.label + '</button>';
-  }).join('');
-  const syncRow = gasUrl
-    ? '<div class="sync-banner no-print"><div class="sync-dot"></div>Data disegerakkan dengan Google Sheets. <a href="#" onclick="loadAllFromGAS();return false;" style="color:var(--green);font-weight:700;margin-left:4px;">Muat semula</a></div>'
-    : '<div class="sync-banner no-print" style="background:#fff8f0;border-color:#f0c98a;color:var(--amber);"><span>⚠️</span> GAS belum disambung — data hanya tersimpan di device ini. <a href="#" onclick="openGas();return false;" style="color:var(--amber);font-weight:700;margin-left:4px;">Sambung sekarang</a></div>';
 
   m.innerHTML =
     '<div class="page-hd">' +
@@ -382,10 +355,10 @@ function renderDashboard() {
       '<div class="page-actions no-print">' +
         '<button class="btn btn-outline btn-sm" onclick="go(\'history\')">📋 Semua RPH</button>' +
         '<button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button>' +
-        (gasUrl ? '<button class="btn btn-amber btn-sm" onclick="loadAllFromGAS()">🔄 Muat dari Sheets</button>' : '') +
+        (gasReady ? '<button class="btn btn-amber btn-sm" onclick="loadAllFromGAS()">🔄 Muat dari Sheets</button>' : '') +
       '</div>' +
     '</div>' +
-    syncRow +
+    syncBanner +
     '<div style="height:14px;"></div>' +
     '<div class="stats">' +
       '<div class="stat"><div class="stat-lbl">RPH Disimpan</div><div class="stat-val">' + saved + '/5</div></div>' +
@@ -399,14 +372,16 @@ function renderDashboard() {
     '</div>' +
     '<div class="rph-card" style="padding:16px;">' +
       '<div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">⚡ Mula Isi RPH</div>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' + dayBtns + '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+        DAYS.map(function(d){ return '<button class="btn btn-outline" onclick="go(\'' + d.id + '\')">' + d.emoji + ' ' + d.label + '</button>'; }).join('') +
+      '</div>' +
     '</div>';
 }
 
 function getLastSaved() {
   var latest = null;
   Object.values(rphData).forEach(function(d) {
-    if (d._saved) { var t = new Date(d._saved); if (!latest || t > latest) latest = t; }
+    if (d._saved) { var t = new Date(d._saved); if (!latest||t>latest) latest=t; }
   });
   return latest ? latest.toLocaleDateString('ms-MY',{day:'2-digit',month:'short'}) : '—';
 }
@@ -414,26 +389,21 @@ function getLastSaved() {
 // ════ HISTORY ════
 function renderHistory() {
   const m = document.getElementById('main');
-  const entries = Object.entries(rphData).filter(function(e){ return e[1] && e[1]._saved; });
-  var html = '<div class="page-hd">' +
-    '<div><h2>Semua RPH</h2><p>' + entries.length + ' rekod tersimpan</p></div>' +
-    '<div class="page-actions no-print"><button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button></div>' +
-  '</div>';
+  const entries = Object.entries(rphData).filter(function(e){ return e[1]&&e[1]._saved; });
+  var html = '<div class="page-hd"><div><h2>Semua RPH</h2><p>' + entries.length + ' rekod tersimpan</p></div>' +
+    '<div class="page-actions no-print"><button class="btn btn-outline btn-sm" onclick="exportCSV()">📥 Export CSV</button></div></div>';
   if (!entries.length) {
     html += '<div class="empty"><div class="empty-icon">📋</div><h3>Tiada RPH Tersimpan</h3><p>Pilih hari di sidebar untuk mula isi RPH.</p></div>';
   } else {
     html += '<div class="hist-list">' + entries.map(function(e) {
-      const id = e[0]; const d = e[1];
-      const day = DAYS.find(function(x){ return x.id === id; });
+      const id=e[0]; const d=e[1];
+      const day = DAYS.find(function(x){ return x.id===id; });
       const saved = d._saved ? new Date(d._saved).toLocaleString('ms-MY',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
       return '<div class="hitem" onclick="go(\'' + id + '\')">' +
-        '<div>' +
-          '<span class="badge" style="background:var(--green-light);color:var(--green);margin-bottom:5px;display:inline-flex;gap:5px;">' + day.emoji + ' ' + day.label + '</span>' +
-          '<div style="font-weight:700;font-size:13px;">Minggu: ' + (d.minggu||'—') + ' &nbsp;|&nbsp; Tarikh: ' + (d.tarikh||'—') + ' &nbsp;|&nbsp; Tema: ' + (d.tema||'—') + '</div>' +
-          '<div class="hitem-meta">Nama Guru: ' + (d.guru||'—') + ' &nbsp;|&nbsp; Disimpan: ' + saved + '</div>' +
-        '</div>' +
-        '<span style="font-size:18px;color:#ccc;">›</span>' +
-      '</div>';
+        '<div><span class="badge" style="background:var(--green-light);color:var(--green);margin-bottom:5px;display:inline-flex;gap:5px;">' + day.emoji + ' ' + day.label + '</span>' +
+        '<div style="font-weight:700;font-size:13px;">Minggu: ' + (d.minggu||'—') + ' &nbsp;|&nbsp; Tarikh: ' + (d.tarikh||'—') + ' &nbsp;|&nbsp; Tema: ' + (d.tema||'—') + '</div>' +
+        '<div class="hitem-meta">Nama Guru: ' + (d.guru||'—') + ' &nbsp;|&nbsp; Disimpan: ' + saved + '</div></div>' +
+        '<span style="font-size:18px;color:#ccc;">›</span></div>';
     }).join('') + '</div>';
   }
   m.innerHTML = html;
@@ -443,30 +413,26 @@ function exportCSV() {
   const rows = [['Hari','Minggu','Tarikh','Nama Guru','Tema','Strategi','Disimpan']];
   Object.entries(rphData).forEach(function(e) {
     if (!e[1]._saved) return;
-    const day = DAYS.find(function(x){ return x.id === e[0]; });
-    rows.push([day.label, e[1].minggu||'', e[1].tarikh||'', e[1].guru||'', e[1].tema||'', e[1].strategi||'', e[1]._saved]);
+    const day = DAYS.find(function(x){ return x.id===e[0]; });
+    rows.push([day.label,e[1].minggu||'',e[1].tarikh||'',e[1].guru||'',e[1].tema||'',e[1].strategi||'',e[1]._saved]);
   });
-  const csv = rows.map(function(r){ return r.map(function(c){ return '"' + (c||'').replace(/"/g,'""') + '"'; }).join(','); }).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
-  a.download = 'e-RPH-export.csv';
-  a.click();
+  const csv = rows.map(function(r){ return r.map(function(c){ return '"'+(c||'').replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  const a = document.createElement('a'); a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv); a.download='e-RPH-export.csv'; a.click();
   toast('✅ CSV berjaya dieksport!');
 }
 
 // ════ RPH FORM ════
 function renderRPH(dayId) {
   const m   = document.getElementById('main');
-  const day = DAYS.find(function(d){ return d.id === dayId; });
+  const day = DAYS.find(function(d){ return d.id===dayId; });
   const D   = rphData[dayId] || {};
 
   const pentHtml = PENTAKSIRAN_OPT.map(function(p) {
-    const chk = D.pentaksiran && D.pentaksiran.includes(p) ? 'checked' : '';
-    return '<label class="pent-item"><input type="checkbox" name="pent" value="' + p + '" ' + chk + '> ' + p + '</label>';
+    return '<label class="pent-item"><input type="checkbox" name="pent" value="'+p+'" '+(D.pentaksiran&&D.pentaksiran.includes(p)?'checked':'')+'>'+p+'</label>';
   }).join('');
 
   const hariOpts = ['Isnin','Selasa','Rabu','Khamis','Jumaat'].map(function(h){
-    return '<option' + ((D.hari || day.label) === h ? ' selected' : '') + '>' + h + '</option>';
+    return '<option'+((D.hari||day.label)===h?' selected':'')+'>'+h+'</option>';
   }).join('');
 
   m.innerHTML =
@@ -477,56 +443,43 @@ function renderRPH(dayId) {
       '</div>' +
       '<div class="page-actions no-print">' +
         '<button class="btn btn-print" onclick="window.print()">🖨️ Cetak / PDF</button>' +
-        '<button class="btn btn-amber" onclick="syncGAS(\'' + dayId + '\')">☁️ Hantar ke Sheets</button>' +
         '<button class="btn btn-green" onclick="saveRPH(\'' + dayId + '\')">💾 Simpan RPH</button>' +
       '</div>' +
     '</div>' +
 
     '<div class="rph-card" id="print-area">' +
-
       '<div class="sch-hd">' +
-        '<div class="sch-name" contenteditable="true" id="sch-name">' + (D.sekolah||'SEKOLAH KEBANGSAAN PULAU SEBANG') + '</div>' +
-        '<div class="sch-addr" contenteditable="true" id="sch-addr">' + (D.alamat||'78000 ALOR GAJAH, MELAKA.') + '</div>' +
-        '<div class="sch-addr" contenteditable="true" id="sch-kelas">' + (D.kelas||'PRASEKOLAH KASIH SAYANG') + '</div>' +
+        '<div class="sch-name" contenteditable="true" id="sch-name">'+(D.sekolah||'SEKOLAH KEBANGSAAN PULAU SEBANG')+'</div>' +
+        '<div class="sch-addr" contenteditable="true" id="sch-addr">'+(D.alamat||'78000 ALOR GAJAH, MELAKA.')+'</div>' +
+        '<div class="sch-addr" contenteditable="true" id="sch-kelas">'+(D.kelas||'PRASEKOLAH KASIH SAYANG')+'</div>' +
         '<div class="sch-doc">RANCANGAN PENGAJARAN PRASEKOLAH</div>' +
       '</div>' +
 
       '<div class="info-grid">' +
-        '<div class="ig-cell"><label>Nama Guru</label><input type="text" id="f_guru" value="' + (D.guru||'') + '" placeholder="Puan / Cikgu ..."></div>' +
-        '<div class="ig-cell"><label>Minggu</label><input type="text" id="f_minggu" value="' + (D.minggu||'') + '" placeholder="11"></div>' +
-        '<div class="ig-cell"><label>Hari</label><select id="f_hari">' + hariOpts + '</select></div>' +
-        '<div class="ig-cell"><label>Tarikh</label><input type="date" id="f_tarikh" value="' + (D.tarikh||'') + '"></div>' +
-        '<div class="ig-cell"><label>Tema</label><input type="text" id="f_tema" value="' + (D.tema||'') + '" placeholder="cth: DIRI SAYA (RUMAH SAYA)"></div>' +
-        '<div class="ig-cell"><label>Strategi</label><input type="text" id="f_strategi" value="' + (D.strategi||'') + '" placeholder="cth: Bertema / Berpusat Pembelajaran / Bersepadu"></div>' +
+        '<div class="ig-cell"><label>Nama Guru</label><input type="text" id="f_guru" value="'+(D.guru||'')+'" placeholder="Puan / Cikgu ..."></div>' +
+        '<div class="ig-cell"><label>Minggu</label><input type="text" id="f_minggu" value="'+(D.minggu||'')+'" placeholder="11"></div>' +
+        '<div class="ig-cell"><label>Hari</label><select id="f_hari">'+hariOpts+'</select></div>' +
+        '<div class="ig-cell"><label>Tarikh</label><input type="date" id="f_tarikh" value="'+(D.tarikh||'')+'"></div>' +
+        '<div class="ig-cell"><label>Tema</label><input type="text" id="f_tema" value="'+(D.tema||'')+'" placeholder="cth: DIRI SAYA (RUMAH SAYA)"></div>' +
+        '<div class="ig-cell"><label>Strategi</label><input type="text" id="f_strategi" value="'+(D.strategi||'')+'" placeholder="cth: Bertema / Berpusat Pembelajaran / Bersepadu"></div>' +
       '</div>' +
 
-      '<div style="overflow-x:auto;">' +
-      '<table class="t">' +
+      '<div style="overflow-x:auto;"><table class="t">' +
         '<tr class="rutin-row">' +
           '<td class="tlbl" style="width:90px;"><div class="tm">7.30 - 8.00</div><div class="bd">RUTIN</div><div class="dur">(30 MIN)</div></td>' +
           '<td colspan="6">' +
             '<div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;">Aktiviti Rutin:</div>' +
-            '<textarea id="f_rutin" style="min-height:55px;">' + (D.rutin || RUTIN_DEF) + '</textarea>' +
+            '<textarea id="f_rutin" style="min-height:55px;">'+(D.rutin||RUTIN_DEF)+'</textarea>' +
             '<div class="rutin-extra">' +
-              '<div style="display:flex;align-items:center;gap:6px;"><label>KEHADIRAN:</label><input type="text" id="f_hadir" value="' + (D.hadir||'') + '" placeholder="__ / __" style="width:70px;"></div>' +
-              '<div style="display:flex;align-items:center;gap:6px;"><label>PERISTIWA:</label><input type="text" id="f_peristiwa" value="' + (D.peristiwa||'') + '" placeholder="cth: Mesyuarat PIBG" style="width:200px;"></div>' +
+              '<div style="display:flex;align-items:center;gap:6px;"><label>KEHADIRAN:</label><input type="text" id="f_hadir" value="'+(D.hadir||'')+'" placeholder="__ / __" style="width:70px;"></div>' +
+              '<div style="display:flex;align-items:center;gap:6px;"><label>PERISTIWA:</label><input type="text" id="f_peristiwa" value="'+(D.peristiwa||'')+'" placeholder="cth: Mesyuarat PIBG" style="width:200px;"></div>' +
             '</div>' +
           '</td>' +
         '</tr>' +
-      '</table>' +
-      '</div>' +
+      '</table></div>' +
 
-      '<div style="overflow-x:auto;">' +
-      '<table class="t">' +
-        '<colgroup>' +
-          '<col style="width:90px;">' +
-          '<col style="width:100px;">' +
-          '<col style="width:120px;">' +
-          '<col style="width:120px;">' +
-          '<col>' +
-          '<col style="width:90px;">' +
-          '<col style="width:115px;">' +
-        '</colgroup>' +
+      '<div style="overflow-x:auto;"><table class="t">' +
+        '<colgroup><col style="width:90px;"><col style="width:100px;"><col style="width:120px;"><col style="width:120px;"><col><col style="width:90px;"><col style="width:115px;"></colgroup>' +
         '<thead><tr>' +
           '<th>Masa /<br>Bidang<br>Pembelajaran</th>' +
           '<th>Kompetensi</th>' +
@@ -537,46 +490,32 @@ function renderRPH(dayId) {
           '<th>Impak</th>' +
         '</tr></thead>' +
         '<tbody id="slots-body"></tbody>' +
-      '</table>' +
-      '</div>' +
+      '</table></div>' +
 
-      '<div style="overflow-x:auto;">' +
-      '<table class="t" style="margin-top:0;">' +
-        '<tbody>' +
-          '<tr>' +
-            '<td class="tlbl" style="width:90px;"><div class="tm">11.50 - 12.00</div><div class="bd">PENUTUP</div><div class="dur">(10 MIN)</div></td>' +
-            '<td colspan="5"><textarea id="f_penutup" style="min-height:60px;">' + (D.penutup || PENUTUP_DEF) + '</textarea></td>' +
-            '<td style="width:115px;"><span style="color:#bbb;font-size:11px;">—</span></td>' +
-          '</tr>' +
-        '</tbody>' +
-      '</table>' +
-      '</div>' +
+      '<div style="overflow-x:auto;"><table class="t" style="margin-top:0;"><tbody>' +
+        '<tr>' +
+          '<td class="tlbl" style="width:90px;"><div class="tm">11.50 - 12.00</div><div class="bd">PENUTUP</div><div class="dur">(10 MIN)</div></td>' +
+          '<td colspan="5"><textarea id="f_penutup" style="min-height:60px;">'+(D.penutup||PENUTUP_DEF)+'</textarea></td>' +
+          '<td style="width:115px;"><span style="color:#bbb;font-size:11px;">—</span></td>' +
+        '</tr>' +
+      '</tbody></table></div>' +
 
-      '<div style="overflow-x:auto;">' +
-      '<table class="t" style="margin-top:0;">' +
-        '<tbody>' +
-          '<tr>' +
-            '<td class="tlbl" style="width:90px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">PENTAKSIRAN<br>DAN<br>PENGUASAAN</div><div style="font-size:9.5px;color:#888;margin-top:3px;">KESELURUHAN</div></td>' +
-            '<td colspan="6">' +
-              '<div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;">Kaedah Pentaksiran:</div>' +
-              '<div class="pent-grid">' + pentHtml + '</div>' +
-            '</td>' +
-          '</tr>' +
-          '<tr>' +
-            '<td class="tlbl" style="text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">REFLEKSI<br>GURU</div></td>' +
-            '<td colspan="6"><textarea id="f_refleksi" style="min-height:55px;" placeholder="Catatan refleksi guru, tindakan susulan, pemerhatian murid...">' + (D.refleksi||'') + '</textarea></td>' +
-          '</tr>' +
-        '</tbody>' +
-      '</table>' +
-      '</div>' +
-
+      '<div style="overflow-x:auto;"><table class="t" style="margin-top:0;"><tbody>' +
+        '<tr>' +
+          '<td class="tlbl" style="width:90px;text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">PENTAKSIRAN<br>DAN<br>PENGUASAAN</div><div style="font-size:9.5px;color:#888;margin-top:3px;">KESELURUHAN</div></td>' +
+          '<td colspan="6"><div style="font-size:10.5px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:7px;">Kaedah Pentaksiran:</div><div class="pent-grid">'+pentHtml+'</div></td>' +
+        '</tr>' +
+        '<tr>' +
+          '<td class="tlbl" style="text-align:center;"><div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;line-height:1.4;">REFLEKSI<br>GURU</div></td>' +
+          '<td colspan="6"><textarea id="f_refleksi" style="min-height:55px;" placeholder="Catatan refleksi guru, tindakan susulan, pemerhatian murid...">'+(D.refleksi||'')+'</textarea></td>' +
+        '</tr>' +
+      '</tbody></table></div>' +
     '</div>' +
 
     '<div class="btn-row-bottom no-print" style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">' +
       '<button class="btn btn-outline" onclick="go(\'dashboard\')">← Dashboard</button>' +
       '<button class="btn btn-green" onclick="saveRPH(\'' + dayId + '\')">💾 Simpan RPH</button>' +
       '<button class="btn btn-print" onclick="window.print()">🖨️ Cetak / Export PDF</button>' +
-      '<button class="btn btn-amber" onclick="syncGAS(\'' + dayId + '\')">☁️ Hantar ke Sheets</button>' +
       '<button class="btn btn-danger" onclick="clearRPH(\'' + dayId + '\')">🗑️ Kosongkan</button>' +
     '</div>';
 
@@ -588,157 +527,186 @@ function buildSlots(dayId, D) {
   if (!body) return;
   body.innerHTML = SLOTS.map(function(s) {
     const sd = D[s.id] || {};
+    const imgs = sd.images || [];
+
     const impakHtml = '<div class="impak-wrap">' +
       IMPAK_OPT.map(function(im) {
-        const chk = sd.impak && sd.impak.includes(im) ? 'checked' : '';
-        return '<label class="ck-item"><input type="checkbox" data-slot="' + s.id + '" data-impak="' + im + '" ' + chk + '> ' + im + '</label>';
+        return '<label class="ck-item"><input type="checkbox" data-slot="'+s.id+'" data-impak="'+im+'" '+(sd.impak&&sd.impak.includes(im)?'checked':'')+'>'+im+'</label>';
       }).join('') +
       '<div class="tp-sec"><div class="tp-lbl">Tahap Penguasaan:</div>' +
       TP_OPT.map(function(tp) {
-        const chk = sd.tp && sd.tp.includes(tp) ? 'checked' : '';
-        return '<label class="ck-item"><input type="checkbox" data-slot="' + s.id + '" data-tp="' + tp + '" ' + chk + '> ' + tp + '</label>';
-      }).join('') +
-      '</div></div>';
+        return '<label class="ck-item"><input type="checkbox" data-slot="'+s.id+'" data-tp="'+tp+'" '+(sd.tp&&sd.tp.includes(tp)?'checked':'')+'>'+tp+'</label>';
+      }).join('') + '</div></div>';
 
-    return '<tr>' +
-      '<td class="tlbl">' +
-        '<div class="tm">' + s.masa + '</div>' +
-        '<input class="bd-edit" type="text" data-slot="' + s.id + '" data-field="bidang" value="' + (sd.bidang || s.bidang) + '">' +
-        '<div class="dur">(' + s.dur + ')</div>' +
-      '</td>' +
-      '<td><textarea data-slot="' + s.id + '" data-field="kompetensi" style="min-height:50px;">' + (sd.kompetensi || s.kompetensi) + '</textarea></td>' +
-      '<td><textarea data-slot="' + s.id + '" data-field="standard" style="min-height:50px;">' + (sd.standard || '') + '</textarea></td>' +
-      '<td><textarea data-slot="' + s.id + '" data-field="objektif" style="min-height:50px;">' + (sd.objektif || '') + '</textarea></td>' +
-      '<td><textarea data-slot="' + s.id + '" data-field="aktiviti" style="min-height:120px;">' + (sd.aktiviti !== undefined ? sd.aktiviti : s.defAkt) + '</textarea></td>' +
-      '<td><textarea data-slot="' + s.id + '" data-field="bahan" style="min-height:50px;">' + (sd.bahan || '') + '</textarea></td>' +
-      '<td>' + impakHtml + '</td>' +
+    // Image thumbnails
+    const imgThumbsHtml = imgs.length
+      ? '<div class="img-thumbs" id="thumbs-'+s.id+'">' +
+          imgs.map(function(src,i){
+            return '<div class="img-thumb-wrap">' +
+              '<img src="'+src+'" class="img-thumb" onclick="viewImg(\''+s.id+'\','+i+')">' +
+              '<button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+s.id+'\','+i+')">✕</button>' +
+            '</div>';
+          }).join('') +
+        '</div>'
+      : '<div class="img-thumbs" id="thumbs-'+s.id+'"></div>';
+
+    const aktivitiCell =
+      '<textarea data-slot="'+s.id+'" data-field="aktiviti" style="min-height:100px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
+      imgThumbsHtml +
+      '<div class="no-print" style="margin-top:6px;">' +
+        '<label class="btn-img-upload" title="Tambah gambar">' +
+          '🖼️ Tambah Gambar' +
+          '<input type="file" accept="image/*" multiple style="display:none;" onchange="addImages(\''+dayId+'\',\''+s.id+'\',this)">' +
+        '</label>' +
+      '</div>';
+
+    return '<tr id="row-'+s.id+'">' +
+      '<td class="tlbl"><div class="tm">'+s.masa+'</div><input class="bd-edit" type="text" data-slot="'+s.id+'" data-field="bidang" value="'+(sd.bidang||s.bidang)+'"><div class="dur">('+s.dur+')</div></td>' +
+      '<td><textarea data-slot="'+s.id+'" data-field="kompetensi" style="min-height:50px;">'+(sd.kompetensi||s.kompetensi)+'</textarea></td>' +
+      '<td><textarea data-slot="'+s.id+'" data-field="standard" style="min-height:50px;">'+(sd.standard||'')+'</textarea></td>' +
+      '<td><textarea data-slot="'+s.id+'" data-field="objektif" style="min-height:50px;">'+(sd.objektif||'')+'</textarea></td>' +
+      '<td>'+aktivitiCell+'</td>' +
+      '<td><textarea data-slot="'+s.id+'" data-field="bahan" style="min-height:50px;">'+(sd.bahan||'')+'</textarea></td>' +
+      '<td>'+impakHtml+'</td>' +
     '</tr>';
   }).join('');
+}
+
+// ── IMAGE HELPERS ──
+function addImages(dayId, slotId, input) {
+  const files = Array.from(input.files);
+  if (!rphData[dayId]) rphData[dayId] = {};
+  if (!rphData[dayId][slotId]) rphData[dayId][slotId] = {};
+  if (!rphData[dayId][slotId].images) rphData[dayId][slotId].images = [];
+  var done = 0;
+  files.forEach(function(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      rphData[dayId][slotId].images.push(e.target.result);
+      done++;
+      if (done === files.length) {
+        persist();
+        refreshThumbs(dayId, slotId);
+        toast('✅ ' + files.length + ' gambar ditambah!');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function removeImg(dayId, slotId, idx) {
+  if (!confirm('Buang gambar ini?')) return;
+  rphData[dayId][slotId].images.splice(idx, 1);
+  persist();
+  refreshThumbs(dayId, slotId);
+}
+
+function refreshThumbs(dayId, slotId) {
+  const el = document.getElementById('thumbs-'+slotId);
+  if (!el) return;
+  const imgs = (rphData[dayId] && rphData[dayId][slotId] && rphData[dayId][slotId].images) || [];
+  el.innerHTML = imgs.map(function(src,i){
+    return '<div class="img-thumb-wrap">' +
+      '<img src="'+src+'" class="img-thumb" onclick="viewImg(\''+slotId+'\','+i+')">' +
+      '<button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+slotId+'\','+i+')">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+// Lightbox
+function viewImg(slotId, idx) {
+  const imgs = document.querySelectorAll('#thumbs-'+slotId+' .img-thumb');
+  if (!imgs[idx]) return;
+  const src = imgs[idx].src;
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+  ov.innerHTML = '<img src="'+src+'" style="max-width:90vw;max-height:90vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);">';
+  ov.onclick = function(){ document.body.removeChild(ov); };
+  document.body.appendChild(ov);
 }
 
 // ════ COLLECT ════
 function collectRPH(dayId) {
   const d = {};
-  const sn = document.getElementById('sch-name'); if (sn) d.sekolah = sn.textContent;
-  const sa = document.getElementById('sch-addr'); if (sa) d.alamat  = sa.textContent;
-  const sk = document.getElementById('sch-kelas'); if (sk) d.kelas  = sk.textContent;
-  ['guru','minggu','hari','tarikh','tema','strategi','rutin','hadir','peristiwa','penutup','refleksi'].forEach(function(f) {
-    const el = document.getElementById('f_'+f); if (el) d[f] = el.value;
+  const sn=document.getElementById('sch-name'); if(sn) d.sekolah=sn.textContent;
+  const sa=document.getElementById('sch-addr'); if(sa) d.alamat=sa.textContent;
+  const sk=document.getElementById('sch-kelas'); if(sk) d.kelas=sk.textContent;
+  ['guru','minggu','hari','tarikh','tema','strategi','rutin','hadir','peristiwa','penutup','refleksi'].forEach(function(f){
+    const el=document.getElementById('f_'+f); if(el) d[f]=el.value;
   });
   d.pentaksiran = Array.from(document.querySelectorAll('input[name="pent"]:checked')).map(function(cb){ return cb.value; });
   SLOTS.forEach(function(s) {
     d[s.id] = {};
-    document.querySelectorAll('[data-slot="' + s.id + '"][data-field]').forEach(function(el){ d[s.id][el.dataset.field] = el.value || el.textContent; });
-    d[s.id].impak = Array.from(document.querySelectorAll('input[data-slot="' + s.id + '"][data-impak]:checked')).map(function(cb){ return cb.dataset.impak; });
-    d[s.id].tp    = Array.from(document.querySelectorAll('input[data-slot="' + s.id + '"][data-tp]:checked')).map(function(cb){ return cb.dataset.tp; });
+    document.querySelectorAll('[data-slot="'+s.id+'"][data-field]').forEach(function(el){ d[s.id][el.dataset.field]=el.value||el.textContent; });
+    d[s.id].impak = Array.from(document.querySelectorAll('input[data-slot="'+s.id+'"][data-impak]:checked')).map(function(cb){ return cb.dataset.impak; });
+    d[s.id].tp    = Array.from(document.querySelectorAll('input[data-slot="'+s.id+'"][data-tp]:checked')).map(function(cb){ return cb.dataset.tp; });
+    // Kekalkan gambar yang sudah di-upload
+    const existing = rphData[dayId] && rphData[dayId][s.id] && rphData[dayId][s.id].images;
+    if (existing && existing.length) d[s.id].images = existing;
   });
   return d;
 }
 
-// ════ SAVE (LOCAL) ════
-function saveRPH(dayId) {
+// ════ SAVE — simpan tempatan + auto-sync ke GAS ════
+async function saveRPH(dayId) {
   const d = collectRPH(dayId);
   d._saved = new Date().toISOString();
   d._lbl   = new Date().toLocaleDateString('ms-MY',{day:'2-digit',month:'short'});
   rphData[dayId] = d;
   persist();
   renderDayNav();
-  toast('✅ RPH Hari ' + DAYS.find(function(x){ return x.id === dayId; }).label + ' berjaya disimpan!');
+  toast('✅ RPH Hari ' + DAYS.find(function(x){ return x.id===dayId; }).label + ' disimpan!');
+  if (gasReady) await pushToGAS(dayId, d);
 }
 
 function clearRPH(dayId) {
   if (!confirm('Kosongkan semua data RPH hari ini?')) return;
-  delete rphData[dayId];
-  persist();
-  renderDayNav();
-  renderRPH(dayId);
+  delete rphData[dayId]; persist(); renderDayNav(); renderRPH(dayId);
   toast('Borang dikosongkan.','warn');
 }
 
-// ════ GAS — HANTAR KE SHEETS (POST) ════
-async function syncGAS(dayId) {
-  if (!gasUrl) { openGas(); return; }
-  const d = collectRPH(dayId);
-  d._dayLabel = DAYS.find(function(x){ return x.id === dayId; }).label;
-  d._dayId    = dayId;
-  d._saved    = new Date().toISOString();
-  d._lbl      = new Date().toLocaleDateString('ms-MY',{day:'2-digit',month:'short'});
-  d._action   = 'save';
-  setGasBadge(true, true);
-  toast('Menghantar data...','warn');
+// ════ GAS — PUSH (POST) — auto dipanggil semasa save ════
+async function pushToGAS(dayId, d) {
+  const payload = Object.assign({}, d, { _dayId: dayId, _dayLabel: DAYS.find(function(x){ return x.id===dayId; }).label, _action:'save' });
+  setSyncInd('sync');
   try {
-    await fetch(gasUrl, {method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
-    rphData[dayId] = d;
-    persist();
-    renderDayNav();
-    toast('✅ Data berjaya dihantar ke Google Sheets!');
+    await fetch(GAS_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    setSyncInd('ok');
   } catch(e) {
-    toast('Gagal hantar ke GAS. Semak URL.','err');
-  } finally {
-    setGasBadge(true, false);
+    setSyncInd('err');
+    console.warn('GAS push failed:', e.message);
   }
 }
 
-// ════ GAS — MUAT DARI SHEETS (GET) ════
+// ════ GAS — LOAD (GET) — dipanggil masa init ════
 async function loadAllFromGAS() {
-  if (!gasUrl) return;
-  setGasBadge(true, true);
+  if (!gasReady) return;
+  setSyncInd('loading');
   try {
-    const res = await fetch(gasUrl + '?action=load', {method:'GET'});
+    const res = await fetch(GAS_URL + '?action=load');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     if (data && typeof data === 'object') {
       Object.entries(data).forEach(function(e) {
-        const dayId  = e[0]; const remote = e[1];
-        const local  = rphData[dayId];
+        const dayId=e[0]; const remote=e[1];
+        const local=rphData[dayId];
         const tR = remote._saved ? new Date(remote._saved) : new Date(0);
-        const tL = local && local._saved ? new Date(local._saved) : new Date(0);
+        const tL = local&&local._saved ? new Date(local._saved) : new Date(0);
         if (tR >= tL) rphData[dayId] = remote;
       });
       persist();
       renderDayNav();
-      if (DAYS.find(function(d){ return d.id === view; })) renderRPH(view);
-      else if (view === 'dashboard') renderDashboard();
+      if (view==='dashboard') renderDashboard();
+      else if (view==='history') renderHistory();
+      else if (DAYS.find(function(d){ return d.id===view; })) renderRPH(view);
       toast('✅ Data dimuatkan dari Google Sheets!');
     }
+    setSyncInd('ok');
   } catch(e) {
-    // GAS mungkin belum ada doGet — senyap, guna localStorage
     console.warn('GAS load failed:', e.message);
-  } finally {
-    setGasBadge(true, false);
+    setSyncInd('err');
   }
-}
-
-// ════ GAS MODAL ════
-function openGas() { document.getElementById('gas-input').value = gasUrl; document.getElementById('gas-modal').classList.add('open'); }
-function closeGas() { document.getElementById('gas-modal').classList.remove('open'); }
-function saveGas() {
-  const url = document.getElementById('gas-input').value.trim();
-  if (!url.startsWith('https://script.google.com')) { toast('URL GAS tidak sah!','err'); return; }
-  gasUrl = url;
-  localStorage.setItem('erph_gas', gasUrl);
-  setGasBadge(true, false);
-  closeGas();
-  toast('✅ GAS disambung! Memuatkan data...','warn');
-  loadAllFromGAS();
-}
-function setGasBadge(on, syncing) {
-  const el = document.getElementById('gas-badge');
-  if (syncing) {
-    el.className = 'gas-btn on syncing';
-    el.textContent = '⚡ Menyegerak...';
-  } else {
-    el.className = 'gas-btn ' + (on ? 'on' : 'off');
-    el.textContent = on ? '⚡ GAS: Tersambung' : '⚡ GAS: Tidak Tersambung';
-  }
-}
-function copyGasCode() {
-  const code = document.querySelector('.gas-code').textContent;
-  navigator.clipboard.writeText(code).then(function(){
-    toast('✅ Kod GAS disalin! Tampal ke Code.gs');
-  }).catch(function(){
-    toast('Salin kod secara manual dari kotak hitam.','warn');
-  });
 }
 
 init();
