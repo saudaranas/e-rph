@@ -427,8 +427,38 @@ const SLOTS = [
 const PENUTUP_DEF = 'Guru bersoal jawab dengan murid mengenai pembelajaran hari ini.\nGuru membuat rumusan keseluruhan mengenai aktiviti PdPc yang telah dijalankan.\nMurid berbaris dan mengucapkan ucapan selamat pulang serta membaca doa untuk pulang.\nMurid bersalaman dengan guru dan pembantu pengurusan murid.';
 const RUTIN_DEF   = 'Ucap salam, minum pagi, pemeriksaan diri dan kebersihan, membaca doa, kalender dan kehadiran murid. Bersalam/mengucapkan selamat antara guru dan PPM dengan murid. Menyusun kasut di rak yang disediakan.';
 const PENTAKSIRAN_OPT = ['Lisan','Pemerhatian','Hasil Kerja','Buku Kerja','Projek','Modul Bacaan','Tingkah Laku','Lembaran Kerja','Gabungan'];
-const IMPAK_OPT = ['Mencapai objektif','Memerlukan bimbingan','Pemulihan','Pengayaan'];
+const IMPAK_PENT_OPT = ['Lisan','Lembaran Kerja','Pemerhatian','Tingkah Laku','Modul Bacaan','Gabungan'];
 const TP_OPT = ['TP 1','TP 2','TP 3'];
+
+// Render kolum Impak seperti dalam gambar: mini-jadual PENTAKSIRAN + TAHAP PENGUASAAN
+function buildImpakHtml(slotId, sd) {
+  const pentRows = IMPAK_PENT_OPT.map(function(p) {
+    return '<tr>' +
+      '<td style="padding:3px 5px;font-size:10px;border:1px solid var(--border);">' +
+        '<label style="display:flex;align-items:center;gap:4px;cursor:pointer;">' +
+          '<input type="checkbox" data-slot="'+slotId+'" data-impak="'+p+'" '+((sd.impak&&sd.impak.includes(p))?'checked':'')+' style="width:11px;height:11px;accent-color:var(--green);margin:0;">'+p+
+        '</label>' +
+      '</td>' +
+      '<td style="padding:3px 5px;border:1px solid var(--border);width:28px;"></td>' +
+    '</tr>';
+  }).join('');
+
+  const tpRows = TP_OPT.map(function(tp) {
+    return '<tr>' +
+      '<td style="padding:3px 5px;font-size:10px;font-weight:700;border:1px solid var(--border);">'+tp+'</td>' +
+      '<td style="padding:3px 5px;border:1px solid var(--border);width:28px;"></td>' +
+    '</tr>';
+  }).join('');
+
+  return '<table style="width:100%;border-collapse:collapse;margin-bottom:6px;">' +
+    '<thead><tr><th colspan="2" style="background:#ffe000;color:#111;font-size:10px;font-weight:700;text-align:center;padding:4px;border:1px solid var(--border);text-transform:uppercase;letter-spacing:.03em;">Pentaksiran</th></tr></thead>' +
+    '<tbody>'+pentRows+'</tbody>' +
+  '</table>' +
+  '<table style="width:100%;border-collapse:collapse;">' +
+    '<thead><tr><th colspan="2" style="background:#ffe000;color:#111;font-size:10px;font-weight:700;text-align:center;padding:4px;border:1px solid var(--border);text-transform:uppercase;letter-spacing:.03em;">Tahap Penguasaan</th></tr></thead>' +
+    '<tbody>'+tpRows+'</tbody>' +
+  '</table>';
+}
 
 let rphData = {};
 let view    = 'dashboard';
@@ -742,8 +772,6 @@ function buildSlots(dayId, D) {
     const imgs = sd.images || [];
 
     // ── S1 SPECIAL LAYOUT (Perbualan Awal) ──
-    // Kompetensi, Standard, Objektif di-merge ke dalam Aktiviti
-    // Bahan mempunyai sub-fields: Kandungan, Sub Kandungan, Tajuk, Nilai Teras Sivik, Bahan dan Alatan
     if (s.specialLayout) {
       const imgThumbsHtml = imgs.length
         ? '<div class="img-thumbs" id="thumbs-'+s.id+'">' +
@@ -752,49 +780,30 @@ function buildSlots(dayId, D) {
             }).join('') + '</div>'
         : '<div class="img-thumbs" id="thumbs-'+s.id+'"></div>';
 
-      const bahanGrid =
-        '<div class="s1-bahan-grid">' +
-          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Kandungan:</span><input type="text" data-slot="s1" data-field="kandungan" value="'+(sd.kandungan||'')+'" placeholder="cth: DIRI SAYA/RUMAH SAYA"></div>' +
-          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Sub Kandungan:</span><input type="text" data-slot="s1" data-field="subkandungan" value="'+(sd.subkandungan||'')+'" placeholder="cth: MEMBEZAKAN ANTARA KEPERLUAN DAN KEHENDAK"></div>' +
-          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Tajuk:</span><input type="text" data-slot="s1" data-field="tajuk" value="'+(sd.tajuk||'')+'" placeholder="cth: MEMBERI KEUTAMAAN KEPADA KEPERLUAN"></div>' +
-          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Nilai Teras Sivik:</span><input type="text" data-slot="s1" data-field="nilaisivik" value="'+(sd.nilaisivik||'')+'" placeholder="cth: KEGEMBIRAAN"></div>' +
-          '<div class="s1-bahan-field"><span class="s1-bahan-lbl">Bahan dan Alatan:</span><input type="text" data-slot="s1" data-field="bahan" value="'+(sd.bahan||'')+'" placeholder="cth: VIDEO PEMBELAJARAN, GAMBAR ICT"></div>' +
-          imgThumbsHtml +
-          '<div class="no-print" style="margin-top:5px;"><label class="btn-img-upload">🖼️ Tambah Gambar<input type="file" accept="image/*" multiple style="display:none;" onchange="addImages(\''+dayId+'\',\''+s.id+'\',this)"></label></div>' +
+      const uploadBtn =
+        '<div class="no-print" style="margin-top:6px;">' +
+          '<label class="btn-img-upload">🖼️ Tambah Gambar' +
+            '<input type="file" accept="image/*" multiple style="display:none;" onchange="addImages(\''+dayId+'\',\''+s.id+'\',this)">' +
+          '</label>' +
+        '</div>' +
+        imgThumbsHtml;
+
+      // S1: Kompetensi+Kemahiran+Objektif+Aktiviti merge (colspan=4), Bahan+Impak merge (colspan=2)
+      const aktivitiMerged =
+        '<textarea data-slot="s1" data-field="aktiviti" style="min-height:120px;width:100%;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;border-top:1px dashed #cde0d4;padding-top:5px;margin-top:5px;">' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Kompetensi:</div><textarea data-slot="s1" data-field="kompetensi" style="min-height:40px;font-size:10.5px;">'+(sd.kompetensi||s.kompetensi)+'</textarea></div>' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Standard Pembelajaran:</div><textarea data-slot="s1" data-field="standard" style="min-height:40px;font-size:10.5px;">'+(sd.standard||'')+'</textarea></div>' +
+          '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Objektif:</div><textarea data-slot="s1" data-field="objektif" style="min-height:40px;font-size:10.5px;">'+(sd.objektif||'')+'</textarea></div>' +
         '</div>';
 
-      // Aktiviti + Bahan merged (colspan=5): Aktiviti besar di kiri, Bahan sub-fields di kanan dalam flex layout
-      const aktivitiDanBahan =
-        '<div style="display:flex;gap:8px;">' +
-          // Kiri: Aktiviti + Kompetensi/Standard/Objektif
-          '<div style="flex:1.6;min-width:0;">' +
-            '<div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Aktiviti:</div>' +
-            '<textarea data-slot="s1" data-field="aktiviti" style="min-height:100px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
-            '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;border-top:1px dashed #cde0d4;padding-top:5px;margin-top:5px;">' +
-              '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Kompetensi:</div><textarea data-slot="s1" data-field="kompetensi" style="min-height:42px;font-size:10.5px;">'+(sd.kompetensi||s.kompetensi)+'</textarea></div>' +
-              '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Standard Pembelajaran:</div><textarea data-slot="s1" data-field="standard" style="min-height:42px;font-size:10.5px;">'+(sd.standard||'')+'</textarea></div>' +
-              '<div><div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;">Objektif:</div><textarea data-slot="s1" data-field="objektif" style="min-height:42px;font-size:10.5px;">'+(sd.objektif||'')+'</textarea></div>' +
-            '</div>' +
-          '</div>' +
-          // Kanan: Bahan sub-fields (seperti dalam gambar)
-          '<div style="flex:1;min-width:0;border-left:1.5px solid var(--border);padding-left:8px;">' +
-            bahanGrid +
-          '</div>' +
-        '</div>';
-
-      const impakHtml = '<div class="impak-wrap">' +
-        IMPAK_OPT.map(function(im) {
-          return '<label class="ck-item"><input type="checkbox" data-slot="s1" data-impak="'+im+'" '+(sd.impak&&sd.impak.includes(im)?'checked':'')+'>'+im+'</label>';
-        }).join('') +
-        '<div class="tp-sec"><div class="tp-lbl">Tahap Penguasaan:</div>' +
-        TP_OPT.map(function(tp) {
-          return '<label class="ck-item"><input type="checkbox" data-slot="s1" data-tp="'+tp+'" '+(sd.tp&&sd.tp.includes(tp)?'checked':'')+'>'+tp+'</label>';
-        }).join('') + '</div></div>';
+      // Bahan + Impak: PENTAKSIRAN + TAHAP PENGUASAAN + upload gambar di bawah TP
+      const bahanDanImpak = buildImpakHtml('s1', sd) + uploadBtn;
 
       return '<tr id="row-s1">' +
         '<td class="tlbl"><div class="tm">'+s.masa+'</div><input class="bd-edit" type="text" data-slot="s1" data-field="bidang" value="'+(sd.bidang||s.bidang)+'"><div class="dur">('+s.dur+')</div></td>' +
-        '<td colspan="5">'+aktivitiDanBahan+'</td>' +
-        '<td>'+impakHtml+'</td>' +
+        '<td colspan="4">'+aktivitiMerged+'</td>' +
+        '<td colspan="2">'+bahanDanImpak+'</td>' +
       '</tr>';
     }
 
@@ -805,15 +814,6 @@ function buildSlots(dayId, D) {
             return '<div class="img-thumb-wrap"><img src="'+src+'" class="img-thumb" onclick="viewImg(\''+s.id+'\','+i+')"><button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+s.id+'\','+i+')">✕</button></div>';
           }).join('') + '</div>'
       : '<div class="img-thumbs" id="thumbs-'+s.id+'"></div>';
-
-    const impakHtml = '<div class="impak-wrap">' +
-      IMPAK_OPT.map(function(im) {
-        return '<label class="ck-item"><input type="checkbox" data-slot="'+s.id+'" data-impak="'+im+'" '+(sd.impak&&sd.impak.includes(im)?'checked':'')+'>'+im+'</label>';
-      }).join('') +
-      '<div class="tp-sec"><div class="tp-lbl">Tahap Penguasaan:</div>' +
-      TP_OPT.map(function(tp) {
-        return '<label class="ck-item"><input type="checkbox" data-slot="'+s.id+'" data-tp="'+tp+'" '+(sd.tp&&sd.tp.includes(tp)?'checked':'')+'>'+tp+'</label>';
-      }).join('') + '</div></div>';
 
     const aktivitiCell =
       '<textarea data-slot="'+s.id+'" data-field="aktiviti" style="min-height:90px;">'+(sd.aktiviti!==undefined?sd.aktiviti:s.defAkt)+'</textarea>' +
@@ -827,7 +827,7 @@ function buildSlots(dayId, D) {
       '<td><textarea data-slot="'+s.id+'" data-field="objektif" style="min-height:48px;">'+(sd.objektif||'')+'</textarea></td>' +
       '<td>'+aktivitiCell+'</td>' +
       '<td><textarea data-slot="'+s.id+'" data-field="bahan" style="min-height:48px;">'+(sd.bahan||'')+'</textarea></td>' +
-      '<td>'+impakHtml+'</td>' +
+      '<td>'+buildImpakHtml(s.id, sd)+'</td>' +
     '</tr>';
   }).join('');
 }
