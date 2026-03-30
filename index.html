@@ -257,6 +257,11 @@ table.t textarea:focus{border-color:var(--green-mid);background:white;}
   .s1-kand-field textarea{border:none;background:transparent;}
 }
 
+.print-only{display:none;}
+@media print{
+  .print-only{display:block!important;}
+  .print-only img{width:90px;height:72px;object-fit:cover;border-radius:4px;border:1px solid #aaa;margin:2px;display:inline-block;}
+}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
 .syncing{animation:pulse 1.5s infinite;}
 </style>
@@ -339,7 +344,8 @@ const TP_OPT = ['TP 1','TP 2','TP 3'];
 function buildS1KandunganCol(dayId, sd) {
   const imgs = sd.images || [];
 
-  const imgThumbsHtml =
+  // Thumbnails untuk skrin (ada butang buang)
+  const imgThumbsScreen =
     '<div class="img-thumbs" id="thumbs-s1">' +
     imgs.map(function(src, i) {
       return '<div class="img-thumb-wrap">' +
@@ -348,6 +354,15 @@ function buildS1KandunganCol(dayId, sd) {
         '</div>';
     }).join('') +
     '</div>';
+
+  // Gambar untuk print sahaja — tiada butang, tunjuk lebih besar
+  const imgThumbsPrint = imgs.length
+    ? '<div class="img-thumbs print-only" style="margin-top:4px;">' +
+        imgs.map(function(src) {
+          return '<img src="' + src + '" style="width:90px;height:72px;object-fit:cover;border-radius:4px;border:1px solid #aaa;margin:2px;">';
+        }).join('') +
+      '</div>'
+    : '';
 
   const fields = [
     {key:'kandungan',   label:'KANDUNGAN :',         def:'DIRI SAYA/RUMAH SAYA',                            rows:2},
@@ -365,20 +380,21 @@ function buildS1KandunganCol(dayId, sd) {
     '</div>';
   }).join('');
 
+  // Bahagian upload + thumbnail (skrin sahaja)
   const uploadSection =
     '<div class="s1-kand-field no-print">' +
       '<label class="btn-img-upload" style="font-size:10px;padding:4px 8px;">🖼️ Tambah Gambar ICT' +
         '<input type="file" accept="image/*" multiple style="display:none;" onchange="addImages(\'' + dayId + '\',\'s1\',this)">' +
       '</label>' +
-      imgThumbsHtml +
+      imgThumbsScreen +
     '</div>';
 
-  // Gambar yang dah ada — tunjuk dalam print
-  const imgPrintSection = imgs.length
-    ? '<div class="s1-kand-field">' + imgThumbsHtml + '</div>'
+  // Gambar untuk print sahaja (tanpa butang, tunjuk terus)
+  const printSection = imgs.length
+    ? '<div class="s1-kand-field print-only">' + imgThumbsPrint + '</div>'
     : '';
 
-  return '<div class="s1-kand-wrap">' + fieldsHtml + uploadSection + '</div>';
+  return '<div class="s1-kand-wrap">' + fieldsHtml + uploadSection + printSection + '</div>';
 }
 
 // ═══ Impak biasa untuk S2-S8
@@ -762,11 +778,21 @@ function removeImg(dayId,slotId,idx){
 }
 
 function refreshThumbs(dayId,slotId){
+  // Update thumbnail skrin
   const el=document.getElementById('thumbs-'+slotId);if(!el)return;
   const imgs=(rphData[dayId]&&rphData[dayId][slotId]&&rphData[dayId][slotId].images)||[];
   el.innerHTML=imgs.map(function(src,i){
     return '<div class="img-thumb-wrap"><img src="'+src+'" class="img-thumb" onclick="viewImg(\''+slotId+'\','+i+')"><button class="img-rm no-print" onclick="removeImg(\''+dayId+'\',\''+slotId+'\','+i+')">✕</button></div>';
   }).join('');
+  // Update bahagian print-only untuk slot S1
+  if(slotId==='s1'){
+    const pel=document.querySelector('.s1-kand-wrap .print-only');
+    if(pel){
+      pel.innerHTML=imgs.map(function(src){
+        return '<img src="'+src+'" style="width:90px;height:72px;object-fit:cover;border-radius:4px;border:1px solid #aaa;margin:2px;">';
+      }).join('');
+    }
+  }
 }
 
 function viewImg(slotId,idx){
